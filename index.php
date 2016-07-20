@@ -123,12 +123,18 @@ if( TOKEN != "" ){
 			$DEVICES = array();
 				
 			if( ! is_array($room["device"]) ){
-				$DEVICES[] = $room["device"]; //singular device in a room
+				
 			}else{
 				$device = (array)$room["device"];
-				for( $x = 0; $x < sizeof($device); $x++ ){
-					if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
-						$DEVICES[] = $device[$x];
+				if( isset($device["did"]) ){
+					//item is singular device
+					$DEVICES[] = $room["device"];
+				}else{
+				
+					for( $x = 0; $x < sizeof($device); $x++ ){
+						if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
+							$DEVICES[] = $device[$x];
+						}
 					}
 				}
 			}
@@ -149,6 +155,9 @@ if( TOKEN != "" ){
 					}
 					echo '</div>';
 				echo '</div>';
+			}else{
+				echo 'No devices?';
+				pa( $room );
 			}
 		
 			echo '<div class="room-controls">';

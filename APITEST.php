@@ -25,18 +25,26 @@
 	foreach($DATA as $room){
 		$deviceCount = 0;
 		if( ! is_array($room["device"]) ){
-			$room["device"]["roomID"] = $room["rid"];
-			$room["device"]["roomName"] = $room["name"];
-			$DEVICES[] = $room["device"]; //singular device in a room
-			$deviceCount++;
+			//$room["device"]["roomID"] = $room["rid"];
+			//$room["device"]["roomName"] = $room["name"];
+			//$DEVICES[] = $room["device"]; //singular device in a room
+			//$deviceCount++;
 		}else{
 			$device = (array)$room["device"];
-			for( $x = 0; $x < sizeof($device); $x++ ){
-				if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
-					$device[$x]["roomID"] = $room["rid"];
-					$device[$x]["roomName"] = $room["name"];
-					$DEVICES[] = $device[$x];
-					$deviceCount++;
+			if( isset($device["did"]) ){
+				//item is singular device
+				$room['device']["roomID"] = $room["rid"];
+				$room['device']["roomName"] = $room["name"];
+				$DEVICES[] = $room["device"];
+				$deviceCount++;
+			}else{
+				for( $x = 0; $x < sizeof($device); $x++ ){
+					if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
+						$device[$x]["roomID"] = $room["rid"];
+						$device[$x]["roomName"] = $room["name"];
+						$DEVICES[] = $device[$x];
+						$deviceCount++;
+					}
 				}
 			}
 		}
