@@ -24,10 +24,10 @@ $(function(){
       min: 0,
       max: 100,
       value: 50,
-      slide: function( event, ui ) {
-        //$( "#amount" ).val( ui.value );
-		console.log("Device: " + $(this).attr('data-device-id') );
-		console.log("Set Device Brightness to " + ui.value)
+      stop: function(event, ui) {
+			$.get( " /api.php?fx=dim&type=device&uid=" + $(this).attr('data-device-id') + "&val=" + ui.value, function( data ) {
+			  console.log( data );
+			});
 		}
 	});
 	
@@ -43,11 +43,14 @@ $(function(){
 	
 	$('button.onOffDeviceToggleButton').click(function(event){
 		var DID = $(this).attr('data-device-id');
+		var val = 0;
 		if( $(this).hasClass('buttonOn') ){
-			window.alert("Turning Device " + DID + " On!");	
-		}else{
-			window.alert("Turning Device " + DID + " Off!");	
+			val = 1;
 		}
+		
+		$.get( "/api.php?fx=toggle&type=device&uid=" + DID + "&val=" + val, function( data ) {
+			  console.log( data );
+		});
 	});
 	
 });

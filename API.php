@@ -4,40 +4,48 @@
  * PHP API CALLS
  *
  */	
- 	include "include.php";
+	$function = isset($_REQUEST['fx']) ? $_REQUEST['fx'] : ""; 		//Toggle or Brightness
+	$type = 	isset($_REQUEST['type']) ? $_REQUEST['type'] : "";		//Device or Room
+	$UID = 		isset($_REQUEST['uid']) ? $_REQUEST['uid'] : "";		//DeviceID or Room ID
+	$val = 		isset($_REQUEST['val']) ? $_REQUEST['val'] : "";		//DeviceID or Room ID
 	
-	$function = ""; //Toggle or Brightness
-	$type = "";		//Device or Room
-	$UID = "";		//DeviceID or Room ID
-	
-	
-	/*
-	echo "<p>Found ".sizeof($ROOMS)." rooms and ".sizeof($DEVICES)." devices.</p>";
-	
-	foreach($ROOMS as $room){
-		echo "<h4>Room - ".$room["name"]."</h4>";
-		pa($room);
+	if( $function != "" && $type != "" && $UID != "" && $val != ""){
+		include "include.php";
+		
+		if( $type == "device"){
+			switch ($function){
+				case "toggle": //SAMPLE CALL: /api.php?fx=dim&type=device&uid=360187068559174100&val=80
+				
+					//$val = 1 | 0 - on | off
+					$val = ($val > 0) ? 1 : 0;
+					$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$UID."</did><value>".$val."</value></gip>"; 
+					$result = getCurlReturn($CMD);
+					$array = xmlToArray($result);
+					echo json_encode( array("toggle" => $val, "device" => $UID, "return" => $array) );
+				break;
+				case "dim": //SAMPLE CALL: /api.php?fx=dim&type=device&uid=360187068559174100&val=80
+				
+					//$val = 0 - 100;
+					$val = $val < 0 ? 0 : $val;
+					$val = $val > 100 ? 100 : $val;
+					
+					$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$UID."</did><value>".$val."</value><type>level</type></gip>"; 
+					$result = getCurlReturn($CMD);
+					$array = xmlToArray($result);
+					echo json_encode( array("dim" => $val, "device" => $UID, "return" => $array) );
+				break;
+				default:
+				echo json_encode( array("error" => "unknown function, required: toggle | dim") );
+			}
+		}elseif($type == "room"){
+			
+			
+			
+			
+		}else{
+			echo json_encode( array("error" => "unknown type, required: device | room") );
+		}
+	}else{
+		echo json_encode( array("error" => "argument empty or invalidm required: fx, type, UID, val") );
 	}
-	
-	foreach( $DEVICES as $device){
-		
-		echo "<h4>Device - ".(isset($device["name"]) ? $device["name"] : "unknown")."</h4>";
-		pa( $device);
-		
-		/*
-		
-		Play with some Commands on the devices
-		
-		
-		// Brighten or dim Device (set value 0 - 100) 
-		//$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device["did"]."</did><value>100</value><type>level</type></gip>"; 
-		
-		// Turn Bulb On or Off (set value 0 - 1)
-		//$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device["did"]."</did><value>1</value></gip>"; 
-		
-		$result = getCurlReturn($CMD);
-
-	}
-	*/
-	
 ?>	
