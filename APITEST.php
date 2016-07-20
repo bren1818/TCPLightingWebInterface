@@ -25,10 +25,7 @@
 	foreach($DATA as $room){
 		$deviceCount = 0;
 		if( ! is_array($room["device"]) ){
-			//$room["device"]["roomID"] = $room["rid"];
-			//$room["device"]["roomName"] = $room["name"];
-			//$DEVICES[] = $room["device"]; //singular device in a room
-			//$deviceCount++;
+
 		}else{
 			$device = (array)$room["device"];
 			if( isset($device["did"]) ){
@@ -62,31 +59,12 @@
 	}
 	
 	foreach( $DEVICES as $device){
-		
 		echo "<h4>Device - ".(isset($device["name"]) ? $device["name"] : "unknown")."</h4>";
 		pa( $device);
-		
-		/*
-		
-		Play with some Commands on the devices
-		
-		
-		// Brighten or dim Device (set value 0 - 100) 
-		//$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device["did"]."</did><value>100</value><type>level</type></gip>"; 
-		
-		// Turn Bulb On or Off (set value 0 - 1)
-		//$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device["did"]."</did><value>1</value></gip>"; 
-		
-		$result = getCurlReturn($CMD);
-		
-	
-		*/
-	
-		
 	}
 	
-	 echo "<h2>API Command Test:</h2>";
-	 echo "<pre>".print_r($array,true)."</pre>";
+	echo "<h2>API Command Test:</h2>";
+	echo "<pre>".print_r($array,true)."</pre>";
 	
 	
 	echo '<h3>UserGetListDefaultRooms</h3>';
