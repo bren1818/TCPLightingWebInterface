@@ -84,6 +84,58 @@
 			}else{
 				echo json_encode( array("error" => "room not found") );
 			}
+		}elseif($type == "all"){	
+
+
+			$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
+			$result = getCurlReturn($CMD);
+			$array = xmlToArray($result);
+			$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
+			$DEVICES = array();	
+			foreach($DATA as $room){
+				
+				if( ! is_array($room["device"]) ){
+					//$DEVICES[] = $room["device"]; //singular device in a room
+				}else{
+					$device = (array)$room["device"];
+					if( isset($device["did"]) ){
+						//item is singular device
+						$DEVICES[] = $room["device"];
+					}else{
+						for( $x = 0; $x < sizeof($device); $x++ ){
+							if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
+								$DEVICES[] = $device[$x];
+							}
+						}
+					}	
+				}
+			}
+			
+			if( sizeof($DEVICES) > 0 ){
+				foreach($DEVICES as $device){
+					if( $function == "toggle" ){
+						$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>".$val."</value></gip>"; 
+						$result = getCurlReturn($CMD);
+					}elseif( $function == "dim"){
+						//check if already on
+						$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>1</value></gip>"; 
+						$result = getCurlReturn($CMD);
+						
+						$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>".$val."</value><type>level</type></gip>"; 
+						$result = getCurlReturn($CMD);
+						
+					}
+				}
+				
+				echo json_encode( array("success" => sizeof($DEVICES)." devices communicated with", "fx" => $function, "val" => $val) );
+				
+			}else{
+				echo json_encode( array("error" => "no devices in home") );
+			}
+			
+			
+			
+			
 		}else{
 			echo json_encode( array("error" => "unknown type, required: device | room") );
 		}

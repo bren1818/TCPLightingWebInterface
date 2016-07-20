@@ -31,6 +31,18 @@
 				}
 			});
 			
+			$('.house-slider').slider({
+				range: "min",
+				min: 0,
+				max: 100,
+				value: 50,
+				stop: function(event, ui) {
+					$.get("/api.php?fx=dim&type=all&uid=" + $(this).attr('data-device-id') + "&val=" + ui.value, function( data ) {
+					  console.log( data );
+					});
+				}
+			});
+			
 			$('button.onOffToggleButton').click(function(event){
 				var roomID = $(this).attr('data-room-id');
 				var val = 0;
@@ -51,6 +63,18 @@
 				}
 				
 				$.get( "/api.php?fx=toggle&type=device&uid=" + DID + "&val=" + val, function( data ) {
+					  console.log( data );
+				});
+			});
+			
+			$('button.onOffHouseToggleButton').click(function(event){
+				var DID = $(this).attr('data-device-id');
+				var val = 0;
+				if( $(this).hasClass('buttonOn') ){
+					val = 1;
+				}
+				
+				$.get( "/api.php?fx=toggle&type=all&uid=" + DID + "&val=" + val, function( data ) {
 					  console.log( data );
 				});
 			});
@@ -115,6 +139,7 @@ if( TOKEN != "" ){
 	$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
 	
 	echo '<h1>Device control</h1>';
+	$deviceCount = 0;
 	
 	foreach($DATA as $room){
 		echo '<div class="roomContainer" data-room-id="'. $room["rid"].'">';
@@ -129,11 +154,13 @@ if( TOKEN != "" ){
 				if( isset($device["did"]) ){
 					//item is singular device
 					$DEVICES[] = $room["device"];
+					$deviceCount++;
 				}else{
 				
 					for( $x = 0; $x < sizeof($device); $x++ ){
 						if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
 							$DEVICES[] = $device[$x];
+							$deviceCount++;
 						}
 					}
 				}
@@ -154,7 +181,11 @@ if( TOKEN != "" ){
 						echo '</div>';
 					}
 					echo '</div>';
+					
 				echo '</div>';
+				
+				
+				
 			}else{
 				echo 'No devices?';
 				pa( $room );
@@ -164,6 +195,16 @@ if( TOKEN != "" ){
 				echo 'Room Brightness: <div class="room-slider" data-room-id="'. $room["rid"].'"></div>';
 				echo 'Room <button data-room-id="'. $room["rid"].'" class="onOffToggleButton buttonOn">On</button> | <button data-room-id="'. $room["rid"].'" class="onOffToggleButton buttonOff">Off</button>';
 			echo '</div>';
+		echo '</div>';
+	}
+	
+	if( $deviceCount > 0 ){
+		echo '<h1>Home</h1>';
+		echo '<div class="house">';
+			echo '<button data-device-id="all" class="onOffHouseToggleButton buttonOn">On</button> | <button data-device-id="all" class="onOffHouseToggleButton buttonOff">Off</button>';
+			echo '<div class="clear"></div>';
+			echo '<p>Brightness:</p>';
+			echo '<div class="house-slider" data-device-id="all"></div>';
 		echo '</div>';
 	}
 	
