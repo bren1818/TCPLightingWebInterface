@@ -39,9 +39,46 @@
 			}
 		}elseif($type == "room"){
 			
-			
-			
-			
+			$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
+			$result = getCurlReturn($CMD);
+			$array = xmlToArray($result);
+			$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
+			$complete = 0;
+			foreach($DATA as $room){
+				if( $room["rid"] == $UID ){
+					$complete = 1;
+					$DEVICES = array();	
+					if( ! is_array($room["device"]) ){
+						$DEVICES[] = $room["device"]; //singular device in a room
+					}else{
+						$device = (array)$room["device"];
+						for( $x = 0; $x < sizeof($device); $x++ ){
+							if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
+								$DEVICES[] = $device[$x];
+							}
+						}
+					}
+					
+					if( sizeof($DEVICES) > 0 ){
+						foreach($DEVICES as $device){
+							if( $function == "toggle" ){
+								$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>".$val."</value></gip>"; 
+								$result = getCurlReturn($CMD);
+							}elseif( $function == "dim"){
+								$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>".$val."</value><type>level</type></gip>"; 
+								$result = getCurlReturn($CMD);
+							}
+						}
+					}else{
+						echo json_encode( array("error" => "no devices in room") );
+					}
+				}
+			}
+			if($complete == 1){
+				echo json_encode( array("room" => $UID, "fx" => $function, "val" => $val) );
+			}else{
+				echo json_encode( array("error" => "room not found") );
+			}
 		}else{
 			echo json_encode( array("error" => "unknown type, required: device | room") );
 		}

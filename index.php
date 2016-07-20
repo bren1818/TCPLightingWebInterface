@@ -1,95 +1,96 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>TCP Control Script</title>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<script>
-$(function(){
-	$('.room-slider').slider({
-      range: "min",
-      min: 0,
-      max: 100,
-      value: 50,
-      slide: function( event, ui ) {
-        //$( "#amount" ).val( ui.value );
-		console.log("Room: " + $(this).attr('data-room-id') );
-		console.log("Set Room Brightness to " + ui.value)
-		}
-	});
-	
-	$('.device-slider').slider({
-      range: "min",
-      min: 0,
-      max: 100,
-      value: 50,
-      stop: function(event, ui) {
-			$.get( " /api.php?fx=dim&type=device&uid=" + $(this).attr('data-device-id') + "&val=" + ui.value, function( data ) {
-			  console.log( data );
+	<title>TCP Control Script</title>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script>
+		$(function(){
+			$('.room-slider').slider({
+				range: "min",
+				min: 0,
+				max: 100,
+				value: 50,
+				stop: function(event, ui) {
+					$.get("/api.php?fx=dim&type=room&uid=" + $(this).attr('data-room-id') + "&val=" + ui.value, function( data ) {
+						console.log( data );
+					});
+				}
 			});
-		}
-	});
-	
-	
-	$('button.onOffToggleButton').click(function(event){
-		var roomID = $(this).attr('data-room-id');
-		if( $(this).hasClass('buttonOn') ){
-			window.alert("Turning Room " + roomID + " On!");	
-		}else{
-			window.alert("Turning Room " + roomID + " Off!");	
-		}
-	});
-	
-	$('button.onOffDeviceToggleButton').click(function(event){
-		var DID = $(this).attr('data-device-id');
-		var val = 0;
-		if( $(this).hasClass('buttonOn') ){
-			val = 1;
-		}
-		
-		$.get( "/api.php?fx=toggle&type=device&uid=" + DID + "&val=" + val, function( data ) {
-			  console.log( data );
+			
+			$('.device-slider').slider({
+				range: "min",
+				min: 0,
+				max: 100,
+				value: 50,
+				stop: function(event, ui) {
+					$.get("/api.php?fx=dim&type=device&uid=" + $(this).attr('data-device-id') + "&val=" + ui.value, function( data ) {
+					  console.log( data );
+					});
+				}
+			});
+			
+			$('button.onOffToggleButton').click(function(event){
+				var roomID = $(this).attr('data-room-id');
+				var val = 0;
+				if( $(this).hasClass('buttonOn') ){
+					val = 1;	
+				}
+				
+				$.get( "/api.php?fx=toggle&type=room&uid=" + roomID + "&val=" + val, function( data ) {
+					  console.log( data );
+				});
+			});
+			
+			$('button.onOffDeviceToggleButton').click(function(event){
+				var DID = $(this).attr('data-device-id');
+				var val = 0;
+				if( $(this).hasClass('buttonOn') ){
+					val = 1;
+				}
+				
+				$.get( "/api.php?fx=toggle&type=device&uid=" + DID + "&val=" + val, function( data ) {
+					  console.log( data );
+				});
+			});
 		});
-	});
-	
-});
-</script>
-<style>
-	html *{
-	  box-sizing: border-box;
-	}
+	</script>
+	<style>
+		html *{
+		  box-sizing: border-box;
+		}
 
-	.roomContainer{ max-width: 1024px; margin: 10px auto; padding: 20px; }
-	.room-controls{ padding: 10px; }
+		.roomContainer{ max-width: 1024px; margin: 10px auto; padding: 20px; }
+		.room-controls{ padding: 10px; }
 
-	.room-slider{ margin: 20px 0;}
+		.room-slider{ margin: 20px 0;}
 
-	.roomContainer, .room-devices, .room-controls{
-		width: 100%;
-		border: 1px solid #000;
-	}
+		.roomContainer, .room-devices, .room-controls{
+			width: 100%;
+			border: 1px solid #000;
+		}
 
-	.room-devices{
-		width: 100%;
-		position: relative;
-		clear: both;
-		overflow: hidden;
-		margin: 10px 0;
-	}
+		.room-devices{
+			width: 100%;
+			position: relative;
+			clear: both;
+			overflow: hidden;
+			margin: 10px 0;
+		}
 
-	.device{
-		width: 200px;
-		height: 200px;
-		margin: 10px;
-		padding: 10px;
-		float: left;
-		border: 1px solid #000;
-		float: left;
-	}
+		.device{
+			width: 200px;
+			height: 200px;
+			margin: 10px;
+			padding: 10px;
+			float: left;
+			border: 1px solid #000;
+			float: left;
+		}
 
-	.clear{ clear: both; width: 100%; }
-</style>
+		.clear{ clear: both; width: 100%; }
+	</style>
 </head>
 <body>
 <?php
@@ -103,8 +104,6 @@ include "include.php";
 
 
 if( TOKEN != "" ){
-	
-	$URL = "https://".LIGTHING_URL.":".LIGHTING_PORT.API_PATH;
 	
 	//Get State of System Data
 	$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
