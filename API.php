@@ -18,6 +18,7 @@
 				
 					//$val = 1 | 0 - on | off
 					$val = ($val > 0) ? 1 : 0;
+					
 					$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$UID."</did><value>".$val."</value></gip>"; 
 					$result = getCurlReturn($CMD);
 					$array = xmlToArray($result);
@@ -54,10 +55,12 @@
 						$device = (array)$room["device"];
 						if( isset($device["did"]) ){
 							//item is singular device
+							//TODO should check if device has power
 							$DEVICES[] = $room["device"];
 						}else{
 							for( $x = 0; $x < sizeof($device); $x++ ){
 								if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
+									//TODO should check if device has power
 									$DEVICES[] = $device[$x];
 								}
 							}
@@ -67,11 +70,22 @@
 					if( sizeof($DEVICES) > 0 ){
 						foreach($DEVICES as $device){
 							if( $function == "toggle" ){
-								$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>".$val."</value></gip>"; 
-								$result = getCurlReturn($CMD);
+								//apply if toggle doesnt already matches value
+								if( isset($device['state']) && $device['state']  != $val ){
+									$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>".$val."</value></gip>"; 
+									$result = getCurlReturn($CMD);
+								}
 							}elseif( $function == "dim"){
-								$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>".$val."</value><type>level</type></gip>"; 
-								$result = getCurlReturn($CMD);
+								//turn light on if off
+								if( isset($device['state']) && $device['state']  != 1 ){
+									$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>1</value></gip>"; 
+									$result = getCurlReturn($CMD);
+								}
+								//only dim if the light is on
+								if( isset($device['state']) && $device['state']  != 0 ){
+									$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>".$val."</value><type>level</type></gip>"; 
+									$result = getCurlReturn($CMD);
+								}
 							}
 						}
 					}else{
@@ -114,20 +128,26 @@
 			if( sizeof($DEVICES) > 0 ){
 				foreach($DEVICES as $device){
 					if( $function == "toggle" ){
-						$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>".$val."</value></gip>"; 
-						$result = getCurlReturn($CMD);
-					}elseif( $function == "dim"){
-						//check if already on
-						$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>1</value></gip>"; 
-						$result = getCurlReturn($CMD);
+						//only toggle if it needs to be toggled
+						if( isset($device['state']) && $device['state']  != $val ){
+							$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>".$val."</value></gip>"; 
+							$result = getCurlReturn($CMD);
+						}
 						
+					}elseif( $function == "dim"){
+						//turn light on if it is not in order to dim it
+						if( isset($device['state']) && $device['state']  == 0 ){
+							$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>1</value></gip>"; 
+							$result = getCurlReturn($CMD);
+						}
+
 						$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>".$val."</value><type>level</type></gip>"; 
 						$result = getCurlReturn($CMD);
 						
 					}
 				}
 				
-				echo json_encode( array("success" => sizeof($DEVICES)." devices communicated with", "fx" => $function, "val" => $val) );
+				echo json_encode( array("success" => 1, "devices" => sizeof($DEVICES), "fx" => $function, "val" => $val) );
 				
 			}else{
 				echo json_encode( array("error" => "no devices in home") );
