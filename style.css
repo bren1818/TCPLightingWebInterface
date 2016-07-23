@@ -2,6 +2,8 @@ html *{
   box-sizing: border-box;
 }
 
+#toolBar,
+.container,
 .roomContainer{ max-width: 1024px; margin: 10px auto; padding: 20px; }
 .room-controls{ padding: 10px; }
 

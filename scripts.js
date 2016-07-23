@@ -109,7 +109,7 @@ $(function(){
 			val = 1;
 		}
 		
-		$.get( "/api.php?fx=toggle&type=all&uid=" + DID + "&val=" + val, function( data ) {
+		$.get( "/api.php?fx=toggle&type=all&uid=ALL&val=" + val, function( data ) {
 			  console.log( data );
 			$('.room-devices .device').each(function(){
 				if( val == 1){

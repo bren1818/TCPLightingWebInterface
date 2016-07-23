@@ -48,7 +48,10 @@ if( TOKEN != "" ){
 	
 	$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
 	
+	echo '<div id="toolBar"><a href="scheduler.php">Lighting Schedule</a> <a href="APITEST.php">API Test Zone</a></div>';
+	echo '<div class="container">';
 	echo '<h1>Device control</h1>';
+	echo '</div>';
 	$deviceCount = 0;
 	
 	foreach($DATA as $room){
@@ -109,28 +112,32 @@ if( TOKEN != "" ){
 	}
 	
 	if( $deviceCount > 0 ){
-		echo '<h1>Home</h1>';
-		echo '<div class="house">';
-			echo '<button data-device-id="all" class="onOffHouseToggleButton buttonOn">On</button> | <button data-device-id="all" class="onOffHouseToggleButton buttonOff">Off</button>';
-			echo '<div class="clear"></div>';
-			echo '<p>Brightness:</p>';
-			echo '<div class="house-slider" data-device-id="all"></div>';
+		echo '<div class="container">';
+			echo '<h1>Home</h1>';
+			echo '<div class="house">';
+				echo '<button data-device-id="all" class="onOffHouseToggleButton buttonOn">On</button> | <button data-device-id="all" class="onOffHouseToggleButton buttonOff">Off</button>';
+				echo '<div class="clear"></div>';
+				echo '<p>Brightness:</p>';
+				echo '<div class="house-slider" data-device-id="all"></div>';
+			echo '</div>';
 		echo '</div>';
 	}
 	
 }else{
 	echo "<h1>If you are seeing this, you haven't put your token in the include.php file.</h1>";
-	echo "<p>Press the sync button on the modem and re-run this script to generate one</p>";
-
+	
 	$CMD = "cmd=GWRLogin&data=<gip><version>1</version><email>".USER_EMAIL."</email><password>".USER_PASSWORD."</password></gip>&fmt=xml";
 		
 	$result = getCurlReturn($CMD);
+	$tokenArray = xmlToArray($result);
 	
-	echo "<p>If you do not see a long string within <b><token></token></b> you need to ensure you have hit the sync button before running this</p>";
-	echo "Result Token: | ".htmlentities($result)." | - note this has been turned to html entities for legibility.";
 	
+	if( !isset($tokenArray["token"]) ){
+		echo '<p>Could not fetch token. Ensure you have the correct IP for your bridge and that you have hit the <b>sync</b> button before running this.</p>';
+	}else{ 
+		echo "<p>Result Token: <b>".$tokenArray["token"]."</b> save this token in the TOKEN definition in the include.php file.</p><p>Full response: | ".htmlentities($result)." | - note this has been turned to html entities for legibility.<p>";
+	}
 } 
 ?>
-<p><a href="APITEST.php">API Test Zone</a></p>
 </body>
 </html>
