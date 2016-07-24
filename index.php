@@ -85,7 +85,7 @@ if( TOKEN != "" ){
 					
 					echo '<div class="room-devices">';
 					foreach($DEVICES as $device){
-						echo '<div class="'.( (isset($device['offline']) && $device['offline'] == 1) ? 'unplugged' : 'plugged' ).' device '.($device['state'] == 1 ? 'light-on' : 'light-off' ).'" data-device-id="'.$device['did'].'">'; //power > 0 then enabled 
+						echo '<div class="'.( (isset($device['offline']) && $device['offline'] == 1) ? 'unplugged' : 'plugged' ).' device '.($device['state'] == 1 ? 'light-on' : 'light-off' ).' '.($device['prodtype'] == 'Light Fixture' ? 'light-fixture' : '' ).'" data-device-id="'.$device['did'].'">'; //power > 0 then enabled 
 							//level = brightness
 							//state = on or off
 							echo '<p>'.$device['name'].'</p>';
