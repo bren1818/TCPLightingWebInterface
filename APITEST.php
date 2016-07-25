@@ -96,5 +96,8 @@
 	$array = xmlToArray($result);
 	
 	pa( $array );
+	
+	echo pa( getDevices() );
+	
 
 ?>

@@ -5,7 +5,7 @@
  *
  */
 
-define("LIGTHING_URL", "192.168.1.114"); //IP address of gateway
+define("LIGTHING_URL", "192.168.1.108"); //IP address of gateway
 define("LIGHTING_PORT", "443");
 define("API_PATH", "/gwr/gop.php");
 define("IMAGE_PATH", "https://".LIGTHING_URL."/gwr/"); //append urls to this eg: images/lighting/TCP/TCP-A19.png
@@ -46,6 +46,35 @@ function xmlToArray($string){
 	$array = json_decode($json,TRUE);
 	
 	return $array;
+}
+
+
+function getDevices(){
+	$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
+	$result = getCurlReturn($CMD);
+	$array = xmlToArray($result);
+	$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
+	$DEVICES = array();	
+	foreach($DATA as $room){
+		
+		if( ! is_array($room["device"]) ){
+			//$DEVICES[] = $room["device"]; //singular device in a room
+		}else{
+			$device = (array)$room["device"];
+			if( isset($device["did"]) ){
+				//item is singular device
+				$DEVICES[] = $room["device"];
+			}else{
+				for( $x = 0; $x < sizeof($device); $x++ ){
+					if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
+						$DEVICES[] = $device[$x];
+					}
+				}
+			}	
+		}
+	}
+	
+	return $DEVICES;
 }
 
 /* 
