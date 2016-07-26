@@ -117,26 +117,27 @@
 				setInterval(runSchedule, 1000);
 			});
 		
+
 		
 		/* Output Add Scheduled Task */
 		<?php
 		
 		?>	
 		<?php ob_start(); ?>
-		<div class="scheduledTask">
+		<form class="scheduledTask">
 			<div class="daysOfWeek">
-				<label><input type="checkbox" name="DAY_MON[]" /> Monday</label>
-				<label><input type="checkbox" name="DAY_TUE[]" /> Tuesday</label>
-				<label><input type="checkbox" name="DAY_WED[]" /> Wednesday</label>
-				<label><input type="checkbox" name="DAY_THU[]" /> Thursday</label>
-				<label><input type="checkbox" name="DAY_FRI[]" /> Friday</label>
-				<label><input type="checkbox" name="DAY_SAT[]" /> Saturday</label>
-				<label><input type="checkbox" name="DAY_SUN[]" /> Sunday</label>
-				<label><input type="checkbox" name="DAY_ALL[]" /> Everyday</label>
+				<label><input type="checkbox" name="DAY_MON" /> Monday</label>
+				<label><input type="checkbox" name="DAY_TUE" /> Tuesday</label>
+				<label><input type="checkbox" name="DAY_WED" /> Wednesday</label>
+				<label><input type="checkbox" name="DAY_THU" /> Thursday</label>
+				<label><input type="checkbox" name="DAY_FRI" /> Friday</label>
+				<label><input type="checkbox" name="DAY_SAT" /> Saturday</label>
+				<label><input type="checkbox" name="DAY_SUN" /> Sunday</label>
+				<label><input type="checkbox" name="DAY_ALL" /> Everyday</label>
 			</div>
 			<div class="timeOfDay">
 				<label>Hour: 
-					<select name="HOUR[]">
+					<select name="HOUR">
 						<?php for($x=0; $x<=23; $x++){
 							if( $x == 0 ){ 
 								echo '<option value="'.$x.'">12 AM - MIDNIGHT</option>';
@@ -152,7 +153,7 @@
 						} ?>
 					</select>
 				</label>
-				<label>Minute: <select name="MIN[]"><?php for($x=1; $x<=59; $x++){ echo '<option value="'.$x.'">'.sprintf("%02d",$x).'</option>'; } ?></select></label>
+				<label>Minute: <select name="MIN"><?php for($x=1; $x<=59; $x++){ echo '<option value="'.$x.'">'.sprintf("%02d",$x).'</option>'; } ?></select></label>
 			</div>
 			<div class="functionTrigger">
 				<label>Function: <select name="FX"><option value="DIM">DIM</option><option value="SWITCH">SWITCH</option></select></label>
@@ -160,11 +161,11 @@
 			<div class="fxTo">
 				<div class="ifDim">
 					<div class="schedule-slider" data-device-id="all"></div>
-					<input name="DIM_SCHED[]" type="hidden" value="" />
+					<input name="DIM_SCHED" type="hidden" value="" />
 				</div>
 				<div class="ifSwitch">
 					<label class="switch">
-					  <input name="SWITCH_SCHED[]" value="1" type="checkbox">
+					  <input name="SWITCH_SCHED" value="1" type="checkbox">
 					  <div class="slider round"></div>
 					</label>
 				</div>
@@ -176,7 +177,7 @@
 				</tr>
 				<tr>
 					<td>
-						<select size="9"  name="available[]" multiple>
+						<select size="9" class="available" name="DEVICE_AVAILABLE" multiple>
 						<?php
 							$devices = getDevices();
 							foreach($devices as $device){
@@ -191,7 +192,7 @@
 						<input type="Button" value="<< Remove" class="btnRemove">
 					</td>
 					<td>
-						<select size="9"  name="selected[]" multiple>
+						<select size="9" class="selected" name="DEVICE_SELECTED" multiple>
 						<?php
 						
 						?>
@@ -201,12 +202,28 @@
 			</table>
 			
 			</div>
-		</div>
+		</form>
 		<?php 
 		$schedule = ob_get_clean();
 		?>	
 	
 		var addSchedule = '<?php echo preg_replace( "/\r|\n/", "",$schedule); ?>';	
+		
+		function SelectMoveRows(SS1,SS2){
+			//function shamelessly borrowed from http://johnwbartlett.com/cf_tipsntricks/index.cfm?TopicID=86
+			var SelID='';
+			var SelText='';
+			// Move rows from SS1 to SS2 from bottom to top
+			for (i=SS1.options.length - 1; i>=0; i--){
+				if (SS1.options[i].selected == true){
+					SelID=SS1.options[i].value;
+					SelText=SS1.options[i].text;
+					var newRow = new Option(SelText,SelID);
+					SS2.options[SS2.length]=newRow;
+					SS1.options[i]=null;
+				}
+			}
+		}
 		
 		function bindEvents(){
 		
@@ -227,24 +244,55 @@
 				max: 100,
 				//value: $(this).attr('data-level'),
 				create: function( event, ui ){
-					
+					//$(this).slider("option", "value", $(this).attr('data-value') );
 				},
 				stop: function(event, ui) {
-					
+					$(this).parent().find('input[name="DIM_SCHED"]').val( ui.value );
 				},
 				slide: function( event, ui ) {
-					
+					$(this).parent().find('input[name="DIM_SCHED"]').val( ui.value );
 				}
 			});
 			
 			$('select[name="FX"]').change();
+			
+			$('.btnAdd, .btnRemove').click(function(){
+				
+				var available =  $(this).closest('.deviceList').find('select.available')[0];
+				var selected = $(this).closest('.deviceList').find('select.selected')[0];
+
+				if( $(this).hasClass('btnAdd') ){
+					SelectMoveRows(available,  selected );
+				}else{
+					SelectMoveRows( selected, available );
+				}
+				
+			});
+			
 		
 		}
 		
 		$('#add').click(function(){
-			console.log("Adding " + addSchedule);
 			$('#events').append(addSchedule);
 			bindEvents();
+		});
+		
+		$('#save').click(function(){
+			$('select[name="DEVICE_SELECTED"] option').each(function(){ $(this).attr('selected','selected'); });
+			var schedules = [];
+			
+			$('.scheduledTask').each(function(){
+				schedules.push( $(this).find(':input').serializeArray() );
+			});
+			
+			var d = JSON.stringify( schedules  );
+			
+			console.log( d ); // post this
+			
+			/* Sample
+			[[{"name":"DAY_MON","value":"on"},{"name":"DAY_WED","value":"on"},{"name":"DAY_FRI","value":"on"},{"name":"HOUR","value":"8"},{"name":"MIN","value":"1"},{"name":"FX","value":"SWITCH"},{"name":"DIM_SCHED","value":""},{"name":"SWITCH_SCHED","value":"1"},{"name":"DEVICE_SELECTED","value":"359905593582463444"}],[{"name":"DAY_MON","value":"on"},{"name":"DAY_WED","value":"on"},{"name":"DAY_FRI","value":"on"},{"name":"HOUR","value":"8"},{"name":"MIN","value":"10"},{"name":"FX","value":"SWITCH"},{"name":"DIM_SCHED","value":""},{"name":"DEVICE_SELECTED","value":"359905593582463444"}]]
+			*/
+			
 		});
 		
 		bindEvents();
