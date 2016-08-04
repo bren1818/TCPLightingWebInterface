@@ -114,99 +114,13 @@
 				$('#runOnce').attr('disabled', true);
 				$(this).unbind();
 				$(this).addClass('running');
-				setInterval(runSchedule, 1000);
+				setInterval(runSchedule, 30000);
 			});
 		
 
 		
 		/* Output Add Scheduled Task */
-		<?php
-		
-		?>	
-		<?php ob_start(); ?>
-		<form class="scheduledTask">
-			<div class="daysOfWeek">
-				<label><input type="checkbox" name="DAY_MON" /> Monday</label>
-				<label><input type="checkbox" name="DAY_TUE" /> Tuesday</label>
-				<label><input type="checkbox" name="DAY_WED" /> Wednesday</label>
-				<label><input type="checkbox" name="DAY_THU" /> Thursday</label>
-				<label><input type="checkbox" name="DAY_FRI" /> Friday</label>
-				<label><input type="checkbox" name="DAY_SAT" /> Saturday</label>
-				<label><input type="checkbox" name="DAY_SUN" /> Sunday</label>
-				<label><input type="checkbox" name="DAY_ALL" /> Everyday</label>
-			</div>
-			<div class="timeOfDay">
-				<label>Hour: 
-					<select name="HOUR">
-						<?php for($x=0; $x<=23; $x++){
-							if( $x == 0 ){ 
-								echo '<option value="'.$x.'">12 AM - MIDNIGHT</option>';
-							}else if($x == 12){
-								echo '<option value="'.$x.'">12 PM - NOON</option>';	
-							}else{
-								if( $x > 12 ){
-									echo '<option value="'.$x.'">'. ($x - 12) .( $x >= 12 ? ' PM' : ' AM' ).'</option>';
-								}else{
-									echo '<option value="'.$x.'">'.$x.( $x >= 12 ? ' PM' : ' AM' ).'</option>';
-								}
-							}
-						} ?>
-					</select>
-				</label>
-				<label>Minute: <select name="MIN"><?php for($x=0; $x<=59; $x++){ echo '<option value="'.$x.'">'.sprintf("%02d",$x).'</option>'; } ?></select></label>
-			</div>
-			<div class="functionTrigger">
-				<label>Function: <select name="FX"><option value="DIM">DIM</option><option value="SWITCH">SWITCH</option></select></label>
-			</div>
-			<div class="fxTo">
-				<div class="ifDim">
-					<div class="schedule-slider" data-device-id="all"></div>
-					<input name="DIM_SCHED" type="hidden" value="" />
-				</div>
-				<div class="ifSwitch">
-					<label class="switch">
-					  <input name="SWITCH_SCHED" value="1" type="checkbox">
-					  <div class="slider round"></div>
-					</label>
-				</div>
-			</div>
-			<div class="deviceList">
-			<table>
-				<tr>
-					<td>Available</td><td>&nbsp;</td><td>Selected</td>
-				</tr>
-				<tr>
-					<td>
-						<select size="9" class="available" name="DEVICE_AVAILABLE" multiple>
-						<?php
-							$devices = getDevices();
-							foreach($devices as $device){
-								echo '<option value="'.$device['did'].'">'.$device['prodtype'].' - '.$device['name'].'</option>';
-							}
-						?>
-						</select>
-					</td>
-					<td>
-						<input type="Button" value="Add >>" class="btnAdd"><br />
-						<br />
-						<input type="Button" value="<< Remove" class="btnRemove">
-					</td>
-					<td>
-						<select size="9" class="selected" name="DEVICE_SELECTED" multiple>
-						<?php
-						
-						?>
-						</select>
-					</td>
-				</tr>
-			</table>
-			
-			</div>
-		</form>
-		<?php 
-		$schedule = ob_get_clean();
-		?>	
-	
+		<?php ob_start(); getScheduleView();$schedule = ob_get_clean();	?>	
 		var addSchedule = '<?php echo preg_replace( "/\r|\n/", "",$schedule); ?>';	
 		
 		function SelectMoveRows(SS1,SS2){
@@ -244,7 +158,7 @@
 				max: 100,
 				//value: $(this).attr('data-level'),
 				create: function( event, ui ){
-					//$(this).slider("option", "value", $(this).attr('data-value') );
+					$(this).slider("option", "value", $(this).parent().find("input[name='DIM_SCHED']").val() );
 				},
 				stop: function(event, ui) {
 					$(this).parent().find('input[name="DIM_SCHED"]').val( ui.value );
@@ -320,6 +234,98 @@
 	 * 
 	 
 	 */
+	
+	function getScheduleView($task=array()){
+		?>
+		<form class="scheduledTask">
+			<div class="daysOfWeek">
+				<label><input type="checkbox" name="DAY_MON" <?php echo (isset($task["DAY_MON"]) && $task["DAY_MON"] == "on") ? " checked" : "";  ?>/> Monday</label>
+				<label><input type="checkbox" name="DAY_TUE" <?php echo (isset($task["DAY_TUE"]) && $task["DAY_TUE"] == "on") ? " checked" : "";  ?>/> Tuesday</label>
+				<label><input type="checkbox" name="DAY_WED" <?php echo (isset($task["DAY_WED"]) && $task["DAY_WED"] == "on") ? " checked" : "";  ?>/> Wednesday</label>
+				<label><input type="checkbox" name="DAY_THU" <?php echo (isset($task["DAY_THU"]) && $task["DAY_THU"] == "on") ? " checked" : "";  ?>/> Thursday</label>
+				<label><input type="checkbox" name="DAY_FRI" <?php echo (isset($task["DAY_FRI"]) && $task["DAY_FRI"] == "on") ? " checked" : "";  ?>/> Friday</label>
+				<label><input type="checkbox" name="DAY_SAT" <?php echo (isset($task["DAY_SAT"]) && $task["DAY_SAT"] == "on") ? " checked" : "";  ?>/> Saturday</label>
+				<label><input type="checkbox" name="DAY_SUN" <?php echo (isset($task["DAY_SUN"]) && $task["DAY_SUN"] == "on") ? " checked" : "";  ?>/> Sunday</label>
+				<label><input type="checkbox" name="DAY_ALL" <?php echo (isset($task["DAY_ALL"]) && $task["DAY_ALL"] == "on") ? " checked" : "";  ?>/> Everyday</label>
+			</div>
+			<div class="timeOfDay">
+				<label>Hour: 
+					<select name="HOUR">
+						<?php for($x=0; $x<=23; $x++){
+							if( $x == 0 ){ 
+								echo '<option value="'.$x.'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>12 AM - MIDNIGHT</option>';
+							}else if($x == 12){
+								echo '<option value="'.$x.'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>12 PM - NOON</option>';	
+							}else{
+								if( $x > 12 ){
+									echo '<option value="'.$x.'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>'. ($x - 12) .( $x >= 12 ? ' PM' : ' AM' ).'</option>';
+								}else{
+									echo '<option value="'.$x.'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>'.$x.( $x >= 12 ? ' PM' : ' AM' ).'</option>';
+								}
+							}
+						} ?>
+					</select>
+				</label>
+				<label>Minute: <select name="MIN"><?php for($x=0; $x<=59; $x++){ echo '<option value="'.$x.'"'.( (isset($task["MIN"]) && $task["MIN"] == $x) ? " selected" : "").'>'.sprintf("%02d",$x).'</option>'; } ?></select></label>
+			</div>
+			<div class="functionTrigger">
+				<label>Function: <select name="FX"><option value="DIM" <?php echo (isset($task["FX"]) && $task["FX"] == "DIM") ? " selected" : ""; ?>>DIM</option><option value="SWITCH" <?php echo (isset($task["FX"]) && $task["FX"] != "DIM") ? " selected" : ""; ?>>SWITCH</option></select></label>
+			</div>
+			<div class="fxTo">
+				<div class="ifDim">
+					<div class="schedule-slider" data-device-id="all"></div>
+					<input name="DIM_SCHED" type="hidden" value="<?php echo (isset($task["FX"]) && $task["FX"] == "DIM") ? $task["DIM_SCHED"] : ""; ?>" />
+				</div>
+				<div class="ifSwitch">
+					<label class="switch">
+					  <input name="SWITCH_SCHED" value="1" type="checkbox" <?php echo (isset($task["FX"]) && $task["FX"] != "DIM" && $task["SWITCH_SCHED"] == 1) ? "checked" : ""; ?>>
+					  <div class="slider round"></div>
+					</label>
+				</div>
+			</div>
+			<div class="deviceList">
+			<table>
+				<tr>
+					<td>Available</td><td>&nbsp;</td><td>Selected</td>
+				</tr>
+				<tr>
+					<td>
+						<select size="9" class="available" name="DEVICE_AVAILABLE" multiple>
+						<?php
+							$devices = getDevices();
+							$selected = "";
+							foreach($devices as $device){
+								//if did is not in here
+								if( isset($task) && isset($task["devices"]) && is_array($task["devices"]) && in_array($device['did'], $task["devices"]) ){
+									$selected.= '<option value="'.$device['did'].'" selected>'.$device['prodtype'].' - '.$device['name'].'</option>';
+								}else{
+									echo '<option value="'.$device['did'].'">'.$device['prodtype'].' - '.$device['name'].'</option>';
+								}
+							}
+						?>
+						</select>
+					</td>
+					<td>
+						<input type="Button" value="Add >>" class="btnAdd"><br />
+						<br />
+						<input type="Button" value="<< Remove" class="btnRemove">
+					</td>
+					<td>
+						<select size="9" class="selected" name="DEVICE_SELECTED" multiple>
+						<?php
+							echo $selected;
+						?>
+						</select>
+					</td>
+				</tr>
+			</table>
+			
+			</div>
+		</form>
+		<?php
+	}
+ 
+ 
  
 	echo '<div id="toolBar"><a href="index.php">Lighting Controls</a> <a href="APITEST.php">API Test Zone</a></div>';
 	
@@ -332,7 +338,16 @@
  ?>
 <div id="events" class="container"> 
 	<?php
-		echo $schedule;
+		if( file_exists("schedule.sched") ){
+			$array = file_get_contents("schedule.sched");
+			$tasks = unserialize ($array);
+			foreach($tasks as $task){
+				getScheduleView($task);
+			}
+			
+		}else{
+			echo $schedule;
+		}
 	?>
  </div>
  <button id="save">Save</button>

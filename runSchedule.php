@@ -27,6 +27,10 @@ function getCleanSchedTask(){
 	);
 }
 
+$tasks = array();
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
 
 if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 	
@@ -54,12 +58,18 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 		file_put_contents("schedule.sched", $serialized);
 	}
 	
+}else{
+	if( file_exists("schedule.sched") ){
+		$array = file_get_contents("schedule.sched");
+		$tasks = unserialize ($array);	
+	}
+}
+
+
 	if( sizeof($tasks) > 0 ){
 		$HOUR_NOW = date('H');
 		$MIN_NOW = date('i');
 		$DAY_NOW = date('D');
-		
-		echo "Currents: DAY: ".$DAY_NOW.", HOUR: ".$HOUR_NOW.", MIN: ".$MIN_NOW;
 		
 		foreach($tasks as $task){
 			if( $task["DAY_ALL"] == "on" || $task["DAY_".strtoupper($DAY_NOW)] == "on" ){
@@ -99,15 +109,5 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 	}else{
 		//Done
 	}
-	
-	
-}else{
-	header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-	header("Cache-Control: post-check=0, pre-check=0", false);
-	header("Pragma: no-cache");
-
-	//load the dilly
-	
-} 
 
 ?>
