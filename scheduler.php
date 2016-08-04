@@ -215,7 +215,7 @@
 				url: 'runSchedule.php',
 				data: {'schedule': JSON.stringify(schedules)},
 				success: function(msg) {
-				  alert(msg);
+				  alert("Saved");
 				}
 			  });
 			
@@ -253,20 +253,20 @@
 					<select name="HOUR">
 						<?php for($x=0; $x<=23; $x++){
 							if( $x == 0 ){ 
-								echo '<option value="'.$x.'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>12 AM - MIDNIGHT</option>';
+								echo '<option value="'.sprintf("%02d",$x).'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>12 AM - MIDNIGHT</option>';
 							}else if($x == 12){
-								echo '<option value="'.$x.'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>12 PM - NOON</option>';	
+								echo '<option value="'.sprintf("%02d",$x).'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>12 PM - NOON</option>';	
 							}else{
 								if( $x > 12 ){
-									echo '<option value="'.$x.'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>'. ($x - 12) .( $x >= 12 ? ' PM' : ' AM' ).'</option>';
+									echo '<option value="'.sprintf("%02d",$x).'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>'. ($x - 12) .( $x >= 12 ? ' PM' : ' AM' ).'</option>';
 								}else{
-									echo '<option value="'.$x.'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>'.$x.( $x >= 12 ? ' PM' : ' AM' ).'</option>';
+									echo '<option value="'.sprintf("%02d",$x).'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>'.$x.( $x >= 12 ? ' PM' : ' AM' ).'</option>';
 								}
 							}
 						} ?>
 					</select>
 				</label>
-				<label>Minute: <select name="MIN"><?php for($x=0; $x<=59; $x++){ echo '<option value="'.$x.'"'.( (isset($task["MIN"]) && $task["MIN"] == $x) ? " selected" : "").'>'.sprintf("%02d",$x).'</option>'; } ?></select></label>
+				<label>Minute: <select name="MIN"><?php for($x=0; $x<=59; $x++){ echo '<option value="'.sprintf("%02d",$x).'"'.( (isset($task["MIN"]) && $task["MIN"] == $x) ? " selected" : "").'>'.sprintf("%02d",$x).'</option>'; } ?></select></label>
 			</div>
 			<div class="functionTrigger">
 				<label>Function: <select name="FX"><option value="DIM" <?php echo (isset($task["FX"]) && $task["FX"] == "DIM") ? " selected" : ""; ?>>DIM</option><option value="SWITCH" <?php echo (isset($task["FX"]) && $task["FX"] != "DIM") ? " selected" : ""; ?>>SWITCH</option></select></label>
