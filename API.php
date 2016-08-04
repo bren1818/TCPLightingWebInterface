@@ -137,6 +137,6 @@
 			echo json_encode( array("error" => "unknown type, required: device | room") );
 		}
 	}else{
-		echo json_encode( array("error" => "argument empty or invalidm required: fx, type, UID, val") );
+		echo json_encode( array("error" => "argument empty or invalid. Required: fx, type, UID, val", "recieved" => $_REQUEST) );
 	}
 ?>	

@@ -48,7 +48,7 @@ if( TOKEN != "" ){
 	
 	$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
 	
-	echo '<div id="toolBar"><a href="scheduler.php">Lighting Schedule</a> <a href="APITEST.php">API Test Zone</a></div>';
+	echo '<div id="toolBar"><a href="scheduler.php">Lighting Scheduler</a> | <a href="APITEST.php">API Test Zone</a></div>';
 	echo '<div class="container">';
 	echo '<h1>Device control</h1>';
 	echo '</div>';
@@ -82,7 +82,6 @@ if( TOKEN != "" ){
 			if( sizeof($DEVICES) > 0 ){
 				echo '<div class="devices">';
 					echo '<p>Room Devices:</p>';
-					
 					echo '<div class="room-devices">';
 					foreach($DEVICES as $device){
 						echo '<div class="'.( (isset($device['offline']) && $device['offline'] == 1) ? 'unplugged' : 'plugged' ).' device '.($device['state'] == 1 ? 'light-on' : 'light-off' ).' '.($device['prodtype'] == 'Light Fixture' ? 'light-fixture' : '' ).'" data-device-id="'.$device['did'].'">'; //power > 0 then enabled 

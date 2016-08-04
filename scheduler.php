@@ -153,7 +153,7 @@
 						} ?>
 					</select>
 				</label>
-				<label>Minute: <select name="MIN"><?php for($x=1; $x<=59; $x++){ echo '<option value="'.$x.'">'.sprintf("%02d",$x).'</option>'; } ?></select></label>
+				<label>Minute: <select name="MIN"><?php for($x=0; $x<=59; $x++){ echo '<option value="'.$x.'">'.sprintf("%02d",$x).'</option>'; } ?></select></label>
 			</div>
 			<div class="functionTrigger">
 				<label>Function: <select name="FX"><option value="DIM">DIM</option><option value="SWITCH">SWITCH</option></select></label>
@@ -277,6 +277,9 @@
 			bindEvents();
 		});
 		
+		
+	
+		
 		$('#save').click(function(){
 			$('select[name="DEVICE_SELECTED"] option').each(function(){ $(this).attr('selected','selected'); });
 			var schedules = [];
@@ -285,13 +288,23 @@
 				schedules.push( $(this).find(':input').serializeArray() );
 			});
 			
-			var d = JSON.stringify( schedules  );
-			
-			console.log( d ); // post this
-			
 			/* Sample
 			[[{"name":"DAY_MON","value":"on"},{"name":"DAY_WED","value":"on"},{"name":"DAY_FRI","value":"on"},{"name":"HOUR","value":"8"},{"name":"MIN","value":"1"},{"name":"FX","value":"SWITCH"},{"name":"DIM_SCHED","value":""},{"name":"SWITCH_SCHED","value":"1"},{"name":"DEVICE_SELECTED","value":"359905593582463444"}],[{"name":"DAY_MON","value":"on"},{"name":"DAY_WED","value":"on"},{"name":"DAY_FRI","value":"on"},{"name":"HOUR","value":"8"},{"name":"MIN","value":"10"},{"name":"FX","value":"SWITCH"},{"name":"DIM_SCHED","value":""},{"name":"DEVICE_SELECTED","value":"359905593582463444"}]]
 			*/
+			//$.ajaxSetup({ cache: false, async: false }); 
+			
+		
+			
+			
+			$.ajax({
+				type: 'POST',
+				url: 'runSchedule.php',
+				data: {'schedule': JSON.stringify(schedules)},
+				success: function(msg) {
+				  alert(msg);
+				}
+			  });
+			
 			
 		});
 		
