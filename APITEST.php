@@ -9,6 +9,51 @@
 	
 	$URL = "https://".LIGTHING_URL.":".LIGHTING_PORT.API_PATH;
 	
+	
+
+	echo '<h3>GWAccountGetExtras</h3>';
+	$CMD = "cmd=AccountGetExtras&data=<gip><version>1</version><token>".TOKEN."</token></gip>";
+	$result = getCurlReturn($CMD);
+	$array = xmlToArray($result);
+	pa( $array );
+	
+	echo '<h3>GWGatewayGetInfo</h3>';
+	$CMD = "cmd=GatewayGetInfo&data=<gip><version>1</version><token>".TOKEN."</token></gip>";
+	$result = getCurlReturn($CMD);
+	$array = xmlToArray($result);
+	pa( $array );
+	
+	/*
+	echo '<h3>GWRoomGetInfoAll</h3>';
+	$CMD = "cmd=RoomGetInfoAll&data=<gip><version>1</version><token>".TOKEN."</token><fields>name,power,product,class,image,imageurl,control,other</fields></gip>";
+	$result = getCurlReturn($CMD);
+	$array = xmlToArray($result);
+	pa( $array );
+	*/
+	
+	echo '<h3>GWRoomGetList</h3>';
+	$CMD = "cmd=RoomGetList&data=<gip><version>1</version><token>".TOKEN."</token></gip>";
+	$result = getCurlReturn($CMD);
+	$array = xmlToArray($result);
+	pa( $array );
+	
+	echo '<h3>GWSceneGetList</h3>';
+	$CMD = "cmd=SceneGetList&data=<gip><version>1</version><token>".TOKEN."</token><bigicon>1</bigicon></gip>";
+	$result = getCurlReturn($CMD);
+	$array = xmlToArray($result);
+	pa( $array );
+	
+	echo '<h3>GWSceneGetListDetails</h3>';
+	$CMD = "cmd=SceneGetListDetails&data=<gip><version>1</version><token>".TOKEN."</token><bigicon>1</bigicon></gip>";
+	$result = getCurlReturn($CMD);
+	$array = xmlToArray($result);
+	pa( $array );
+
+
+
+
+	
+	
 	//Get State of System Data
 	$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
 	
@@ -98,6 +143,13 @@
 	pa( $array );
 	
 	echo pa( getDevices() );
+	
+	
+	
+	
+	
+	
+	
 	
 
 ?>

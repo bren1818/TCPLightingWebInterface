@@ -93,7 +93,7 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 							$req = LOCAL_URL."/API.php?fx=".$fx."&type=device&uid=".$ID."&val=".$val;
 							$data = file_get_contents($req);
 							if(LOG_ACTIONS){
-								file_put_contents("schedule.actioned", $req." - Response: ".$data."\n", FILE_APPEND | LOCK_EX);
+								file_put_contents("schedule.actioned", date('Y-m-d H:i:s').' - '.$req." - Response: ".$data."\n", FILE_APPEND | LOCK_EX);
 							}
 						}
 					}else{
