@@ -34,7 +34,6 @@ if( TOKEN != "" ){
 	
 	//Get State of System Data
 	$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
-	
 	$result = getCurlReturn($CMD);
 	
 	$array = xmlToArray($result);

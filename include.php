@@ -5,11 +5,12 @@
  *
  */
 
-define("LIGTHING_URL", "192.168.1.108"); 					//IP address of TCP Bridge/Gateway
-define("LIGHTING_PORT", "443");								//leave as 443
-define("LOCAL_URL", "http://localhost:82"); 				//Address of this webserver - this is used in runSchedule to call the API
+define("LIGTHING_URL", "192.168.1.7"); 					//IP address of TCP Bridge/Gateway
+define("LIGHTING_PORT", "80");								//leave as 443
+define("SCHEME", 'http');
+define("LOCAL_URL", "http://onethree.net/local/"); 				//Address of this webserver - this is used in runSchedule to call the API
 define("API_PATH", "/gwr/gop.php");							//API Path on bridge - do not change
-define("IMAGE_PATH", "https://".LIGTHING_URL."/gwr/"); 		//append urls to this eg: images/lighting/TCP/TCP-A19.png
+define("IMAGE_PATH", "http://".LIGTHING_URL."/gwr/"); 		//append urls to this eg: images/lighting/TCP/TCP-A19.png
 define("USER_EMAIL", "bren1818@gmail.com"); 				//update this to your email - I think this is so you dont have to regenerate tokens if you run this script elsewhere
 define("USER_PASSWORD", USER_EMAIL);						//can be anything
 
@@ -17,7 +18,7 @@ define("SAVE_SCHEDULE", 1); 								//saves schedule to a binary file on save sc
 define("LOG_ACTIONS", 1); 									//saves completed actions to schedule.actioned
 
 
-define("TOKEN", ""); //paste your token here once you get it 
+define("TOKEN", "blahblah"); //paste your token here once you get it 
 define("TOKEN_STRING", "<gip><version>1</version><rc>200</rc><token>".TOKEN."</token></gip>"); //example of the token
 
 date_default_timezone_set("America/New_York"); 				//Ensure this matches your timezone so if you use scheduler the hours match
@@ -29,14 +30,16 @@ function pa($array){
 }
 
 function getCurlReturn($postDataString){
-	$URL = "https://".LIGTHING_URL.":".LIGHTING_PORT.API_PATH;
+	$URL = SCHEME."://".LIGTHING_URL.":".LIGHTING_PORT.API_PATH;
 	
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $URL);
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $postDataString);
-	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+	if (SCHEME == 'https') {
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+	}
 
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	
