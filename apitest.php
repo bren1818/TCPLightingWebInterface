@@ -7,7 +7,7 @@
  
 	include "include.php";
 	
-	$URL = "https://".LIGTHING_URL.":".LIGHTING_PORT.API_PATH;
+	$URL = SCHEME."://".LIGTHING_URL.":".LIGHTING_PORT.API_PATH;
 	
 	
 

@@ -327,7 +327,7 @@
  
  
  
-	echo '<div id="toolBar"><a href="index.php">Lighting Controls</a> <a href="APITEST.php">API Test Zone</a></div>';
+	echo '<div id="toolBar"><a href="index.php">Lighting Controls</a> <a href="apitest.php">API Test Zone</a></div>';
 	
 	echo '<div class="container">';
 		echo '<h1>Device Schedule</h1>';

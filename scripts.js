@@ -6,7 +6,7 @@ $(function(){
 		value: 50,
 		stop: function(event, ui) {
 			var room = $(this).parent().parent();
-			$.get("/api.php?fx=dim&type=room&uid=" + $(this).attr('data-room-id') + "&val=" + ui.value, function( data ) {
+			$.get("api.php?fx=dim&type=room&uid=" + $(this).attr('data-room-id') + "&val=" + ui.value, function( data ) {
 				console.log( data );
 				$(room).find('.device-slider').each(function(){
 					$(this).slider('value', ui.value );
@@ -27,7 +27,7 @@ $(function(){
 			}
 		},
 		stop: function(event, ui) {
-			$.get("/api.php?fx=dim&type=device&uid=" + $(this).attr('data-device-id') + "&val=" + ui.value, function( data ) {
+			$.get("api.php?fx=dim&type=device&uid=" + $(this).attr('data-device-id') + "&val=" + ui.value, function( data ) {
 			  console.log( data );
 			  
 			  
@@ -46,7 +46,7 @@ $(function(){
 		max: 100,
 		value: 50,
 		stop: function(event, ui) {
-			$.get("/api.php?fx=dim&type=all&uid=" + $(this).attr('data-device-id') + "&val=" + ui.value, function( data ) {
+			$.get("api.php?fx=dim&type=all&uid=" + $(this).attr('data-device-id') + "&val=" + ui.value, function( data ) {
 			  console.log( data );
 			  //set every slider to the new value
 			  
@@ -62,7 +62,7 @@ $(function(){
 			val = 1;	
 		}
 		
-		$.get( "/api.php?fx=toggle&type=room&uid=" + roomID + "&val=" + val, function( data ) {
+		$.get( "api.php?fx=toggle&type=room&uid=" + roomID + "&val=" + val, function( data ) {
 			  console.log( data );
 			  
 			  $(room).find('.room-devices .device').each(function(){
@@ -89,7 +89,7 @@ $(function(){
 			val = 1;
 		}
 		
-		$.get( "/api.php?fx=toggle&type=device&uid=" + DID + "&val=" + val, function( data ) {
+		$.get( "api.php?fx=toggle&type=device&uid=" + DID + "&val=" + val, function( data ) {
 			 console.log( data );
 			 if( val == 1){
 				$(light).parent().addClass('light-on');
@@ -109,7 +109,7 @@ $(function(){
 			val = 1;
 		}
 		
-		$.get( "/api.php?fx=toggle&type=all&uid=ALL&val=" + val, function( data ) {
+		$.get( "api.php?fx=toggle&type=all&uid=ALL&val=" + val, function( data ) {
 			  console.log( data );
 			$('.room-devices .device').each(function(){
 				if( val == 1){

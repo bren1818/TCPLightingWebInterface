@@ -34,7 +34,6 @@ if( TOKEN != "" ){
 	
 	//Get State of System Data
 	$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
-	
 	$result = getCurlReturn($CMD);
 	
 	$array = xmlToArray($result);
@@ -49,7 +48,7 @@ if( TOKEN != "" ){
 	
 	$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
 	
-	echo '<div id="toolBar"><a href="scheduler.php">Lighting Scheduler</a> | <a href="APITEST.php">API Test Zone</a></div>';
+	echo '<div id="toolBar"><a href="scheduler.php">Lighting Scheduler</a> | <a href="apitest.php">API Test Zone</a></div>';
 	echo '<div class="container">';
 	echo '<h1>Device control</h1>';
 	echo '</div>';
