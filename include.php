@@ -5,12 +5,12 @@
  *
  */
 
-define("LIGTHING_URL", "192.168.1.tcp"); 					    // IP address of TCP Bridge/Gateway
-define("LIGHTING_PORT", "443");								      // 443 for new firmware, 80 for legacy
+define("LIGTHING_URL", "192.168.1.tcp"); 					// IP address of TCP Bridge/Gateway
+define("LIGHTING_PORT", "443");								// 443 for new firmware, 80 for legacy
 define("USER_EMAIL", "username@gmail.com"); 				// update this to your email - I think this is so you dont have to regenerate tokens if you run this script elsewhere
-define("USER_PASSWORD", USER_EMAIL);						    // can be anything
-define("USER_TOKEN", "");                           // paste your token here once you get it - leave empty for legacy 
-define("LOCAL_URL", "http://localhost:82/"); 	      // Address of this webserver - this is used in runSchedule to call the API
+define("USER_PASSWORD", USER_EMAIL);						// can be anything
+define("USER_TOKEN", "");                                   // paste your token here once you get it - leave empty for legacy 
+define("LOCAL_URL", "http://localhost:82/"); 	            // Address of this webserver - this is used in runSchedule to call the API
 
 # You should not need to edit below this line 
 define("SAVE_SCHEDULE", 1); 								//saves schedule to a binary file on save sched.sched
@@ -89,11 +89,16 @@ function getDevices(){
 }
 
 /* 
-	Some Documentation links
+	Some Documentation, links, Repos of interest
+	
 	http://home.stockmopar.com/updated-connected-by-tcp-api/
 	http://home.stockmopar.com/connected-by-tcp-unofficial-api/
 	http://forum.micasaverde.com/index.php/topic,22555.0.html
 	http://code.mios.com/trac/mios_tcplighting
+	https://community.smartthings.com/t/any-interest-in-tcp-connected-hub-local-integration/51926/9
+	
+	https://github.com/twack/TCP-Connect
+	
 */
 
 ?>
