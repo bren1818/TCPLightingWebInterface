@@ -17,6 +17,7 @@
 	<link rel="stylesheet" href="style.css">
 	<style>
 		/* The switch - the box around the slider */
+		
 		.switch {
 		  position: relative;
 		  display: inline-block;
@@ -91,7 +92,13 @@
 		.scheduledTask.fx-Dim .ifDim{ display: block; }
 		.scheduledTask.fx-Switch .ifSwitch{ display: block; }
 		
-		.scheduledTask { border: 1px solid #000; padding: 20px; }
+		.scheduledTask { border: 1px solid #000; padding: 20px; position: relative; }
+		.scheduledTask .delTask{
+			position: absolute; top: -1px; right: -1px; color: #f00; cursor: pointer; height: 20px; width: 20px; border: 1px solid #000; text-align: center; margin: 0;
+		}
+		
+		.taskNote{ width: 100%; clear: both; }
+		.taskNote textarea{ height: 50px; width: 100%; }
 		
 	</style>
 	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
@@ -183,6 +190,7 @@
 				
 			});
 			
+			$('.delTask').click(function(){ $(this).parent().remove(); });
 		
 		}
 		
@@ -238,6 +246,11 @@
 	function getScheduleView($task=array()){
 		?>
 		<form class="scheduledTask">
+		<div class="delTask">X</div>
+			<div class="taskNote">
+				<p>Schedule title/note:</p>
+				<textarea name="TITLE_NOTE"><?php echo (isset($task["TITLE_NOTE"])) ? $task["TITLE_NOTE"] : ""; ?></textarea>
+			</div>
 			<div class="daysOfWeek">
 				<label><input type="checkbox" name="DAY_MON" <?php echo (isset($task["DAY_MON"]) && $task["DAY_MON"] == "on") ? " checked" : "";  ?>/> Monday</label>
 				<label><input type="checkbox" name="DAY_TUE" <?php echo (isset($task["DAY_TUE"]) && $task["DAY_TUE"] == "on") ? " checked" : "";  ?>/> Tuesday</label>
@@ -341,17 +354,19 @@
 		if( file_exists("schedule.sched") ){
 			$array = file_get_contents("schedule.sched");
 			$tasks = unserialize ($array);
+			ob_start();
 			foreach($tasks as $task){
 				getScheduleView($task);
 			}
-			
+			ob_end_flush();
 		}else{
 			echo $schedule;
 		}
 	?>
  </div>
+ <div class="container">
  <button id="save">Save</button>
  <button id="add">Add Task</button> 
- 
+ </div>
  </body>
  </html>

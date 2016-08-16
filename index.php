@@ -133,8 +133,10 @@ if( TOKEN != "" ){
 	
 	if( !isset($tokenArray["token"]) ){
 		echo '<p>Could not fetch token. Ensure you have the correct IP for your bridge and that you have hit the <b>sync</b> button before running this.</p>';
+		echo '<p><img src="images/syncgateway.png" /></p>';
 	}else{ 
 		echo "<p>Result Token: <b>".$tokenArray["token"]."</b> save this token in the TOKEN definition in the include.php file.</p><p>Full response: | ".htmlentities($result)." | - note this has been turned to html entities for legibility.<p>";
+		echo '<p><img src="images/syncgateway.png" /></p>';
 	}
 } 
 ?>

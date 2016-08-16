@@ -10,6 +10,7 @@ include "include.php";
 /*Get Empty "default" schedule array*/
 function getCleanSchedTask(){
 	return array(
+		"TITLE_NOTE" => "",
 		"DAY_MON" => "off",
 		"DAY_TUE" => "off",
 		"DAY_WED" => "off",
