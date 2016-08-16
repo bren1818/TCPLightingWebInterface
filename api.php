@@ -9,6 +9,9 @@
 	$UID = 		isset($_REQUEST['uid']) ? $_REQUEST['uid'] : "";		//DeviceID or Room ID
 	$val = 		isset($_REQUEST['val']) ? $_REQUEST['val'] : "";		//DeviceID or Room ID
 	
+	$val = $val < 0 ? 0 : $val;
+	$val = $val > 100 ? 100 : $val;
+	
 	if( $function != "" && $type != "" && $UID != "" && $val != ""){
 		include "include.php";
 		
@@ -26,10 +29,6 @@
 				break;
 				case "dim": //SAMPLE CALL: /api.php?fx=dim&type=device&uid=360187068559174100&val=80
 				
-					//$val = 0 - 100;
-					$val = $val < 0 ? 0 : $val;
-					$val = $val > 100 ? 100 : $val;
-					
 					$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$UID."</did><value>".$val."</value><type>level</type></gip>"; 
 					$result = getCurlReturn($CMD);
 					$array = xmlToArray($result);
@@ -40,64 +39,15 @@
 			}
 		}elseif($type == "room"){
 			
-			$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
+			if( $function == "toggle" ){
+				$CMD = "cmd=RoomSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><rid>".$UID."</rid><value>".$val."</value></gip>";
+			}else{
+				$CMD = "cmd=RoomSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><rid>".$UID."</rid><value>".$val."</value><type>level</type></gip>";
+			}
 			$result = getCurlReturn($CMD);
 			$array = xmlToArray($result);
-			$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
-			$complete = 0;
-			foreach($DATA as $room){
-				if( $room["rid"] == $UID ){
-					$complete = 1;
-					$DEVICES = array();	
-					if( ! is_array($room["device"]) ){
-						//$DEVICES[] = $room["device"]; //singular device in a room
-					}else{
-						$device = (array)$room["device"];
-						if( isset($device["did"]) ){
-							//item is singular device
-							//TODO should check if device has power
-							$DEVICES[] = $room["device"];
-						}else{
-							for( $x = 0; $x < sizeof($device); $x++ ){
-								if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
-									//TODO should check if device has power
-									$DEVICES[] = $device[$x];
-								}
-							}
-						}	
-					}
-					
-					if( sizeof($DEVICES) > 0 ){
-						foreach($DEVICES as $device){
-							if( $function == "toggle" ){
-								//apply if toggle doesnt already matches value
-								if( isset($device['state']) && $device['state']  != $val ){
-									$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>".$val."</value></gip>"; 
-									$result = getCurlReturn($CMD);
-								}
-							}elseif( $function == "dim"){
-								//turn light on if off
-								if( isset($device['state']) && $device['state']  != 1 ){
-									$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>1</value></gip>"; 
-									$result = getCurlReturn($CMD);
-								}
-								//only dim if the light is on
-								if( isset($device['state']) && $device['state']  != 0 ){
-									$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>".$val."</value><type>level</type></gip>"; 
-									$result = getCurlReturn($CMD);
-								}
-							}
-						}
-					}else{
-						echo json_encode( array("error" => "no devices in room") );
-					}
-				}
-			}
-			if($complete == 1){
-				echo json_encode( array("room" => $UID, "fx" => $function, "val" => $val) );
-			}else{
-				echo json_encode( array("error" => "room not found") );
-			}
+			echo json_encode( array("room" => $UID, "fx" => $function, "val" => $val,  "return" => $array) );
+				
 		}elseif($type == "all"){	
 
 			$DEVICES = getDevices();
@@ -112,15 +62,15 @@
 						}
 						
 					}elseif( $function == "dim"){
+
+						$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>".$val."</value><type>level</type></gip>"; 
+						$result = getCurlReturn($CMD);
+						
 						//turn light on if it is not in order to dim it
 						if( isset($device['state']) && $device['state']  == 0 ){
 							$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>1</value></gip>"; 
 							$result = getCurlReturn($CMD);
 						}
-
-						$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>".$val."</value><type>level</type></gip>"; 
-						$result = getCurlReturn($CMD);
-						
 					}
 				}
 				
@@ -129,8 +79,6 @@
 			}else{
 				echo json_encode( array("error" => "no devices in home") );
 			}
-			
-			
 			
 			
 		}else{
