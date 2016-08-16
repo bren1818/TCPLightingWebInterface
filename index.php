@@ -56,7 +56,7 @@ if( TOKEN != "" ){
 	
 	foreach($DATA as $room){
 		echo '<div class="roomContainer" data-room-id="'. $room["rid"].'">';
-			echo '<h3>'.$room["name"].'</h3>';
+			echo '<h3>'.$room["name"].' <a href="info.php?rid='.$room["rid"].'"><img src="/images/info.png"/></a></h3>';
 
 			$DEVICES = array();
 				
@@ -87,7 +87,7 @@ if( TOKEN != "" ){
 						echo '<div class="'.( (isset($device['offline']) && $device['offline'] == 1) ? 'unplugged' : 'plugged' ).' device '.($device['state'] == 1 ? 'light-on' : 'light-off' ).' '.($device['prodtype'] == 'Light Fixture' ? 'light-fixture' : '' ).'" data-device-id="'.$device['did'].'">'; //power > 0 then enabled 
 							//level = brightness
 							//state = on or off
-							echo '<p>'.$device['name'].'</p>';
+							echo '<p>'.$device['name'].' <a href="info.php?did='.$device['did'].'"><img src="/images/info.png"/></a></p>';
 							echo '<button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOn">On</button> | <button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOff">Off</button>';
 							echo '<div class="clear"></div>';
 							echo '<p>Brightness:</p>';
