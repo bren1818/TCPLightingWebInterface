@@ -80,6 +80,7 @@
 		
 		.scheduledTask{
 			margin: 20px 0px;
+			background-color: #fff;
 		}
 		
 		.scheduledTask  > div{ margin: 10px 0; }
@@ -231,6 +232,12 @@
 		});
 		
 		bindEvents();
+		
+		
+		$( "#events" ).sortable({
+      placeholder: "ui-state-highlight"
+    });
+		$( "#events" ).disableSelection();
 	});
 	</script>
 </head>
@@ -345,10 +352,13 @@
 	echo '<div class="container">';
 		echo '<h1>Device Schedule</h1>';
 		echo '<button id="runOnce">Run Now</button> <button id="poll">Poll continuously</button>';
+		echo '<p>Note, polling continuously will work if the tab this script is running on has focus. Consider setting up a batch file to run the schedule. See documentation and runschedule.bat</p>';
+		echo '<p>Tasks can be dragged and dropped to re-order. Just click save after.</p>';
 	echo '</div>';
 
 	
  ?>
+ 
 <div id="events" class="container"> 
 	<?php
 		if( file_exists("schedule.sched") ){
