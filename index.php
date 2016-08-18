@@ -20,6 +20,7 @@
 	<script src="scripts.js"></script>
 </head>
 <body>
+<div id="toolBar"><a href="scheduler.php">Lighting Scheduler</a> | <a href="apitest.php">API Test Zone</a> | <a href="scenes.php">Scenes/Smart Control</a></div>
 <?php
 /*
  *
@@ -48,7 +49,7 @@ if( TOKEN != "" ){
 	
 	$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
 	
-	echo '<div id="toolBar"><a href="scheduler.php">Lighting Scheduler</a> | <a href="apitest.php">API Test Zone</a></div>';
+	
 	echo '<div class="container">';
 	echo '<h1>Device control</h1>';
 	echo '</div>';

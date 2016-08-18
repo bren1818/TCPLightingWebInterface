@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * TCP Ligthing Web UI Test Script - By Brendon Irwin
+ * TCP Ligthing Web UI Info Script - By Brendon Irwin
  * 
  */
 
