@@ -84,7 +84,10 @@ if( TOKEN != "" ){
 				echo '<div class="devices">';
 					echo '<p>Room Devices:</p>';
 					echo '<div class="room-devices">';
+					$roomBrightness = 0;
+					$roomDevices = 0;
 					foreach($DEVICES as $device){
+						
 						echo '<div class="'.( (isset($device['offline']) && $device['offline'] == 1) ? 'unplugged' : 'plugged' ).' device '.($device['state'] == 1 ? 'light-on' : 'light-off' ).' '.($device['prodtype'] == 'Light Fixture' ? 'light-fixture' : '' ).'" data-device-id="'.$device['did'].'">'; //power > 0 then enabled 
 							//level = brightness
 							//state = on or off
@@ -92,8 +95,11 @@ if( TOKEN != "" ){
 							echo '<button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOn">On</button> | <button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOff">Off</button>';
 							echo '<div class="clear"></div>';
 							echo '<p>Brightness:</p>';
-							echo '<div class="device-slider" data-value="'.(isset($device['level']) ? $device['level'] : 50).'" data-device-id="'. $device["did"].'"></div>';
+							echo '<div class="device-slider" data-value="'.(isset($device['level']) ? $device['level'] : 100).'" data-device-id="'. $device["did"].'"></div>';
 						echo '</div>';
+						$roomBrightness += (isset($device['level']) ? $device['level'] : 100);
+						$roomDevices++;
+						
 					}
 					echo '</div>';
 					
@@ -105,7 +111,7 @@ if( TOKEN != "" ){
 			}
 		
 			echo '<div class="room-controls">';
-				echo 'Room Brightness: <div class="room-slider" data-room-id="'. $room["rid"].'"></div>';
+				echo 'Room Brightness: <div class="room-slider" data-value="'.($roomBrightness/$roomDevices).'" data-room-id="'. $room["rid"].'"></div>';
 				echo 'Room <button data-room-id="'. $room["rid"].'" class="onOffToggleButton buttonOn">On</button> | <button data-room-id="'. $room["rid"].'" class="onOffToggleButton buttonOff">Off</button>';
 			echo '</div>';
 		echo '</div>';
@@ -136,8 +142,14 @@ if( TOKEN != "" ){
 		echo '<p>Could not fetch token. Ensure you have the correct IP for your bridge and that you have hit the <b>sync</b> button before running this.</p>';
 		echo '<p><img src="images/syncgateway.png" /></p>';
 	}else{ 
-		echo "<p>Result Token: <b>".$tokenArray["token"]."</b> save this token in the TOKEN definition in the include.php file.</p><p>Full response: | ".htmlentities($result)." | - note this has been turned to html entities for legibility.<p>";
-		echo '<p><img src="images/syncgateway.png" /></p>';
+		if(USE_TOKEN_FILE){
+			ob_clean();
+			file_put_contents("tcp.token", $tokenArray["token"]);
+			header("Location: index.php");
+		}else{
+			echo "<p>Result Token: <b>".$tokenArray["token"]."</b> save this token in the TOKEN definition in the include.php file.</p><p>Full response: | ".htmlentities($result)." | - note this has been turned to html entities for legibility.<p>";
+			echo '<p><img src="images/syncgateway.png" /></p>';
+		}
 	}
 } 
 ?>

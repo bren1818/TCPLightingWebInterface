@@ -4,6 +4,9 @@ $(function(){
 		min: 0,
 		max: 100,
 		value: 50,
+		create: function( event, ui ){
+			$(this).slider("option", "value", $(this).attr('data-value') );
+		},
 		stop: function(event, ui) {
 			var room = $(this).parent().parent();
 			$.get("api.php?fx=dim&type=room&uid=" + $(this).attr('data-room-id') + "&val=" + ui.value, function( data ) {
