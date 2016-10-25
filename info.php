@@ -20,6 +20,31 @@ foreach( $array['room'] as $room ){
 	$ROOM_COLOURS[ $room["colorid"] ]["room"] =  $room["rid"];
 }
 	
+
+if (strtoupper($_SERVER['REQUEST_METHOD']) == 'GET'){
+		if(isset($_GET['delete']) && $_GET['delete'] != "" ){
+		/*
+		 if (this.full != null && this.full.length() > 0 && this.full.equalsIgnoreCase("1")) {
+            fullDelete = "<full>1</full>";
+        }
+        dataString = String.format("<gip><version>1</version><token>%s</token><did>%s</did>%s</gip>", new Object[]{xmlEscape(this.token), xmlEscape(this.did), fullDelete});
+        this.postData.add(new BasicNameValuePair("cmd", "DeviceDelete"));
+        this.postData.add(new BasicNameValuePair("data", dataString));
+		*/
+		
+		$did = $_REQUEST['delete'];
+		$fullDelete =  $_REQUEST['fullDelete'];
+		
+		$CMD = "cmd=DeviceDelete&data=<gip><version>1</version><token>".TOKEN."</token><did>".$did."</did>".($fullDelete == 1 ? '<full>1</full>' : '')."</gip>";
+		$result = getCurlReturn($CMD);
+		$array = xmlToArray($result);
+		
+		
+		
+		echo json_encode( array("delete" => $did, "fullDelete" => $fullDelete, "Result" => $array) );
+		
+	}
+}
 	
 	
 if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
@@ -28,6 +53,7 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 		$did = $_POST['did'];
 		$name = $_POST['name'];
 		$color = $_POST['color'];
+		$remote = $_POST['remote'];
 		$imdata = "";
 		
 		if( isset($_FILES["image"]) && $_FILES["image"]["tmp_name"] != "" ){ 	
@@ -53,7 +79,7 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 		
 		
 		
-		$CMD = "cmd=DeviceSetInfo&data=<gip><version>1</version><token>".TOKEN."</token><did>".$did."</did><name>".$name."</name><color>".$color."</color>".($imdata != "" ? "<image>".$imdata."</image>" : "")."</gip>";
+		$CMD = "cmd=DeviceSetInfo&data=<gip><version>1</version><token>".TOKEN."</token><did>".$did."</did><name>".$name."</name><color>".$color."</color>".($imdata != "" ? "<image>".$imdata."</image>" : "").( $remote != ""  ? "<other><rcgroup>".$remote."</rcgroup></other>" : "" )."</gip>";
 		
 		//echo htmlentities($CMD);
 		$result = getCurlReturn($CMD);
@@ -68,9 +94,42 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 	}
 	
 	if(isset($_POST['rid']) && $_POST['rid'] != "" ){
+		
+		
+		
+	/*
+	 StringBuilder dataString = new StringBuilder(String.format("<gip><version>1</version><token>%s</token>", new Object[]{xmlEscape(this.token)}));
+        if (this.bycolor == null && this.rid != null) {
+            dataString.append(String.format("<rid>%s</rid>", new Object[]{xmlEscape(this.rid)}));
+        }
+        if (!(this.bycolor == null || this.colorid == null)) {
+            dataString.append(String.format("<colorid>%s</colorid>", new Object[]{xmlEscape(this.colorid)}));
+        }
+        if (this.name != null) {
+            dataString.append(String.format("<name>%s</name>", new Object[]{xmlEscape(this.name)}));
+        }
+        if (this.type != null) {
+            dataString.append(String.format("<type>%s</type>", new Object[]{xmlEscape(this.type)}));
+        }
+        dataString.append("</gip>");
+        if (this.preprocessForBatch) {
+            this.gcmdDictionary = new HashMap();
+            this.gcmdDictionary.put("gdata", dataString.toString());
+            this.gcmdDictionary.put("gcmd", "RoomSetInfo");
+            this.gcmdDictionary.put("cmdOwner", this);
+        }
+        this.postData.add(new BasicNameValuePair("cmd", "RoomSetInfo"));
+        this.postData.add(new BasicNameValuePair("data", dataString.toString()));
+	*/
 	
 	
+	
+		$_REQUEST['rid'] = $_POST['rid'];
 	}
+	
+
+	
+	
 }
 
 
@@ -83,15 +142,31 @@ if( isset($_REQUEST['did']) && $_REQUEST['did'] != "" ){
 	echo '<div class="container">';
 	//echo '<h2>Device Info</h2>';
 	//echo '<p><b>Device ID:'.$did.'</b></p>';
-
-	
 	
 	$CMD = "cmd=DeviceGetInfo&data=<gip><version>1</version><token>".TOKEN."</token><did>".$did."</did><fields>name,power,product,class,image,control,realtype,other,status</fields></gip>";
 	
 	$result = getCurlReturn($CMD);
 	$array = xmlToArray($result);
-	
+
 	?>
+	<script>
+		$(function(){
+			$('#deleteDevice').click(function(){
+				var did = $(this).attr('data-deviceID');
+				var c = confirm("Are you sure you wish to delete the device?");
+				if(c){
+					//var fd = confirm("Do you want to 'Full' Delete? - No puts device into detection mode and will add it to first room");
+					//if(fd) { fd = 1; }else{ fd = 0; }
+					var fd = 0;
+					
+					$.get( "info.php?delete=" + did + "&fullDelete=" + fd, function( data ) {
+						console.log( data );
+						window.location = "index.php";
+					});
+				}
+			});
+		});
+	</script>
 	<form method="post" action="info.php" enctype="multipart/form-data">
 		<fieldset>
 			<legend>Update Device</legend>
@@ -126,6 +201,24 @@ if( isset($_REQUEST['did']) && $_REQUEST['did'] != "" ){
 		<?php
 		}
 		?>
+		<br />
+		<label for="remote">Assigned Remote Control Button: <br />
+		<?php
+			if( isset($array['other']['rcgroup']) &&  $array['other']['rcgroup'] != "" ){
+				$rcID = $array['other']['rcgroup'];
+			}else{
+				$rcID = "";
+			}
+		?>
+			<select name="remote">
+				<option value="">Not Specified / No remote</option>
+				<option value="1" <?php echo ($rcID == 1 ? " Selected" : ""  ); ?>>Button 1</option>
+				<option value="2" <?php echo ($rcID == 2 ? " Selected" : ""  ); ?>>Button 2</option>
+				<option value="3" <?php echo ($rcID == 3 ? " Selected" : ""  ); ?>>Button 3</option>
+				<option value="4" <?php echo ($rcID == 4 ? " Selected" : ""  ); ?>>Button 4</option>
+			</select><br />
+			<img id="remote" style="display: none;" src="<?php echo LOCAL_URL; ?>/images/remote.png" />
+		</label><br />
 		
 		<input type="hidden" name="did" value="<?php echo $did; ?>" /><br />
 		<input type="submit" value="SAVE" />
@@ -146,6 +239,10 @@ if( isset($_REQUEST['did']) && $_REQUEST['did'] != "" ){
 				echo '<div class="device-slider" data-value="'.(isset($device['level']) ? $device['level'] : 100).'" data-device-id="'. $device["did"].'"></div>';
 			echo '</div>';
 		echo '</div>';
+		
+		?>
+			<button id="deleteDevice" data-deviceID="<?php echo $device['did'];  ?>">Delete Device</button>
+		<?php
 	echo '</div>';
 	?>
 	</div>

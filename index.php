@@ -3,7 +3,7 @@ include "include.php";
 pageHeader("TCP Lighting Controller");
 ?>
 
-<div id="toolBar"><a href="scheduler.php">Lighting Scheduler</a> | <a href="apitest.php">API Test Zone</a> | <a href="scenes.php">Scenes/Smart Control</a></div>
+<div id="toolBar"><a href="scheduler.php">Lighting Scheduler</a> | <a href="apitest.php">API Test Zone</a> | <a href="scenes.php">Scenes/Smart Control</a> | <a href="createDevice.php">Create Virtual Device</a> </div>
 <?php
 /*
  *
