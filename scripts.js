@@ -127,4 +127,8 @@ $(function(){
 			  
 		});
 	});
+	
+	$('#arrayDump').click(function(){
+		$(this).toggleClass('toggled');
+	});
 });

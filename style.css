@@ -54,3 +54,22 @@ html *{
 	.room-slider, .device-slider{ max-width: 80%; }
 }
 
+#arrayDump::before{
+	content: 'Click to Show Array info';
+}
+#arrayDump{
+	height: 20px;
+	overflow: hidden;
+	width: 100%;
+	display: block;
+	cursor: pointer;
+	border: 1px solid #000;
+	border-radius: 3px;
+	transition: all 1s;
+	font-size: 10px;
+}
+
+#arrayDump.toggled{
+	height: auto;
+	
+}
