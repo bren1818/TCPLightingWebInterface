@@ -30,15 +30,29 @@ if( TOKEN != "" ){
 		pageFooter();
 	}
 	
-	$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
+	if( isset( $array["gwrcmd"]["gdata"]["gip"]["room"] ) ){
+		$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
+	}else{
+			echo "No Room Data";
+			pa( $array );
+			$DATA =  array();
+	}
 	
+	
+	
+	$deviceCount = 0;
+	
+	if( sizeof($DATA) > 0 ){
 	
 	echo '<div class="container">';
 	echo '<h1>Device control</h1>';
-	echo '</div>';
-	$deviceCount = 0;
-	
+	echo '</div>';	
+		
+	if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
+		
 	foreach($DATA as $room){
+		
+		if( isset($room['rid'] ) ){
 		echo '<div class="roomContainer" data-room-id="'. $room["rid"].'">';
 			echo '<h3>'.$room["name"].' <a href="info.php?rid='.$room["rid"].'"><img src="/images/info.png"/></a></h3>';
 
@@ -98,8 +112,9 @@ if( TOKEN != "" ){
 				echo 'Room <button data-room-id="'. $room["rid"].'" class="onOffToggleButton buttonOn">On</button> | <button data-room-id="'. $room["rid"].'" class="onOffToggleButton buttonOff">Off</button>';
 			echo '</div>';
 		echo '</div>';
+		}
 	}
-	
+	}
 	if( $deviceCount > 0 ){
 		echo '<div class="container">';
 			echo '<h1>Home</h1>';

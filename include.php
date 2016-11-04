@@ -84,6 +84,9 @@ function getDevices(){
 	$array = xmlToArray($result);
 	$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
 	$DEVICES = array();	
+	
+	if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
+	
 	foreach($DATA as $room){
 		
 		if( ! is_array($room["device"]) ){

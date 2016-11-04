@@ -11,7 +11,39 @@ $CMD = "cmd=RoomGetList&data=<gip><version>1</version><token>".TOKEN."</token></
 $result = getCurlReturn($CMD);
 $array = xmlToArray($result);
 $ROOM_COLOURS = array();
-//pa($array);
+
+/*
+pa( $array );
+Array
+(
+    [version] => 1
+    [rc] => 200
+    [room] => Array
+        (
+            [rid] => 0
+            [name] => Unknown Room
+            [desc] => Array
+                (
+                )
+
+            [known] => 1
+            [type] => 0
+            [color] => 000000
+            [colorid] => 0
+            [img] => images/black.png
+            [power] => 0
+            [poweravg] => 0
+            [energy] => 0
+        )
+
+)*/
+
+
+if ( isset( $array["room"]["rid"] ) ){ $array["room"] = array(   $array["room"]); }
+
+
+//if( sizeof( $array['room'] ) > 1 ){
+
 foreach( $array['room'] as $room ){
 	$ROOM_COLOURS[ $room["colorid"] ]["name"] =  $room["name"];
 	$ROOM_COLOURS[ $room["colorid"] ]["hex"] =  $room["color"];
@@ -19,7 +51,8 @@ foreach( $array['room'] as $room ){
 	$ROOM_COLOURS[ $room["colorid"] ]["image"] =  $room["img"];
 	$ROOM_COLOURS[ $room["colorid"] ]["room"] =  $room["rid"];
 }
-	
+
+//}
 
 if (strtoupper($_SERVER['REQUEST_METHOD']) == 'GET'){
 		if(isset($_GET['delete']) && $_GET['delete'] != "" ){
@@ -79,7 +112,7 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 		
 		
 		
-		$CMD = "cmd=DeviceSetInfo&data=<gip><version>1</version><token>".TOKEN."</token><did>".$did."</did><name>".$name."</name><color>".$color."</color>".($imdata != "" ? "<image>".$imdata."</image>" : "").( $remote != ""  ? "<other><rcgroup>".$remote."</rcgroup></other>" : "" )."</gip>";
+		$CMD = "cmd=DeviceSetInfo&data=<gip><version>1</version><token>".TOKEN."</token><did>".$did."</did><name>".$name."</name>".($color != "" ? "<color>".$color."</color>" : "").($imdata != "" ? "<image>".$imdata."</image>" : "").( $remote != ""  ? "<other><rcgroup>".$remote."</rcgroup></other>" : "" )."</gip>";
 		
 		//echo htmlentities($CMD);
 		$result = getCurlReturn($CMD);
@@ -87,44 +120,31 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 		$array = xmlToArray($result);
 		//pa( $array );
 		if( $array['rc'] == 200){
-			echo "Updated Successfully";
+			//echo "Updated Successfully";
 		}
 		
-		$_REQUEST['did'] = $did;
+		header("Location: info.php?did=".$did);
 	}
 	
 	if(isset($_POST['rid']) && $_POST['rid'] != "" ){
+		$rid = $_POST['rid'];
+		$name =  $_POST['name'];
+		$color = $_POST['color'];
 		
 		
-		
+		$CMD = "cmd=RoomSetInfo&data=<gip><version>1</version><token>".TOKEN."</token><rid>".$rid."</rid><name>".$name."</name>".($color != "" ? "<colorid>".$color."</colorid>" : "")."</gip>";
+		$result = getCurlReturn($CMD);
+		$array = xmlToArray($result);
 	/*
-	 StringBuilder dataString = new StringBuilder(String.format("<gip><version>1</version><token>%s</token>", new Object[]{xmlEscape(this.token)}));
-        if (this.bycolor == null && this.rid != null) {
-            dataString.append(String.format("<rid>%s</rid>", new Object[]{xmlEscape(this.rid)}));
-        }
-        if (!(this.bycolor == null || this.colorid == null)) {
-            dataString.append(String.format("<colorid>%s</colorid>", new Object[]{xmlEscape(this.colorid)}));
-        }
-        if (this.name != null) {
-            dataString.append(String.format("<name>%s</name>", new Object[]{xmlEscape(this.name)}));
-        }
         if (this.type != null) {
             dataString.append(String.format("<type>%s</type>", new Object[]{xmlEscape(this.type)}));
         }
-        dataString.append("</gip>");
-        if (this.preprocessForBatch) {
-            this.gcmdDictionary = new HashMap();
-            this.gcmdDictionary.put("gdata", dataString.toString());
-            this.gcmdDictionary.put("gcmd", "RoomSetInfo");
-            this.gcmdDictionary.put("cmdOwner", this);
-        }
-        this.postData.add(new BasicNameValuePair("cmd", "RoomSetInfo"));
-        this.postData.add(new BasicNameValuePair("data", dataString.toString()));
 	*/
+		
 	
+		header("Location: info.php?rid=".$rid);
 	
-	
-		$_REQUEST['rid'] = $_POST['rid'];
+		
 	}
 	
 
@@ -180,6 +200,7 @@ if( isset($_REQUEST['did']) && $_REQUEST['did'] != "" ){
 		<label for="image">Image: <input type="file" name="image" id="image"></label><br />
 		<label for="color">Color: 
 			<select name="color">
+				<option value="">Pick Colour</option>
 				<option value="0" <?php echo ($array["colorid"] == 0 ? "selected" : ""); ?>>Black <?php echo isset( $ROOM_COLOURS[0] ) ?  ' ('.$ROOM_COLOURS[0]['name'].')' : ''; ?></option>
 				<option value="1" <?php echo ($array["colorid"] == 1 ? "selected" : ""); ?>>Green <?php echo isset( $ROOM_COLOURS[1] ) ?  ' ('.$ROOM_COLOURS[1]['name'].')' : ''; ?></option>
 				<option value="2" <?php echo ($array["colorid"] == 2 ? "selected" : ""); ?>>Dark Blue <?php echo isset( $ROOM_COLOURS[2] ) ?  ' ('.$ROOM_COLOURS[2]['name'].')' : ''; ?></option>
@@ -202,7 +223,7 @@ if( isset($_REQUEST['did']) && $_REQUEST['did'] != "" ){
 		}
 		?>
 		<br />
-		<label for="remote">Assigned Remote Control Button: <br />
+<label for="remote">Assigned Remote Control Button: <br />
 		<?php
 			if( isset($array['other']['rcgroup']) &&  $array['other']['rcgroup'] != "" ){
 				$rcID = $array['other']['rcgroup'];
@@ -268,13 +289,17 @@ if( isset($_REQUEST['rid']) && $_REQUEST['rid'] != "" ){
 	
 	
 	echo '<div class="container">';
-	
-		echo '<h2>Room Information</h2>';
-		echo '<p><b>Room ID:'.$rid.'</b></p>';
-	
-		echo '<div class="roomContainer" data-room-id="'. $rid.'">';
-			echo '<h3>'.$room["name"].'</h3>';
+	?>
+	<form method="post" action="info.php" enctype="multipart/form-data">
+		<fieldset>
+			<legend>Update Room</legend>
+			<?php	
+
+			echo '<h3>&lsquo;'.$room["name"].'&rsquo; - room ID: '.$rid.'</h3>';
 			?>
+			<input type="hidden" name="rid" value="<?php echo $rid; ?>" />
+			<label for="name">Name: <input name="name" id="name" value="<?php echo $room["name"]; ?>" /></label><br />
+			
 			<label for="color">Color: 
 			<select name="color">
 				<option value="0" <?php echo ($room["colorid"] == 0 ? "selected" : ""); ?>>Black <?php echo isset( $ROOM_COLOURS[0] ) ?  ' ('.$ROOM_COLOURS[0]['name'].')' : ''; ?></option>
@@ -292,8 +317,15 @@ if( isset($_REQUEST['rid']) && $_REQUEST['rid'] != "" ){
 					echo '<div style="display: inline-block; background-color: #'.$ROOM_COLOURS[ $room["colorid"] ]["hex"].';">'.$ROOM_COLOURS[ $room["colorid"] ]["hex"].'</div>'; //<img src="'.IMAGE_PATH.'rooms/'.$ROOM_COLOURS[ $room["colorid"] ]["image"].'" alt="'.$ROOM_COLOURS[ $room["colorid"] ]["hex"].'" />
 				}
 			?>
-		</label>
+		</label><br />
+		
+		
+		
+		<input type="submit" value="UPDATE" />
+		</fieldset>
+		</form>
 			<?php
+			echo '<div class="roomContainer" data-room-id="'. $rid.'">';
 			$DEVICES = array();
 			$deviceCount = 0;	
 			if( ! is_array($room["device"]) ){
@@ -342,7 +374,7 @@ if( isset($_REQUEST['rid']) && $_REQUEST['rid'] != "" ){
 				
 			}else{
 				echo 'No devices?';
-				pa( $room );
+				//pa( $room );
 			}
 		
 			echo '<div class="room-controls">';
