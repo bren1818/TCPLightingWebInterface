@@ -25,6 +25,18 @@ if( TOKEN != "" ){
 	if( !isset($array["gwrcmd"]) ){
 		echo '<p>GWR Command not returned, this likely indicates your token is expired, or invalid.<p>';
 		echo '<p>Remove token and try regenerating a new one.</p>';
+		
+		//unlink old token file
+		if( file_exists("tcp.token") ){
+			if( unlink("tcp.token") ){
+				echo "<p>Successfully Deleted Old Token file</p>";
+			}
+		}
+		
+		if(USE_TOKEN_FILE){
+			echo '<p>If you are continuously seeing this message, ensure the folder is writeable or that tcp.token is writeable</p>';
+		}
+		
 		//echo '</body></html>';
 		//exit;
 		pageFooter();
