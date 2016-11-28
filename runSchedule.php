@@ -91,7 +91,7 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 						}
 						//do it for each device
 						foreach($task["devices"] as $U=>$ID ){
-							$req = LOCAL_URL."api.php?fx=".$fx."&type=device&uid=".$ID."&val=".$val;
+							$req = LOCAL_URL."/api.php?fx=".$fx."&type=device&uid=".$ID."&val=".$val;
 							$data = file_get_contents($req);
 							if(LOG_ACTIONS){
 								file_put_contents("schedule.actioned", date('Y-m-d H:i:s').' - '.$req." - Response: ".$data."\n", FILE_APPEND | LOCK_EX);

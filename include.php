@@ -39,6 +39,7 @@ define("FORCE_FADE_OFF", 	1);							//makes it so when lights are turned on they
 define("API_PATH", "/gwr/gop.php");							//API Path on bridge - do not change
 define("IMAGE_PATH", "https://".LIGTHING_URL."/gwr/"); 		//append urls to this eg: images/lighting/TCP/TCP-A19.png
 
+define("ENABLE_PLUGINS", 	0);
 
 date_default_timezone_set("America/New_York"); 				//Ensure this matches your timezone so if you use scheduler the hours match
 
