@@ -3,7 +3,7 @@ include "include.php";
 pageHeader("TCP Lighting Controller");
 ?>
 
-<div id="toolBar"><a href="scheduler.php">Lighting Scheduler</a> | <a href="apitest.php">API Test Zone</a> | <a href="scenes.php">Scenes/Smart Control</a> | <a href="createDevice.php">Create Virtual Device</a> </div>
+
 <?php
 /*
  *
@@ -29,7 +29,7 @@ if( TOKEN != "" ){
 		//unlink old token file
 		if( file_exists("tcp.token") ){
 			if( unlink("tcp.token") ){
-				echo "<p>Successfully Deleted Old Token file</p>";
+				echo "<p>Successfully deleted expired token file</p>";
 			}
 		}
 		
@@ -37,9 +37,8 @@ if( TOKEN != "" ){
 			echo '<p>If you are continuously seeing this message, ensure the folder is writeable or that tcp.token is writeable</p>';
 		}
 		
-		//echo '</body></html>';
-		//exit;
 		pageFooter();
+		exit;
 	}
 	
 	if( isset( $array["gwrcmd"]["gdata"]["gip"]["room"] ) ){
@@ -48,9 +47,13 @@ if( TOKEN != "" ){
 			echo "No Room Data";
 			pa( $array );
 			$DATA =  array();
+			pageFooter();
+			exit;
 	}
 	
-	
+	?>
+	<div id="toolBar"><a href="scheduler.php">Lighting Scheduler</a> | <a href="apitest.php">API Test Zone</a> | <a href="scenes.php">Scenes/Smart Control</a> | <a href="createDevice.php">Create Virtual Device</a> </div>
+	<?php
 	
 	$deviceCount = 0;
 	
@@ -140,7 +143,7 @@ if( TOKEN != "" ){
 	}
 	
 }else{
-	echo "<h1>If you are seeing this, you haven't put your token in the include.php file.</h1>";
+	echo "<h2>If you are seeing this, you haven't generated your token yet.</h2>";
 	
 	$CMD = "cmd=GWRLogin&data=<gip><version>1</version><email>".USER_EMAIL."</email><password>".USER_PASSWORD."</password></gip>&fmt=xml";
 		
@@ -150,6 +153,9 @@ if( TOKEN != "" ){
 	
 	if( !isset($tokenArray["token"]) ){
 		echo '<p>Could not fetch token. Ensure you have the correct IP for your bridge and that you have hit the <b>sync</b> button before running this.</p>';
+		if(USE_TOKEN_FILE){
+			echo '<p>Since you ae not using the token file option, ensure you paste your token in the include.php.</p>';
+		}
 		echo '<p><img src="images/syncgateway.png" /></p>';
 	}else{ 
 		if(USE_TOKEN_FILE){
