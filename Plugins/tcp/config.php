@@ -4,6 +4,19 @@
 	require_once $cwd.DIRECTORY_SEPARATOR."base_bridge.php";
 	
 	class tcp_device extends base_device{
+		
+		function __construct(){
+			$this->setID( "" );
+			$this->setName( "" );
+			$this->setState( 1 );
+			$this->setBrightness( 100 );
+			$this->setDeviceType( "" );
+			$this->setOnline(  1 );
+			$this->setColorID( 0 );
+			$this->setRemoteID( "" ); //number on the remote which triggers it 
+			
+		}
+		
 		/*
 		[did] => 216801307632666586
 		[known] => 1
@@ -59,17 +72,36 @@
 		public $remoteID;
 		
 		function arrayPopulate($device){
+			
+			//echo '<pre>'.print_r($device,true).'</pre>';
+			
 			if( is_array($device) ){
+				//echo "set";
 				$this->setID( $device['did'] );
 				$this->setName( $device['name'] );
 				$this->setState( ($device['state'] == 1 ? 1 : 0 ) );
 				$this->setBrightness( (isset($device['level']) ? $device['level'] : 0) );
-				$this->setDeviceType( ($device['prodtype'] == 'Light Fixture' ? 'light-fixture' : '' ) );
-				$this->setOnline(  ( isset($device['offline']) && $device['offline'] == 1 ) ? 0 : 1  );
+				$this->setDeviceType( ($device['prodtype'] == 'Light Fixture' ? 'light-fixture' : $device['prodtype'] ) );
+				$this->setOnline(  isset( $device['offline'] ) ? 0 : 1  );
 				$this->setColorID( $device['colorid'] );
 				$this->setRemoteID( isset( $device['other']['rcgroup'] ) ? $device['other']['rcgroup'] : "" ); 
 				
 			}
+		}
+		
+		function renderDevice(){
+			
+			echo '<div class="'.( $this->getOnline() == 0 ? 'unplugged' : 'plugged' ).' device '.( $this->getState() == 1 ? 'light-on' : 'light-off' ).' '.( $this->getDeviceType() == 'Light Fixture' ? 'light-fixture' : '' ).'" data-device-id="'.$this->getID().'">'; //power > 0 then enabled 
+				//level = brightness
+				//state = on or off
+				echo '<p>'.$this->getName().'</p>';
+				
+				echo '<button data-device-id="'.$this->getID().'" class="onOffDeviceToggleButton buttonOn">On</button> | <button data-device-id="'.$this->getID().'" class="onOffDeviceToggleButton buttonOff">Off</button>';
+				echo '<div class="clear"></div>';
+				echo '<p>Brightness:</p>';
+				echo '<div class="device-slider" data-value="'.( ($this->getBrightness() ) ? $this->getBrightness() : 100).'" data-device-id="'. $this->getID().'"></div>';
+			echo '</div>';
+			
 		}
 		
 		function getDeviceType(){
@@ -142,16 +174,56 @@
 		function getColorID(){
 			return $this->colorID;
 		}
+		
+		function renderCollection(){
+			echo '<div class="roomContainer" data-room-id="'.$this->getID().'">';
+				echo '<h3>'.$this->getName().' ('.$this->getDeviceCount().')</h3>';
+				if( $this->getDeviceCount() > 0 ){
+					
+					$brightness = 0;
+					$devices = 0;
+					
+					echo '<div class="devices">';
+						
+						echo '<div class="room-devices">';
+						foreach( $this->getDevices() as $device ){
+							$device->renderDevice();
+							
+							//pa( $device );
+							
+							$devices++;
+							$brightness += $device->getBrightness();
+						}
+						echo '</div>';
+						
+					echo '</div>';
+					
+					
+					echo '<div class="room-controls">';
+						
+						echo 'Room Brightness: <div class="room-slider" data-value="'.($brightness/$devices).'" data-room-id="'. $this->getID() .'"></div>';
+						echo 'Room <button data-room-id="'. $this->getID().'" class="onOffToggleButton buttonOn">On</button> | <button data-room-id="'. $this->getID().'" class="onOffToggleButton buttonOff">Off</button>';
+					echo '</div>';
+					
+				}
+			echo '</div>';
+		
+		}
+		
+		
 	}
 	
 	class tcp_bridge extends base_bridge{
-	
+		public $hueEmulation;
+		public $forceFadeON;
+		public $forceFadeOFF;
 	
 		public function __construct(){
 			$this->setName("TCP");
 			$this->setClassName("TCP-2");
 			$this->setRequiresHTTPS( true );
 			$this->setRequiresToken( true );
+			$this->setHueEmulation ( true );
 		}			
 		
 		function runCommand($CMD){
@@ -267,12 +339,44 @@
 				}
 			}	
 		}
+		
+		function setHueEmulation($bool){
+			//Make the lights fade on or off when turned on or off
+			$this->hueEmulation = $bool;
+			if( $bool ){
+				$this->setFadeOn( $bool );
+				$this->setFadeOff( $bool );
+			}
+		}
+		
+		function getHueEmulation(){
+			return $this->hueEmulation;
+		}
+		
+		function setFadeOn($bool){
+			$this->fadeOn = $bool;
+		}
+		
+		function getFadeOn(){
+			return $this->fadeOff;
+		}
+		
+		function setFadeOff($bool){
+			$this->fadeOff = $bool;
+		}
+		
+		function getFadeOff(){
+			return $this->fadeoff;
+		}
+		
+	
 	}
 	
 	$bridge = new tcp_bridge();
-	$bridge->setEnabled( false );		//SET TRUE
-	$bridge->setIP("192.168.1.TCP"); 	//SET BRIDGE IP
+	$bridge->setEnabled( true );		//SET TRUE
+	$bridge->setIP("192.168.1.109"); 	//SET BRIDGE IP
 	$bridge->setTokenPath( dirname(__FILE__).DIRECTORY_SEPARATOR.$bridge->getName().'_token' );
+	$bridge->setHueEmulation( true );
 	$bridge->init();
 	
 ?>

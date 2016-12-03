@@ -44,77 +44,83 @@ if( TOKEN != "" ){
 	
 	if( sizeof($DATA) > 0 ){
 	
-	echo '<div class="container">';
-	echo '<h1>Device control</h1>';
-	echo '</div>';	
-		
-	if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
-		
-	foreach($DATA as $room){
-		
-		if( isset($room['rid'] ) ){
-		echo '<div class="roomContainer" data-room-id="'. $room["rid"].'">';
-			echo '<h3>'.$room["name"].' <a href="info.php?rid='.$room["rid"].'"><img src="/images/info.png"/></a></h3>';
+		echo '<div class="container">';
+		echo '<h1>Device control</h1>';
+		echo '</div>';	
+			
+		if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
+			
+		foreach($DATA as $room){
+			
+			if( isset($room['rid'] ) ){
+				
 
-			$DEVICES = array();
-				
-			if( ! is_array($room["device"]) ){
-				
-			}else{
-				$device = (array)$room["device"];
-				if( isset($device["did"]) ){
-					//item is singular device
-					$DEVICES[] = $room["device"];
-					$deviceCount++;
+			echo '<div class="roomContainer" data-room-id="'. $room["rid"].'">';
+				echo '<h3>'.$room["name"].' <a href="info.php?rid='.$room["rid"].'"><img src="/images/info.png"/></a></h3>';
+
+				$DEVICES = array();
+					
+				if( ! is_array($room["device"]) ){
+					
 				}else{
-				
-					for( $x = 0; $x < sizeof($device); $x++ ){
-						if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
-							$DEVICES[] = $device[$x];
-							$deviceCount++;
+					$device = (array)$room["device"];
+					if( isset($device["did"]) ){
+						//item is singular device
+						$DEVICES[] = $room["device"];
+						$deviceCount++;
+					}else{
+					
+						for( $x = 0; $x < sizeof($device); $x++ ){
+							if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
+								$DEVICES[] = $device[$x];
+								$deviceCount++;
+							}
 						}
 					}
 				}
-			}
-			
-			if( sizeof($DEVICES) > 0 ){
-				echo '<div class="devices">';
-					echo '<p>Room Devices:</p>';
-					echo '<div class="room-devices">';
-					$roomBrightness = 0;
-					$roomDevices = 0;
-					foreach($DEVICES as $device){
+				
+				if( sizeof($DEVICES) > 0 ){
+					echo '<div class="devices">';
+						echo '<p>Room Devices:</p>';
+						echo '<div class="room-devices">';
+						$roomBrightness = 0;
+						$roomDevices = 0;
 						
-						echo '<div class="'.( (isset($device['offline']) && $device['offline'] == 1) ? 'unplugged' : 'plugged' ).' device '.($device['state'] == 1 ? 'light-on' : 'light-off' ).' '.($device['prodtype'] == 'Light Fixture' ? 'light-fixture' : '' ).'" data-device-id="'.$device['did'].'">'; //power > 0 then enabled 
-							//level = brightness
-							//state = on or off
-							echo '<p>'.$device['name'].' <a href="info.php?did='.$device['did'].'"><img src="/images/info.png"/></a></p>';
-							echo '<button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOn">On</button> | <button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOff">Off</button>';
-							echo '<div class="clear"></div>';
-							echo '<p>Brightness:</p>';
-							echo '<div class="device-slider" data-value="'.(isset($device['level']) ? $device['level'] : 100).'" data-device-id="'. $device["did"].'"></div>';
+						foreach($DEVICES as $device){
+							
+							echo '<div class="'.( (isset($device['offline']) && $device['offline'] == 1) ? 'unplugged' : 'plugged' ).' device '.($device['state'] == 1 ? 'light-on' : 'light-off' ).' '.($device['prodtype'] == 'Light Fixture' ? 'light-fixture' : '' ).'" data-device-id="'.$device['did'].'">'; //power > 0 then enabled 
+								//level = brightness
+								//state = on or off
+								echo '<p>'.$device['name'].' <a href="info.php?did='.$device['did'].'"><img src="/images/info.png"/></a></p>';
+								echo '<button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOn">On</button> | <button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOff">Off</button>';
+								echo '<div class="clear"></div>';
+								echo '<p>Brightness:</p>';
+								echo '<div class="device-slider" data-value="'.(isset($device['level']) ? $device['level'] : 100).'" data-device-id="'. $device["did"].'"></div>';
+							echo '</div>';
+							$roomBrightness += (isset($device['level']) ? $device['level'] : 100);
+							$roomDevices++;
+							
+							
+						}
 						echo '</div>';
-						$roomBrightness += (isset($device['level']) ? $device['level'] : 100);
-						$roomDevices++;
 						
-					}
 					echo '</div>';
 					
+				}else{
+					echo 'No devices?';
+					pa( $room );
+				}
+			
+				echo '<div class="room-controls">';
+					echo 'Room Brightness: <div class="room-slider" data-value="'.($roomBrightness/$roomDevices).'" data-room-id="'. $room["rid"].'"></div>';
+					echo 'Room <button data-room-id="'. $room["rid"].'" class="onOffToggleButton buttonOn">On</button> | <button data-room-id="'. $room["rid"].'" class="onOffToggleButton buttonOff">Off</button>';
 				echo '</div>';
-				
-			}else{
-				echo 'No devices?';
-				pa( $room );
-			}
-		
-			echo '<div class="room-controls">';
-				echo 'Room Brightness: <div class="room-slider" data-value="'.($roomBrightness/$roomDevices).'" data-room-id="'. $room["rid"].'"></div>';
-				echo 'Room <button data-room-id="'. $room["rid"].'" class="onOffToggleButton buttonOn">On</button> | <button data-room-id="'. $room["rid"].'" class="onOffToggleButton buttonOff">Off</button>';
 			echo '</div>';
-		echo '</div>';
+			}
 		}
+	
 	}
-	}
+	
 	if( $deviceCount > 0 ){
 		echo '<div class="container">';
 			echo '<h1>Home</h1>';
@@ -126,6 +132,33 @@ if( TOKEN != "" ){
 			echo '</div>';
 		echo '</div>';
 	}
+	
+	
+	
+	if( ENABLE_PLUGINS == 1 ){
+			//enable plugins
+			include "Plugins/plugins.php";
+			if( sizeof($plugins) > 0 ){
+				//echo "Loaded: ".sizeof($plugins);
+				foreach($plugins as $plugin ){
+					//echo $plugin->getName();
+					if( $plugin->getEnabled() ){
+						
+						//$collection = $plugin->getCollection();
+						$plugin->renderDevices();
+						
+						
+						//echo '<pre>'.print_r($collection, true).'</pre>';
+						
+						
+					}
+				}
+			}
+		}
+	
+	
+	
+	
 	
 }else{
 	echo "<h1>If you are seeing this, you haven't put your token in the include.php file.</h1>";

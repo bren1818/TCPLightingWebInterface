@@ -18,6 +18,8 @@
 		public $tokenPath;
 		public $token;
 		
+		public $logActions;
+		
 		public function __construct(){
 			$this->enabled = 0;
 		}
@@ -70,8 +72,6 @@
 			$this->requiresHTTPS = $bool;
 		}
 		
-		
-		
 		function getRequiresToken(){
 			return $this->requiresToken;
 		}
@@ -93,11 +93,17 @@
 			$this->devices[] = $device;
 		}
 		
+		function getDevices(){
+			return $this->devices;
+		}
+		
 		function addCollection($collection){
 			$this->collections[] = $collection;
 		}
 		
-		
+		function getCollection(){
+			return $this->collections;
+		}
 		
 		
 		function init(){
@@ -106,14 +112,56 @@
 		
 		
 		function renderDevices(){
-		
+			//echo '<div class="roomContainer plugin-container">';
+			
+			//echo '<h3>'.$this->getName().' ('.sizeof($this->getDevices() ).') Devices</h3>'; 
+			
+			if( sizeof($this->getDevices() ) > 0 ){
+				//echo '<div class="devices">';
+			
+					if( sizeof( $this->getCollection() ) > 0 ){
+						//go over collections and devices,	
+						//echo '<div class="room-devices">';
+						
+						foreach( $this->getCollection() as $collection ){
+							$collection->renderCollection();
+						}
+						
+						
+						
+					}else{
+						//spit out devices
+						echo '<div class="roomContainer bridgeContainer">';
+						echo '<div class="devices">';
+						echo '<div class="room-devices">';
+							foreach( $this->getDevices() as $device ){
+								$device->renderDevice();
+							}
+						echo '</div>';
+						echo '</div>';
+						echo '</div>';
+						
+						
+						
+				
+						
+					}
+					
+				//echo '</div>';
+			}
+			//echo '</div>';
+			
 		}
 		
-		function renderDevice($ID){
-		
+		function getLogActions(){
+			return $this->logActions;
 		}
 		
-	
+		function setLogActions($bool){
+			$this->logActions = $bool;
+		}
+		
+		
 	}
 
 	/*
@@ -125,6 +173,7 @@
 		public $name;
 		public $deviceCount;
 		public $devices;
+		public $collectionOwner; //bridge
 		
 		public function __construct(){
 			$this->deviceCount = 0;
@@ -164,6 +213,36 @@
 			return $this->devices;
 		}
 		
+		function getCollectionOwner(){
+			return $this->collectionOwner;
+		}
+		
+		function setCollectionOwner( $id ){
+			$this->collectionOwner = $id;
+		}
+		
+		
+		function renderCollection(){
+			//should be overridden...
+			
+			
+			echo '<div class="roomContainer collection" data-collection-id="'.$this->getID().'">';
+				echo '<h3>'.$this->getName().' ('.$this->getDeviceCount().')</h3>';
+				
+				if( $this->getDeviceCount() > 0 ){
+					echo '<div class="devices">';
+						
+						foreach( $this->getDevices() as $device ){
+							$device->renderDevice();
+						}
+						
+					echo '</div>';
+					
+				}
+			echo '</div>';
+			
+		}
+		
 	}
 
 	
@@ -179,6 +258,8 @@
 		public $name;
 		public $brightness;
 		public $state;
+		public $deviceOwner; //bridge
+		
 		
 		public function __construct(){
 			$this->state = 0;
@@ -222,6 +303,34 @@
 			}else{
 				$state = 0;
 			}
+		}
+		
+		//override
+		function renderDevice(){
+			echo $this->getName().'<br />';
+			
+			/*
+			echo '<div class="'.( (isset($device['offline']) && $device['offline'] == 1) ? 'unplugged' : 'plugged' ).' device '.($device['state'] == 1 ? 'light-on' : 'light-off' ).' '.($device['prodtype'] == 'Light Fixture' ? 'light-fixture' : '' ).'" data-device-id="'.$device['did'].'">'; //power > 0 then enabled 
+			//level = brightness
+			//state = on or off
+				echo '<p>'.$device['name'].' <a href="info.php?did='.$device['did'].'"><img src="/images/info.png"/></a></p>';
+				echo '<button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOn">On</button> | <button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOff">Off</button>';
+				echo '<div class="clear"></div>';
+				echo '<p>Brightness:</p>';
+				echo '<div class="device-slider" data-value="'.(isset($device['level']) ? $device['level'] : 100).'" data-device-id="'. $device["did"].'"></div>';
+			echo '</div>';
+			
+			*/
+			
+			
+		}
+		
+		function getDeviceOwner(){
+			return $this->deviceOwner;
+		}
+		
+		function setDeviceOwner( $id ){
+			$this->deviceOwner = $id;
 		}
 		
 	}

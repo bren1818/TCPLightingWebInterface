@@ -5,7 +5,7 @@
  *
  */
 
-define("LIGTHING_URL", 	"192.168.1.TCP"); 			// IP address of TCP Bridge/Gateway
+define("LIGTHING_URL", 	"192.168.1.108"); 			// IP address of TCP Bridge/Gateway
 define("LIGHTING_PORT", "443");						// 443 for new firmware, 80 for legacy - If you don't know, leave it at 443
 
 define("LOCAL_URL", 	"http://localhost");		// Address of your webserver running this - this is used in runSchedule to call the API
@@ -39,7 +39,7 @@ define("FORCE_FADE_OFF", 	1);							//makes it so when lights are turned on they
 define("API_PATH", "/gwr/gop.php");							//API Path on bridge - do not change
 define("IMAGE_PATH", "https://".LIGTHING_URL."/gwr/"); 		//append urls to this eg: images/lighting/TCP/TCP-A19.png
 
-define("ENABLE_PLUGINS", 	0);
+define("ENABLE_PLUGINS", 	1);
 
 date_default_timezone_set("America/New_York"); 				//Ensure this matches your timezone so if you use scheduler the hours match
 

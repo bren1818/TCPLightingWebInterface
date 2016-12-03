@@ -4,7 +4,7 @@
  * TCP Ligthing Scheduler Script - By Brendon Irwin
  * 
  */
- 
+ error_reporting(0);
 include "include.php";
 
 /*Get Empty "default" schedule array*/
@@ -110,5 +110,6 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 	}else{
 		//Done
 	}
-
+	file_put_contents("schedule.actioned", date('Y-m-d H:i:s')." - poll\n", FILE_APPEND | LOCK_EX);
+							
 ?>

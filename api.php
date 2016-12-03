@@ -15,7 +15,7 @@
 	/*Function to facilitate device dimming on / off */
 	function dimOnOff($deviceInfoArray, $onOff ){
 		//store original value
-		$olevel = $deviceInfoArray["level"];
+		$olevel = isset($deviceInfoArray["level"]) ? $deviceInfoArray["level"] : 100;
 		//check state?
 		if( $onOff == 1){
 			//fade on,
