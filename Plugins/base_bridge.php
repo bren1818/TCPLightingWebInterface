@@ -3,7 +3,7 @@
 		Base Bridge Object
 	*/
 	class base_bridge{
-		
+		public $id;
 		public $enabled;
 		public $name;
 		public $className;
@@ -110,6 +110,13 @@
 			echo "This method should be overriden";
 		}
 		
+		function setID($id){
+			$this->id = $id;
+		}
+		
+		function getID(){
+			return $this->id;
+		}
 		
 		function renderDevices(){
 			//echo '<div class="roomContainer plugin-container">';
@@ -282,7 +289,7 @@
 		}
 		
 		function setBrightness($level){
-			if( $level > 0 && $level < 100){
+			if( $level >= 0 && $level <= 100){
 				$this->level = $level;
 			}else{
 			
@@ -298,7 +305,7 @@
 		}
 		
 		function setState($state){
-			if( $state == 1 or $state == true ){
+			if( $state == 1 || $state == true ){
 				$state = 1;
 			}else{
 				$state = 0;

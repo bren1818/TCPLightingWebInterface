@@ -159,8 +159,10 @@ if( TOKEN != "" ){
 					//echo $plugin->getName();
 					if( $plugin->getEnabled() ){
 						
+						echo '<pre>'.print_r( $plugin , true ).'</pre>';
+						
 						//$collection = $plugin->getCollection();
-						$plugin->renderDevices();
+						//$plugin->renderDevices();
 						
 						
 						//echo '<pre>'.print_r($collection, true).'</pre>';

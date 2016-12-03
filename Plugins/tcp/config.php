@@ -14,7 +14,7 @@
 			$this->setOnline(  1 );
 			$this->setColorID( 0 );
 			$this->setRemoteID( "" ); //number on the remote which triggers it 
-			
+			$this->setDeviceOwner( "" );
 		}
 		
 		/*
@@ -79,8 +79,15 @@
 				//echo "set";
 				$this->setID( $device['did'] );
 				$this->setName( $device['name'] );
-				$this->setState( ($device['state'] == 1 ? 1 : 0 ) );
-				$this->setBrightness( (isset($device['level']) ? $device['level'] : 0) );
+				$state = ($device['state'] == 1 ) ? true : false ;
+				$this->setState(  $state );
+				
+				$brightness = ( isset(  $device['level'] ) ? $device['level'] : 0 );
+				
+				$this->setBrightness( $brightness );
+				
+				//echo $device['level'];
+				
 				$this->setDeviceType( ($device['prodtype'] == 'Light Fixture' ? 'light-fixture' : $device['prodtype'] ) );
 				$this->setOnline(  isset( $device['offline'] ) ? 0 : 1  );
 				$this->setColorID( $device['colorid'] );
@@ -91,7 +98,7 @@
 		
 		function renderDevice(){
 			
-			echo '<div class="'.( $this->getOnline() == 0 ? 'unplugged' : 'plugged' ).' device '.( $this->getState() == 1 ? 'light-on' : 'light-off' ).' '.( $this->getDeviceType() == 'Light Fixture' ? 'light-fixture' : '' ).'" data-device-id="'.$this->getID().'">'; //power > 0 then enabled 
+			echo '<div data-bridgeID="'.$this->getDeviceOwner().'" class="'.( $this->getOnline() == 0 ? 'unplugged' : 'plugged' ).' device '.( $this->getState() == 1 ? 'light-on' : 'light-off' ).' '.( $this->getDeviceType() == 'Light Fixture' ? 'light-fixture' : '' ).'" data-device-id="'.$this->getID().'">'; //power > 0 then enabled 
 				//level = brightness
 				//state = on or off
 				echo '<p>'.$this->getName().'</p>';
@@ -138,6 +145,8 @@
 	}
 	
 	class tcp_room extends base_collection{
+		
+		
 		/*
 		[rid] => 0
 		[name] => Kitchen 
@@ -159,6 +168,7 @@
 		public $color;
 		public $colorID;
 		
+		
 		function setColor($color){
 			$this->color = $color;
 		}
@@ -176,7 +186,7 @@
 		}
 		
 		function renderCollection(){
-			echo '<div class="roomContainer" data-room-id="'.$this->getID().'">';
+			echo '<div class="roomContainer" data-bridgeID="'.$this->getCollectionOwner().'" data-room-id="'.$this->getID().'">';
 				echo '<h3>'.$this->getName().' ('.$this->getDeviceCount().')</h3>';
 				if( $this->getDeviceCount() > 0 ){
 					
@@ -188,11 +198,8 @@
 						echo '<div class="room-devices">';
 						foreach( $this->getDevices() as $device ){
 							$device->renderDevice();
-							
-							//pa( $device );
-							
 							$devices++;
-							$brightness += $device->getBrightness();
+							$brightness = $brightness +  ( $device->getBrightness() ? $device->getBrightness() : 100 ) ;
 						}
 						echo '</div>';
 						
@@ -201,7 +208,7 @@
 					
 					echo '<div class="room-controls">';
 						
-						echo 'Room Brightness: <div class="room-slider" data-value="'.($brightness/$devices).'" data-room-id="'. $this->getID() .'"></div>';
+						echo 'Room Brightness: <div class="room-slider" data-value="'.($brightness/$devices).'" data-bridgeID="'.$this->getCollectionOwner().'" data-room-id="'. $this->getID() .'"></div>';
 						echo 'Room <button data-room-id="'. $this->getID().'" class="onOffToggleButton buttonOn">On</button> | <button data-room-id="'. $this->getID().'" class="onOffToggleButton buttonOff">Off</button>';
 					echo '</div>';
 					
@@ -220,7 +227,8 @@
 	
 		public function __construct(){
 			$this->setName("TCP");
-			$this->setClassName("TCP-2");
+			$this->setClassName("TCP");
+			$this->setID("TCP");
 			$this->setRequiresHTTPS( true );
 			$this->setRequiresToken( true );
 			$this->setHueEmulation ( true );
@@ -309,24 +317,31 @@
 							$roomC->setName( $room["name"] );
 							$roomC->setColor( $room['color'] );
 							$roomC->setColorID( $room['colorid'] );
-
+							$roomC->setCollectionOwner( $this->getID() ); //set owner
+							
 							if( is_array( $room["device"] ) ){
+								
 								$device = (array)$room["device"];
+								
 								//singular device
 								if(  isset($device["did"]) ){
 									//item is singular device
 									$bdevice = new tcp_device();
 									$bdevice->arrayPopulate( $room["device"] );
-									
+									$bdevice->setDeviceOwner( $roomC->getCollectionOwner() );
 									$roomC->addDevice( $bdevice );
 									$this->addDevice( $bdevice );
+									
+									
 								}else{
+									
 									//array of devices
 									for( $x = 0; $x < sizeof($device); $x++ ){
 										if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
+											
 											$bdevice = new tcp_device();
 											$bdevice->arrayPopulate( $device[$x] );
-											
+											$bdevice->setDeviceOwner( $roomC->getCollectionOwner() );
 											$roomC->addDevice( $bdevice );
 											$this->addDevice( $bdevice );
 										}
