@@ -290,7 +290,7 @@
 		
 		function setBrightness($level){
 			if( $level >= 0 && $level <= 100){
-				$this->level = $level;
+				$this->brightness = $level;
 			}else{
 			
 			}
@@ -310,6 +310,7 @@
 			}else{
 				$state = 0;
 			}
+			$this->state = $state;
 		}
 		
 		//override
