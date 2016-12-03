@@ -99,7 +99,7 @@
 				echo '<button data-device-id="'.$this->getID().'" class="onOffDeviceToggleButton buttonOn">On</button> | <button data-device-id="'.$this->getID().'" class="onOffDeviceToggleButton buttonOff">Off</button>';
 				echo '<div class="clear"></div>';
 				echo '<p>Brightness:</p>';
-				echo '<div class="device-slider" data-value="'.( ($this->getBrightness() ) ? $this->getBrightness() : 100).'" data-device-id="'. $this->getID().'"></div>';
+				echo '<div class="device-slider" data-value="'.( ( $this->getBrightness() ) ? $this->getBrightness() : 100).'" data-device-id="'. $this->getID().'"></div>';
 			echo '</div>';
 			
 		}
