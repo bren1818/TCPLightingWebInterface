@@ -168,7 +168,14 @@
 			$this->logActions = $bool;
 		}
 		
-		
+		function turnDeviceOn( $ID ){ /*Override*/ }
+		function turnDeviceOff( $ID ){ /*Override*/ }
+		function dimDevice( $ID, $opacity){ /*Override*/ }
+		function turnCollectionOn( $ID ){ /*Override*/}
+		function turnCollectionOff( $ID ){ /*Override*/ }
+		function dimCollection( $ID, $opacity){ /*Override*/ }
+		function turnAllOn(){ /*Override*/ }
+		function turnAllOn(){ /*Override*/ }
 	}
 
 	/*
