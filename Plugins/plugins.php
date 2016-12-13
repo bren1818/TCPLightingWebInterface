@@ -12,7 +12,7 @@
 			$file = $dir.DIRECTORY_SEPARATOR."config.php";
 			if( file_exists( $file ) ){
 				include $file;
-				$plugins[] = $bridge;
+				//$plugins[] = $bridge;
 			}
 		}
 	}

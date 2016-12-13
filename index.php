@@ -1,18 +1,41 @@
 <?php
-include "include.php";
-pageHeader("TCP Lighting Controller");
-?>
 
-
-<?php
 /*
  *
  * TCP Ligthing Web UI Test Script - By Brendon Irwin
  * 
  */
 
+include "config.php";
+pageHeader("TCP Lighting Controller");
+
+global $home;
+
+echo '<div class="container">';
+echo '<h1>'.$home->getName()."</h1>";
+
+foreach( $home->getDevices() as $bridge ){
+	
+	if( $bridge->getEnabled() ){
+		echo '<div class="bridge">';
+			echo '<h2>'.$bridge->getName().'</h2>';
+			if( $bridge->getID() == ""){
+				echo "<p>".$bridge->getName()." is missing a unique ID. Please set!</p>";
+			}
+			$bridge->renderDevices();
+		echo '</div>';
+	}
+	
+	//pa($bridge);
+}
+echo '</div>';
+
+pageFooter();
+?>
 
 
+<?php 
+/*
 if( TOKEN != "" ){
 	
 	//Get State of System Data
@@ -150,28 +173,7 @@ if( TOKEN != "" ){
 	
 	
 	
-	if( ENABLE_PLUGINS == 1 ){
-			//enable plugins
-			include "Plugins/plugins.php";
-			if( sizeof($plugins) > 0 ){
-				//echo "Loaded: ".sizeof($plugins);
-				foreach($plugins as $plugin ){
-					//echo $plugin->getName();
-					if( $plugin->getEnabled() ){
-						
-						echo '<pre>'.print_r( $plugin , true ).'</pre>';
-						
-						//$collection = $plugin->getCollection();
-						//$plugin->renderDevices();
-						
-						
-						//echo '<pre>'.print_r($collection, true).'</pre>';
-						
-						
-					}
-				}
-			}
-		}
+	
 	
 	
 	
@@ -206,3 +208,5 @@ if( TOKEN != "" ){
 ?>
 </body>
 </html>
+*/
+?>

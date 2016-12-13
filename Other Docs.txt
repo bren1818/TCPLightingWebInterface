@@ -1,0 +1,9 @@
+Some Documentation, links, Repos of interest
+
+http://home.stockmopar.com/updated-connected-by-tcp-api/
+http://home.stockmopar.com/connected-by-tcp-unofficial-api/
+http://forum.micasaverde.com/index.php/topic,22555.0.html
+http://code.mios.com/trac/mios_tcplighting
+https://community.smartthings.com/t/any-interest-in-tcp-connected-hub-local-integration/51926/9
+https://github.com/hypergolic/greeenwave_firmware
+https://github.com/twack/TCP-Connect

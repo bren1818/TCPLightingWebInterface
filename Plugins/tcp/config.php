@@ -7,7 +7,7 @@
 		
 		function __construct(){
 			$this->setID( "" );
-			$this->setName( "" );
+			$this->setName( "TCP" );
 			$this->setState( 1 );
 			$this->setBrightness( 100 );
 			$this->setDeviceType( "" );
@@ -15,6 +15,7 @@
 			$this->setColorID( 0 );
 			$this->setRemoteID( "" ); //number on the remote which triggers it 
 			$this->setDeviceOwner( "" );
+			
 		}
 		
 		/*
@@ -389,16 +390,11 @@
 		function turnCollectionOn( $ID ){ /*Override*/}
 		function turnCollectionOff( $ID ){ /*Override*/ }
 		function turnAllOn(){ /*Override*/ }
-		function turnAllOn(){ /*Override*/ }
+		function turnAllOff(){ /*Override*/ }
 		
 	
 	}
 	
-	$bridge = new tcp_bridge();
-	$bridge->setEnabled( true );		//SET TRUE
-	$bridge->setIP("192.168.1.109"); 	//SET BRIDGE IP
-	$bridge->setTokenPath( dirname(__FILE__).DIRECTORY_SEPARATOR.$bridge->getName().'_token' );
-	$bridge->setHueEmulation( true );
-	$bridge->init();
+	
 	
 ?>

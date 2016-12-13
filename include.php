@@ -5,6 +5,8 @@
  *
  */
 
+ 
+ /*
 define("LIGTHING_URL", 	"192.168.1.108"); 			// IP address of TCP Bridge/Gateway
 define("LIGHTING_PORT", "443");						// 443 for new firmware, 80 for legacy - If you don't know, leave it at 443
 
@@ -42,13 +44,17 @@ define("IMAGE_PATH", "https://".LIGTHING_URL."/gwr/"); 		//append urls to this e
 define("ENABLE_PLUGINS", 	1);
 
 date_default_timezone_set("America/New_York"); 				//Ensure this matches your timezone so if you use scheduler the hours match
+*/
+
+
+
 
 
 /*Function to Print Array*/
 function pa($array){
 	echo '<pre>'.print_r($array,true).'</pre>';
 }
-
+/*
 function getCurlReturn($postDataString){
 	$URL = SCHEME."://".LIGTHING_URL.":".LIGHTING_PORT.API_PATH;
 	
@@ -109,7 +115,7 @@ function getDevices(){
 	
 	return $DEVICES;
 }
-
+*/
 function pageHeader($title){
 	?>
 	<!DOCTYPE html>
@@ -145,18 +151,4 @@ function pageFooter(){
 </html>	
 	<?php
 }
-
-/* 
-	Some Documentation, links, Repos of interest
-	
-	http://home.stockmopar.com/updated-connected-by-tcp-api/
-	http://home.stockmopar.com/connected-by-tcp-unofficial-api/
-	http://forum.micasaverde.com/index.php/topic,22555.0.html
-	http://code.mios.com/trac/mios_tcplighting
-	https://community.smartthings.com/t/any-interest-in-tcp-connected-hub-local-integration/51926/9
-	https://github.com/hypergolic/greeenwave_firmware
-	https://github.com/twack/TCP-Connect
-	
-*/
-
 ?>

@@ -2,6 +2,48 @@
 	/*
 		Base Bridge Object
 	*/
+	
+	class home{
+		public $ip;
+		public $home;
+		public $devices;
+		
+		
+		public function __construct(){
+			$this->devices = [];
+		}
+		
+		function getIP(){
+			return $this->ip;
+		}
+		
+		function setIP($ip){
+			$this->ip = $ip;
+		}		
+		
+		function getName(){
+			return $this->name;
+		}
+		
+		function setName($name){
+			$this->name = $name;
+		}
+		
+		function addBridge($bridge){
+			$this->devices[] = $bridge;
+		}
+		
+		function getDevices(){
+			return $this->devices;
+		}
+		
+		function setDevices($bridge){
+			$this->devices = $bridge;
+		}
+		
+	}
+	
+	
 	class base_bridge{
 		public $id;
 		public $enabled;
@@ -111,7 +153,7 @@
 		}
 		
 		function setID($id){
-			$this->id = $id;
+			$this->id = md5($id);
 		}
 		
 		function getID(){
@@ -175,7 +217,7 @@
 		function turnCollectionOff( $ID ){ /*Override*/ }
 		function dimCollection( $ID, $opacity){ /*Override*/ }
 		function turnAllOn(){ /*Override*/ }
-		function turnAllOn(){ /*Override*/ }
+		function turnAllOff(){ /*Override*/ }
 	}
 
 	/*
