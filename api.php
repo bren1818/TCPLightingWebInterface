@@ -1,11 +1,22 @@
 <?php
-/*
- *
- * PHP API CALLS
- *
- */	
-	$function = isset($_REQUEST['fx']) ? $_REQUEST['fx'] : ""; 		//Toggle or Brightness
-	$type = 	isset($_REQUEST['type']) ? $_REQUEST['type'] : "";		//Device or Room
+	/*
+	 *
+	 * PHP API CALLS
+	 *
+	 */	
+	
+	include "config.php";
+	global $home;
+	
+	if( sizeof( $home->getDevices() ) == 0 ){
+		//No bridges - report error
+		exit;
+	}
+	
+	
+	$function = isset($_REQUEST['fx']) ? $_REQUEST['fx'] : ""; 			//Toggle or Brightness
+	$bridge =   isset($_REQUEST['bid']) ? $_REQUEST['bid'] : "";		//DeviceID or Room ID
+	$type = 	isset($_REQUEST['type']) ? $_REQUEST['type'] : "";		//Device or collection 
 	$UID = 		isset($_REQUEST['uid']) ? $_REQUEST['uid'] : "";		//DeviceID or Room ID
 	$val = 		isset($_REQUEST['val']) ? $_REQUEST['val'] : "";		//DeviceID or Room ID
 	

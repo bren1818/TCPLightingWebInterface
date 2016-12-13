@@ -138,7 +138,7 @@ function pageHeader($title){
 	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 	<script src="js/jquery.ui.touch-punch.min.js"></script>
-	<script src="scripts.js"></script>
+	<script src="js/scripts.js"></script>
 	<title><?php echo $title; ?></title>
 </head>
 <body>

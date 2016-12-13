@@ -8,7 +8,8 @@ $(function(){
 			$(this).slider("option", "value", $(this).attr('data-value') );
 		},
 		stop: function(event, ui) {
-			var room = $(this).parent().parent();
+			var room = $(this).parent().parent(); //collection
+			var bridge = ''; 
 			$.get("api.php?fx=dim&type=room&uid=" + $(this).attr('data-room-id') + "&val=" + ui.value, function( data ) {
 				console.log( data );
 				$(room).find('.device-slider').each(function(){

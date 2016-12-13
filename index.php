@@ -28,6 +28,9 @@ foreach( $home->getDevices() as $bridge ){
 	
 	//pa($bridge);
 }
+
+//render home control...
+
 echo '</div>';
 
 pageFooter();
