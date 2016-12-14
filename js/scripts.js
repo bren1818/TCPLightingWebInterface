@@ -1,4 +1,5 @@
 $(function(){
+	
 	$('.room-slider').slider({
 		range: "min",
 		min: 0,
@@ -9,8 +10,7 @@ $(function(){
 		},
 		stop: function(event, ui) {
 			var room = $(this).parent().parent(); //collection
-			var bridge = ''; 
-			$.get("api.php?fx=dim&type=room&uid=" + $(this).attr('data-room-id') + "&val=" + ui.value, function( data ) {
+			$.get("api.php?fx=dim&type=room&bid=" + $(this).attr('data-bridgeid') + "&uid=" + $(this).attr('data-room-id') + "&val=" + ui.value, function( data ) {
 				console.log( data );
 				$(room).find('.device-slider').each(function(){
 					$(this).slider('value', ui.value );
@@ -19,6 +19,8 @@ $(function(){
 		}
 	});
 
+	//device-color-picker
+	
 	$('.device-slider').slider({
 		range: "min",
 		min: 0,
@@ -31,7 +33,7 @@ $(function(){
 			}
 		},
 		stop: function(event, ui) {
-			$.get("api.php?fx=dim&type=device&uid=" + $(this).attr('data-device-id') + "&val=" + ui.value, function( data ) {
+			$.get("api.php?fx=dim&type=device&bid=" + $(this).parent().attr('data-bridgeid') + "&uid=" + $(this).attr('data-device-id') + "&val=" + ui.value, function( data ) {
 			  console.log( data );
 			  
 			  
@@ -60,13 +62,14 @@ $(function(){
 
 	$('button.onOffToggleButton').click(function(event){
 		var roomID = $(this).attr('data-room-id');
+		var bridgeID = $(this).parent().parent().attr('data-bridgeid');
 		var room = $(this).parent().parent();
 		var val = 0;
 		if( $(this).hasClass('buttonOn') ){
 			val = 1;	
 		}
 		
-		$.get( "api.php?fx=toggle&type=room&uid=" + roomID + "&val=" + val, function( data ) {
+		$.get( "api.php?fx=toggle&type=room&bid=" + bridgeID + "&uid=" + roomID + "&val=" + val, function( data ) {
 			  console.log( data );
 			  
 			  $(room).find('.room-devices .device').each(function(){
@@ -86,14 +89,15 @@ $(function(){
 	});
 
 	$('button.onOffDeviceToggleButton').click(function(event){
-		var DID = $(this).attr('data-device-id');
+		var did = $(this).attr('data-device-id');
+		var bid = $(this).parent().attr('data-bridgeid');
 		var val = 0;
 		var light = $(this);
 		if( $(this).hasClass('buttonOn') ){
 			val = 1;
 		}
 		
-		$.get( "api.php?fx=toggle&type=device&uid=" + DID + "&val=" + val, function( data ) {
+		$.get( "api.php?fx=toggle&type=device&bid=" + bid + "&uid=" + did + "&val=" + val, function( data ) {
 			 console.log( data );
 			 if( val == 1){
 				$(light).parent().addClass('light-on');
@@ -107,7 +111,7 @@ $(function(){
 	});
 
 	$('button.onOffHouseToggleButton').click(function(event){
-		var DID = $(this).attr('data-device-id');
+		//var DID = $(this).attr('data-device-id');
 		var val = 0;
 		if( $(this).hasClass('buttonOn') ){
 			val = 1;

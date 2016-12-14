@@ -385,8 +385,51 @@
 			return $this->fadeoff;
 		}
 		
-		function turnDeviceOn( $ID ){ /*Override*/ }
-		function turnDeviceOff( $ID ){ /*Override*/ }
+		function turnDeviceOn( $ID ){ /*Override*/ 
+			if( $this->fadeOn ){
+				$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".$this->getToken()."</token><did>".$ID."</did><value>1</value></gip>"; 
+				$result = $this->runCommand($CMD);
+				
+				$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".$this->getToken()."</token><did>".$ID."</did><value>100</value><type>level</type></gip>"; //get orig??
+				$result = $this->runCommand($CMD);
+				
+			}else{
+				$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".$this->getToken()."</token><did>".$ID."</did><value>1</value></gip>"; 
+				$result = $this->runCommand($CMD);
+			}
+			$array = $this->xmlToArray($result);
+			return $array;
+		
+		}
+		
+		
+		function turnDeviceOff( $ID ){ /*Override*/ 
+			if( $this->fadeOff ){
+				$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".$this->getToken()."</token><did>".$ID."</did><value>1</value><type>level</type></gip>";  
+				$result = $this->runCommand($CMD);
+				
+				$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".$this->getToken()."</token><did>".$ID."</did><value>0</value></gip>"; 
+				$result = $this->runCommand($CMD);
+				
+			}else{
+				$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".$this->getToken()."</token><did>".$ID."</did><value>0</value></gip>"; 
+				$result = $this->runCommand($CMD);
+			}
+			//$array = xmlToArray($result);
+			return $array;
+		
+		}
+		
+		
+		function dimDevice( $ID, $opacity){ /*Override*/ 
+			$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".$this->getToken()."</token><did>".$ID."</did><value>".$opacity."</value><type>level</type></gip>"; 
+			$result = $this->runCommand($CMD);
+			$array = $this->xmlToArray($result);
+			return $array;
+		
+		}
+		
+		
 		function turnCollectionOn( $ID ){ /*Override*/}
 		function turnCollectionOff( $ID ){ /*Override*/ }
 		function turnAllOn(){ /*Override*/ }
