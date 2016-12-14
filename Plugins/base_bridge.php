@@ -218,6 +218,8 @@
 		function dimCollection( $ID, $opacity){ /*Override*/ }
 		function turnAllOn(){ /*Override*/ }
 		function turnAllOff(){ /*Override*/ }
+		function dimAll($opacity){ /*Override*/ }
+		
 	}
 
 	/*

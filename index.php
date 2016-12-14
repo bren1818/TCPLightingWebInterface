@@ -33,6 +33,16 @@ foreach( $home->getDevices() as $bridge ){
 
 echo '</div>';
 
+echo '<div class="container">';
+	echo '<h1>Home</h1>';
+	echo '<div class="house">';
+		echo '<button data-device-id="all" class="onOffHouseToggleButton buttonOn">On</button> | <button data-device-id="all" class="onOffHouseToggleButton buttonOff">Off</button>';
+		echo '<div class="clear"></div>';
+		echo '<p>Brightness:</p>';
+		echo '<div class="house-slider" data-device-id="all"></div>';
+	echo '</div>';
+echo '</div>';
+
 pageFooter();
 ?>
 

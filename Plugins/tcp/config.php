@@ -401,8 +401,7 @@
 			return $array;
 		
 		}
-		
-		
+				
 		function turnDeviceOff( $ID ){ /*Override*/ 
 			if( $this->fadeOff ){
 				$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".$this->getToken()."</token><did>".$ID."</did><value>1</value><type>level</type></gip>";  
@@ -415,7 +414,7 @@
 				$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".$this->getToken()."</token><did>".$ID."</did><value>0</value></gip>"; 
 				$result = $this->runCommand($CMD);
 			}
-			//$array = xmlToArray($result);
+			$array = $this->xmlToArray($result);
 			return $array;
 		
 		}
@@ -426,18 +425,61 @@
 			$result = $this->runCommand($CMD);
 			$array = $this->xmlToArray($result);
 			return $array;
-		
 		}
 		
 		
-		function turnCollectionOn( $ID ){ /*Override*/}
-		function turnCollectionOff( $ID ){ /*Override*/ }
-		function turnAllOn(){ /*Override*/ }
-		function turnAllOff(){ /*Override*/ }
+		function turnCollectionOn( $ID ){ 
+			//check fade
+			
+			$CMD = "cmd=RoomSendCommand&data=<gip><version>1</version><token>".$this->getToken()."</token><rid>".$ID."</rid><value>1</value></gip>";					
+			$result = $this->runCommand($CMD);
+			$array = $this->xmlToArray($result);
+			return $array;
 		
+		}
+		
+		function turnCollectionOff( $ID ){ 
+			//check fade
+		
+			$CMD = "cmd=RoomSendCommand&data=<gip><version>1</version><token>".$this->getToken()."</token><rid>".$ID."</rid><value>0</value></gip>";					
+			$result = $this->runCommand($CMD);
+			$array = $this->xmlToArray($result);
+			return $array;
+		}
+		
+		function dimCollection( $ID, $opacity){ 
+			/*Override*/ 
+			$CMD = "cmd=RoomSendCommand&data=<gip><version>1</version><token>".$this->getToken()."</token><rid>".$ID."</rid><value>".$opacity."</value><type>level</type></gip>";
+				
+			$result = $this->runCommand($CMD);
+			$array = $this->xmlToArray($result);
+			return $array;
+		}
+		
+		
+		function turnAllOn(){ 
+			//check fade
+			//iterate through rooms?
+			foreach( $this->getDevices() as $device ){
+				$this->turnDeviceOn( $device->getID() );
+			}
+		}
+		
+		function turnAllOff(){ 
+			//check fade?
+			
+			//iterate through rooms?
+			foreach( $this->getDevices() as $device ){
+				$this->turnDeviceOff( $device->getID() );
+			}
+		}
+		
+		function dimAll($opacity){
+			foreach( $this->getDevices() as $device ){
+				$this->dimDevice( $device->getID(), $opacity );
+			}
+		}
 	
 	}
-	
-	
 	
 ?>
