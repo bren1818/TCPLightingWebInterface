@@ -50,6 +50,8 @@
 		public $name;
 		public $className;
 		public $ip;
+		public $supportsColor; //??
+		
 		
 		public $requiresToken;
 		public $requiresHTTPS;
