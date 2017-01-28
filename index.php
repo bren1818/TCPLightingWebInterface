@@ -61,6 +61,7 @@ if( TOKEN != "" ){
 	
 	echo '<div class="container">';
 	echo '<h1>Device control</h1>';
+	echo '<p><a href="setDateTime.php">Set Date Time</a></p>';
 	echo '</div>';	
 		
 	if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
