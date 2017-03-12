@@ -290,23 +290,45 @@
 			}
 			
 			if( $this->getToken() != "" ){
-				//Get System State
-				$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".$this->getToken()."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
-				$result = $this->runCommand( $CMD );
-				$array = $this->xmlToArray( $result );
-				//ensure Token is good
-				if( !isset($array["gwrcmd"]) ){
-					echo '<p>GWR Command not returned, this likely indicates your token is expired, or invalid.<p>';
-					$this->setToken( "" );
-					file_put_contents( $this->getTokenPath(), "");
-					return;
+				
+				if( $this->getCacheDeviceState() ){
+					//load cached result
+					if( file_exists( $this->getDeviceCachePath() ) && file_get_contents( $this->getDeviceCachePath() ) != "" ){
+						$DATA = unserialize( file_get_contents( $this->getDeviceCachePath() ) );
+					}else{
+						echo "Could not get Device State from Cache";
+					}
 				}
 				
-				if( isset( $array["gwrcmd"]["gdata"]["gip"]["room"] ) ){
-					$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
+				
+				if( isset($DATA) && is_array($DATA) && $this->getCacheDeviceState() ){
+					//just use the cached response
 				}else{
-					echo "<p>".$this->getName()." has no 'Room' Data</p>";
-					$DATA = array();
+				
+					//Get System State
+					$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".$this->getToken()."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
+					$result = $this->runCommand( $CMD );
+					$array = $this->xmlToArray( $result );
+					//ensure Token is good
+					if( !isset($array["gwrcmd"]) ){
+						echo '<p>GWR Command not returned, this likely indicates your token is expired, or invalid.<p>';
+						$this->setToken( "" );
+						file_put_contents( $this->getTokenPath(), "");
+						return;
+					}
+					
+					if( isset( $array["gwrcmd"]["gdata"]["gip"]["room"] ) ){
+						$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
+						if( $this->getCacheDeviceState() ){  //true
+							if( file_put_contents( $this->getDeviceCachePath(), serialize($DATA) ) ){
+								echo "Cached Device Response";
+							}
+						}
+						
+					}else{
+						echo "<p>".$this->getName()." has no 'Room' Data</p>";
+						$DATA = array();
+					}
 				}
 				
 				//Populate Rooms and devices...

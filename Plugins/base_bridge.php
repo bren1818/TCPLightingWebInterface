@@ -62,6 +62,9 @@
 		public $tokenPath;
 		public $token;
 		
+		public $cacheDeviceState;
+		public $deviceCachePath;
+		
 		public $logActions;
 		
 		public function __construct(){
@@ -132,7 +135,22 @@
 			$this->token = $token;
 		}
 		
-
+		function getCacheDeviceState(){
+			return $this->cacheDeviceState;
+		}
+		
+		function setCacheDeviceState($bool){
+			$this->cacheDeviceState = $bool;
+		}
+		
+		function getDeviceCachePath(){
+			return $this->deviceCachePath;
+		}
+		
+		function setDeviceCachePath($path){
+			$this->deviceCachePath = $path;
+		}
+		
 		function addDevice($device){
 			$this->devices[] = $device;
 		}

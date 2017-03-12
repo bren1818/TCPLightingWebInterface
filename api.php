@@ -4,7 +4,7 @@
 	 * PHP API CALLS
 	 *
 	 */	
-	
+	error_reporting(0);
 	include "config.php";
 	global $home;
 	
@@ -28,6 +28,47 @@
 			$bridge = $bridges;
 			break;
 		}
+	}
+	
+
+	
+	if( $bridge == "NOT_FOUND" && $function != "refreshState"){
+		echo json_encode( array("error" => "Bridge not found") );
+		exit;
+	}
+	
+	if( $function == "refreshState" ){
+		//
+		
+		$devices = array();
+		foreach($home->getDevices() as $bridges){
+
+			if( $bridges->getCacheDeviceState() ){ //if caching is disabled, clear the cache
+				//$bridge->setCacheDeviceState(false);
+
+				if( $bridges->getDeviceCachePath() != ""){
+					error_log("Deleting Cache");
+					if( unlink( $bridges->getDeviceCachePath() ) ){
+						error_log("Deleted Cache");
+					}
+					$bridges->init();
+				}
+			}else{
+				$bridges->init();
+			}
+
+			//append device states to response
+
+			foreach( $bridges->getDevices() as $device ){
+				$devices[] = array("bid" => $bridges->getID(), "did" => $device->getID(), "state" => $device->getState(), "brightness" => $device->getBrightness(), "online" => $device->getOnline() );
+			}
+		}
+
+		$response = array("action" =>"refresh", "deviceStates"=> $devices);
+		ob_clean();
+		echo json_encode( $response );
+		exit;
+
 	}
 	
 	if( $function != "" && $type != "" && $UID != "" && $val != ""){ // && is_object($bridge) 

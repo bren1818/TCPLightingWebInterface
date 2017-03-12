@@ -133,6 +133,13 @@ $(function(){
 		});
 	});
 	
+	$('#refresh').click(function(){
+		$.get( "api.php?fx=refreshState", function( data ) {
+			  console.log( data );
+		});
+	});
+
+
 	$('#arrayDump').click(function(){
 		$(this).toggleClass('toggled');
 	});
