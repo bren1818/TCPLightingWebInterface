@@ -41,7 +41,32 @@ define("IMAGE_PATH", "https://".LIGTHING_URL."/gwr/"); 		//append urls to this e
 
 define("ENABLE_PLUGINS", 	0);
 
-date_default_timezone_set("America/New_York"); 				//Ensure this matches your timezone so if you use scheduler the hours match
+date_default_timezone_set("America/New_York");                 //Ensure this matches your timezone so if you use scheduler the hours match
+
+
+/*************************************START OF INSERTED CODE FOR SUNRISE SUNSET MOD *************************/
+/* 
+/* look up your own location at http://latlong.net
+/* 
+/* for LATITUDE, locations N of equator are positive values, S of equator are negative values
+/* for LONGITUDE, locations E of the prime meridian are positive, W of prime meridian are negative
+/* 
+/* You *must* set your time zone correctly, refer to http://php.net/manual/en/timezones.php for the formal list
+/* 
+/* examples: 	Vancouver, Canada would be LATITUDE 49.28 LONGITUDE -123.12 timezone "America/Vancouver"
+/*           	Paris, France would be LATITUDE 48.85 LONGITUDE 2.35 timezone "Europe/Paris"
+/* 		Rio de Janeiro, Brazil would be LATITUDE -22.91 LONGITUDE -43.17 timezone "America/Sao_Paulo"
+/* 
+/* 
+ */
+
+define("LATITUDE", 43.59);
+define("LONGITUDE", -80.24);
+
+
+
+/************************************* END OF INSERTED CODE FOR SUNRISE SUNSET MOD **************************/
+
 
 
 /*Function to Print Array*/
@@ -77,7 +102,6 @@ function xmlToArray($string){
 	
 	return $array;
 }
-
 
 function getDevices(){
 	$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";

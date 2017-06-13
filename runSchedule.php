@@ -3,6 +3,8 @@
  *
  * TCP Ligthing Scheduler Script - By Brendon Irwin
  * 
+ * Sunrise/Sunset mod originally added by Andrew Tsui
+ *
  */
  
 include "include.php";
@@ -19,9 +21,13 @@ function getCleanSchedTask(){
 		"DAY_SAT" => "off",
 		"DAY_SUN" => "off",
 		"DAY_ALL" => "off",
+		"TIME_TYPE" => "FIXED",
 		"FX" => "SWITCH",
 		"HOUR" => "0",
 		"MIN" => "0",
+		"OFFSET_HOUR" => "0",
+		"OFFSET_MIN" => "0",
+		"OFFSET_DIR" => "after",
 		"DIM_SCHED" => "0",
 		"SWITCH_SCHED" => "0",
 		"devices" => array()
@@ -71,11 +77,30 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 		$HOUR_NOW = date('H');
 		$MIN_NOW = date('i');
 		$DAY_NOW = date('D');
+		$sun_info = date_sun_info(time(), LATITUDE, LONGITUDE);
 		
 		foreach($tasks as $task){
 			if( $task["DAY_ALL"] == "on" || $task["DAY_".strtoupper($DAY_NOW)] == "on" ){
-				if( $task["HOUR"] == $HOUR_NOW){
-					if( $task["MIN"] == $MIN_NOW){
+
+				if (isset($task["OFFSET_DIR"]) && $task["OFFSET_DIR"] == "before") {
+					$offset_dir = "-";
+				}else{
+					$offset_dir = "+";
+				}
+
+				if( $task["TIME_TYPE"] == "SUNRISE") {
+					$task_hour = date("H", strtotime($offset_dir . $task['OFFSET_HOUR'] . " hours " . $offset_dir . $task['OFFSET_MIN'] . " minutes ", $sun_info['sunrise']));
+					$task_min = date("i", strtotime($offset_dir . $task['OFFSET_HOUR'] . " hours " . $offset_dir . $task['OFFSET_MIN'] . " minutes ", $sun_info['sunrise']));
+				}elseif ($task["TIME_TYPE"] == "SUNSET"){
+					$task_hour = date("H", strtotime($offset_dir . $task['OFFSET_HOUR'] . " hours " . $offset_dir . $task['OFFSET_MIN'] . " minutes ", $sun_info['sunset']));
+					$task_min = date("i", strtotime($offset_dir . $task['OFFSET_HOUR'] . " hours " . $offset_dir . $task['OFFSET_MIN'] . " minutes ", $sun_info['sunset']));
+				}else{
+					$task_hour = $task["HOUR"];
+					$task_min = $task["MIN"];
+				}
+
+				if( $task_hour == $HOUR_NOW){
+					if( $task_min == $MIN_NOW){
 						$fx = "";
 						$val = 0;
 						if( $task["FX"] == "SWITCH" ){

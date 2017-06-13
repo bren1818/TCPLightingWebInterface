@@ -1,6 +1,9 @@
 <?php 
 	include "include.php"; 
 	pageHeader("TCP Lighting Scheduler");
+
+	/*** includes Sunrise/Sunset mod by Andrew Tsui ***/
+
 ?>
 
 	<style>
@@ -64,8 +67,6 @@
 		  border-radius: 50%;
 		}
 		
-		/****/
-		
 		.scheduledTask{
 			margin: 20px 0px;
 			background-color: #fff;
@@ -75,9 +76,13 @@
 		
 		.fxTo{ width: 200px; }
 		
+		.ifSunTime,
+		.ifFixedTime,
 		.ifDim,
 		.ifSwitch{ display: none; }
 		
+		.scheduledTask.tm-SunTime .ifSunTime{ display: block; }
+		.scheduledTask.tm-FixedTime .ifFixedTime{ display: block; }
 		.scheduledTask.fx-Dim .ifDim{ display: block; }
 		.scheduledTask.fx-Switch .ifSwitch{ display: block; }
 		
@@ -134,6 +139,17 @@
 		}
 		
 		function bindEvents(){
+
+			$('select[name="TIME_TYPE"]').change(function(){
+				$(this).closest('.scheduledTask').removeClass('tm-SunTime');
+				$(this).closest('.scheduledTask').removeClass('tm-FixedTime');
+				
+				if( $(this).find('option:selected').val() == "FIXED" ){
+					$(this).closest('.scheduledTask').addClass('tm-FixedTime');
+				}else{
+					$(this).closest('.scheduledTask').addClass('tm-SunTime');
+				}
+			});
 		
 			$('select[name="FX"]').change(function(){
 				$(this).closest('.scheduledTask').removeClass('fx-Dim');
@@ -162,6 +178,8 @@
 				}
 			});
 			
+			$('select[name="TIME_TYPE"]').change();			
+
 			$('select[name="FX"]').change();
 			
 			$('.btnAdd, .btnRemove').click(function(){
@@ -253,26 +271,76 @@
 				<label><input type="checkbox" name="DAY_SUN" <?php echo (isset($task["DAY_SUN"]) && $task["DAY_SUN"] == "on") ? " checked" : "";  ?>/> Sunday</label>
 				<label><input type="checkbox" name="DAY_ALL" <?php echo (isset($task["DAY_ALL"]) && $task["DAY_ALL"] == "on") ? " checked" : "";  ?>/> Everyday</label>
 			</div>
+
 			<div class="timeOfDay">
-				<label>Hour: 
-					<select name="HOUR">
-						<?php for($x=0; $x<=23; $x++){
-							if( $x == 0 ){ 
-								echo '<option value="'.sprintf("%02d",$x).'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>12 AM - MIDNIGHT</option>';
-							}else if($x == 12){
-								echo '<option value="'.sprintf("%02d",$x).'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>12 PM - NOON</option>';	
-							}else{
-								if( $x > 12 ){
-									echo '<option value="'.sprintf("%02d",$x).'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>'. ($x - 12) .( $x >= 12 ? ' PM' : ' AM' ).'</option>';
-								}else{
-									echo '<option value="'.sprintf("%02d",$x).'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>'.$x.( $x >= 12 ? ' PM' : ' AM' ).'</option>';
-								}
-							}
-						} ?>
+				<label>Time: 
+					<select name="TIME_TYPE"><option value="FIXED" <?php echo (isset($task["TIME_TYPE"]) && $task["TIME_TYPE"] == "FIXED") ? " selected" : ""; ?>>FIXED</option><option value="SUNRISE" <?php echo (isset($task["TIME_TYPE"]) && $task["TIME_TYPE"] == "SUNRISE") ? " selected" : ""; ?>>SUNRISE</option><option value="SUNSET" <?php echo (isset($task["TIME_TYPE"]) && $task["TIME_TYPE"] == "SUNSET") ? " selected" : ""; ?>>SUNSET</option>
 					</select>
 				</label>
-				<label>Minute: <select name="MIN"><?php for($x=0; $x<=59; $x++){ echo '<option value="'.sprintf("%02d",$x).'"'.( (isset($task["MIN"]) && $task["MIN"] == $x) ? " selected" : "").'>'.sprintf("%02d",$x).'</option>'; } ?></select></label>
+                  </div>
+					
+			<div class="timeType">
+
+<?php /***
+       *
+       *    Added Sunrise-Sunset settings
+       *    2017-06-09 by Andrew Tsui
+       *
+       */
+?>
+				
+				<div class="ifSunTime">
+
+
+					<label>Offset Hours: <select name="OFFSET_HOUR"><?php for($x=0; $x<=12; $x++){ echo '<option value="'.sprintf("%02d",$x).'"'.( (isset($task["OFFSET_HOUR"]) && $task["OFFSET_HOUR"] == $x) ? " selected" : "").'>'.sprintf("%02d",$x).'</option>'; } 
+						?>
+						</select>
+					</label>
+					<label>Minutes: 
+						<select name="OFFSET_MIN">
+						<?php for($x=0; $x<=59; $x++){ echo '<option value="'.sprintf("%02d",$x).'"'.( (isset($task["OFFSET_MIN"]) && $task["OFFSET_MIN"] == $x) ? " selected" : "").'>'.sprintf("%02d",$x).'</option>'; } 
+						?>
+						</select>
+					</label>
+					<label> 
+						<select name="OFFSET_DIR"><option value="before" <?php echo (isset($task["OFFSET_DIR"]) && $task["OFFSET_DIR"] == "before") ? " selected" : ""; ?>>before</option><option value="after" <?php echo (isset($task["OFFSET_DIR"]) && $task["OFFSET_DIR"] == "after") ? " selected" : ""; ?>>after</option>
+						</select>
+					</label>
+
+				</div>
+
+				<div class="ifFixedTime">
+					<label>Hour: 
+					<select name="HOUR">
+					<?php for($x=0; $x<=23; $x++){
+						if( $x == 0 ){ 
+							echo '<option value="'.sprintf("%02d",$x).'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>12 AM - MIDNIGHT</option>';
+						}else if($x == 12){
+							echo '<option value="'.sprintf("%02d",$x).'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>12 PM - NOON</option>';	
+						}else{
+							if( $x > 12 ){
+								echo '<option value="'.sprintf("%02d",$x).'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>'. ($x - 12) .( $x >= 12 ? ' PM' : ' AM' ).'</option>';
+								}else{
+									echo '<option value="'.sprintf("%02d",$x).'"'.( (isset($task["HOUR"]) && $task["HOUR"] == $x) ? " selected" : "").'>'.$x.( $x >= 12 ? ' PM' : ' AM' ).'</option>';
+							}
+						}
+					} ?>
+					</select>
+					</label>
+
+					<label>Minute: 
+					<select name="MIN">
+					<?php for($x=0; $x<=59; $x++){ 
+						echo '<option value="'.sprintf("%02d",$x).'"'.( (isset($task["MIN"]) && $task["MIN"] == $x) ? " selected" : "").'>'.sprintf("%02d",$x).'</option>';
+					} 
+					?>
+					</select>
+					</label>
+				</div>
 			</div>
+
+
+
 			<div class="functionTrigger">
 				<label>Function: <select name="FX"><option value="DIM" <?php echo (isset($task["FX"]) && $task["FX"] == "DIM") ? " selected" : ""; ?>>DIM</option><option value="SWITCH" <?php echo (isset($task["FX"]) && $task["FX"] != "DIM") ? " selected" : ""; ?>>SWITCH</option></select></label>
 			</div>
@@ -324,25 +392,23 @@
 					</td>
 				</tr>
 			</table>
-			
-			</div>
+                  </div>
 		</form>
-		<?php
-	}
- 
- 
- 
 	
-	
+
+<?php
+}
+
 	echo '<div class="container">';
 		echo '<h1>Device Schedule</h1>';
 		echo '<button id="runOnce">Run Now</button> <button id="poll">Poll continuously</button>';
 		echo '<p>Note, polling continuously will work if the tab this script is running on has focus. Consider setting up a batch file to run the schedule. See documentation and runschedule.bat</p>';
 		echo '<p>Tasks can be dragged and dropped to re-order. Just click save after.</p>';
+		$sun_info = date_sun_info(time(), LATITUDE, LONGITUDE);
+		echo "Sunrise Today: " . date("H:i", $sun_info['sunrise']) . "    ";
+		echo "Sunset Today:  " . date("H:i", $sun_info['sunset'])  . "<br>";
 	echo '</div>';
-
-	
- ?>
+?>
  
 <div id="events" class="container"> 
 	<?php
@@ -363,6 +429,9 @@
  <button id="save">Save</button>
  <button id="add">Add Task</button> 
  </div>
+
 <?php
-pageFooter();
+
+  pageFooter();
+
 ?>
