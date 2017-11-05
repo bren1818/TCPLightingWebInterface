@@ -6,6 +6,7 @@
 	class hue_bridge extends base_bridge{
 		public $showSensors;
 		public $sensors = [];
+		public $groups;
 		
 		public function __construct(){
 			$this->requiresToken = true;
@@ -142,6 +143,8 @@
 						
 					}
 				}
+				
+				$this->groups = $this->runCommand('/api/'.$this->getToken().'/groups', '', "GET" );
 				
 			}
 			
@@ -366,6 +369,8 @@
 								echo '<br />';	
 							}
 							
+							
+							//echo '<pre>'.print_r($this->groups, true).'</pre>';
 								
 							echo '</div>';
 						}

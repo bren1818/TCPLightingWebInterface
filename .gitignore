@@ -3,3 +3,4 @@ schedule.actioned
 tcp.token
 Plugins/tcp/TCP_token
 *.token
+*.cache
