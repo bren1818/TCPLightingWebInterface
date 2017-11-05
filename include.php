@@ -11,7 +11,7 @@ function pa($array){
 
 function pageHeader($title){
 	?>
-	<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 	<title>TCP Control Script</title>
