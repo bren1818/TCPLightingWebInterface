@@ -73,3 +73,5 @@ html *{
 	height: auto;
 	
 }
+
+input.jscolor{ color: transparent !important; }

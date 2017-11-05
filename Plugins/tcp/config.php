@@ -68,7 +68,7 @@
 		*/
 		
 		public $deviceType;
-		public $online;
+		
 		public $colorID;
 		public $remoteID;
 		
@@ -120,13 +120,6 @@
 			$this->deviceType = $type;
 		}
 		
-		function setOnline($state){
-			$this->online = $state;
-		}
-		
-		function getOnline(){
-			return $this->online;
-		}
 		
 		function setColorID($col){
 			$this->colorID = $col;

@@ -319,10 +319,19 @@
 		public $brightness;
 		public $state;
 		public $deviceOwner; //bridge
+		public $colorSupport;
+		public $online;
+		
+		public $colorRed;
+		public $colorBlue;
+		public $colorGreen;
+		public $hue;
+		public $sat;
 		
 		
 		public function __construct(){
 			$this->state = 0;
+			$this->colorSupport = false;
 		}
 		
 		function getID(){
@@ -341,11 +350,20 @@
 			$this->name = $name;
 		}
 		
+		
+		function getColorSupport(){
+			return $this->colorSupport;
+		}
+		
+		function setColorSupport($bool){
+			$this->colorSupport = $bool;
+		}
+		
 		function setBrightness($level){
 			if( $level >= 0 && $level <= 100){
 				$this->brightness = $level;
 			}else{
-			
+				$this->brightness = 1;
 			}
 		}
 		
@@ -365,6 +383,15 @@
 			}
 			$this->state = $state;
 		}
+		
+		function setOnline($state){
+			$this->online = $state;
+		}
+		
+		function getOnline(){
+			return $this->online;
+		}
+		
 		
 		//override
 		function renderDevice(){
@@ -393,6 +420,35 @@
 		function setDeviceOwner( $id ){
 			$this->deviceOwner = $id;
 		}
+		
+		function setDeviceColor( $deviceID, $r, $g, $b ){
+			
+		}
+		
+		function setColorRed($r){
+			$this->colorRed = $r;
+		}
+		
+		function setColorGreen($g){
+			$this->colorGreen = $g;
+		}
+		
+		function setColorBlue($b){
+			$this->colorBlue = $b;
+		}
+		
+		function getColorRed(){
+			return $this->colorRed;
+		}
+		
+		function getColorGreen(){
+			return $this->colorGreen;
+		}
+		
+		function getColorBlue(){
+			return $this->colorBlue;
+		}
+		
 		
 	}
 	

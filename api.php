@@ -51,8 +51,16 @@
 				break;
 				case "color":
 					//tbd
+					$r = 	isset($_REQUEST['r']) ? $_REQUEST['r'] : "";		//Device or collection 
+					$g = 	isset($_REQUEST['g']) ? $_REQUEST['g'] : "";		//DeviceID or Room ID
+					$b = 	isset($_REQUEST['b']) ? $_REQUEST['b'] : "";		//DeviceID or Room ID
 					
+					//$fx = isset($_REQUEST['x']) ? $_REQUEST['x'] : "";
+					//$fy = isset($_REQUEST['y']) ? $_REQUEST['y'] : "";
 				
+				
+					$ret = $bridge->setDeviceColor( $UID , $r, $g, $b );
+					echo json_encode( array("color" => $r.','.$g.','.$b, "device" => $UID, "return" => $ret ) );
 				break;
 				default:
 				echo json_encode( array("error" => "unknown function, required: toggle | dim") );
@@ -73,6 +81,11 @@
 			}elseif ( $function == "color"){
 				//tbd
 				
+				$r = 	isset($_REQUEST['r']) ? $_REQUEST['r'] : "";		//Device or collection 
+				$g = 	isset($_REQUEST['g']) ? $_REQUEST['g'] : "";		//DeviceID or Room ID
+				$b = 	isset($_REQUEST['b']) ? $_REQUEST['b'] : "";		//DeviceID or Room ID
+				
+				$ret = $bridge->setDeviceColor( $UID , $r, $g, $b );
 				
 			}
 			

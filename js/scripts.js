@@ -1,4 +1,17 @@
 $(function(){
+		
+	$(document).on('change', 'input.jscolor', function() {
+		
+		console.log( 'Color change: ' +  Math.round(this.jscolor.rgb[0]) + ', ' +  Math.round(this.jscolor.rgb[1]) + ', ' +  Math.round(this.jscolor.rgb[2]) );
+		if( $(this).parent().hasClass('light-on') ){
+			$(this).parent().css('background-color', 'rgba(' + Math.round(this.jscolor.rgb[0]) + ',' + Math.round(this.jscolor.rgb[1]) + ',' + Math.round(this.jscolor.rgb[2]) + ',1)');
+		}
+		
+		$.get("api.php?fx=color&r=" + Math.round(this.jscolor.rgb[0]) + "&g=" + Math.round(this.jscolor.rgb[1]) + "&b=" + Math.round(this.jscolor.rgb[2]) + "&type=device&bid=" + $(this).parent().attr('data-bridgeid') + "&uid=" + $(this).attr('data-device-id')  + '&val=1', function( data ) {
+			console.log( data );	  
+		});
+		
+	});	
 	
 	$('.room-slider').slider({
 		range: "min",

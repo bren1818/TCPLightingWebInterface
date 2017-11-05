@@ -7,7 +7,7 @@
 	
 	$tcp1 = new tcp_bridge();
 	$tcp1->setID( "TCP 1" );		//UNIQUE ID
-	$tcp1->setEnabled( false );		//SET TRUE
+	$tcp1->setEnabled( true );		//SET TRUE
 	$tcp1->setIP("192.168.1.108"); 	//SET BRIDGE IP
 	$tcp1->setName("TCP Bridge 1");
 	$tcp1->setHueEmulation( true );
@@ -16,7 +16,7 @@
 	
 	$tcp2 = new tcp_bridge();
 	$tcp2->setID( "TCP 2" );		//UNIQUE ID
-	$tcp2->setEnabled( false );		//SET TRUE
+	$tcp2->setEnabled( true );		//SET TRUE
 	$tcp2->setIP("192.168.1.109"); 	//SET BRIDGE IP
 	$tcp2->setName("TCP Bridge 2");
 	$tcp2->setHueEmulation( true );
