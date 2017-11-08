@@ -146,14 +146,74 @@ $(function(){
 		});
 	});
 	
-	$('#refresh').click(function(){
-		$.get( "api.php?fx=refreshState", function( data ) {
-			  console.log( data );
-		});
-	});
+	//$('#refresh').click(function(){
+	//	$.get( "api.php?fx=refreshState", function( data ) {
+	//		  console.log( data );
+	//	});
+	//});
 
 
 	$('#arrayDump').click(function(){
 		$(this).toggleClass('toggled');
 	});
+	
+	
+	setInterval(function(){
+		// call your function here
+		$.get( "poll.php", function( data ) {
+			var ts = data.ts;
+			console.log( data.ts );
+			if( data.bridges > 0 ){
+				
+			  if( data.sensors ){
+				for(var s = 0; s < data.sensors.length; s++ ){
+					//console.log( data.sensors[s] );
+					
+					if( data.sensors[s].type == "motionSensor" ){
+						var activityTime = Math.abs( data.sensors[s].activityts - ts );
+						if( activityTime < 10 ){
+							console.log("Motion detected!");
+						}else{
+							//console.log("No Activity");
+						}
+					}else{
+						//console.log( data.sensors[s].type );
+					}
+					
+				}
+			  }
+			  
+			  if( data.devices ){
+				for( var d = 0; d < data.devices.length; d++){
+					//console.log( data.devices[d] );
+					if( data.devices[d].online == 1){
+						if( data.devices[d].state == 1){
+							//on
+							$('div[data-device-id="' + data.devices[d].id + '"]').removeClass('light-off').addClass('light-on');
+							$('div[data-device-id="' + data.devices[d].id + '"]').css('background-color', ('rgba(255,255,0,' + (data.devices[d].brightness / 100 ) + ')') );
+										
+							
+						}else{
+							//off
+							$('div[data-device-id="' + data.devices[d].id + '"]').removeClass('light-on').addClass('light-off');
+							$('div[data-device-id="' + data.devices[d].id + '"]').css('background-color', 'transparent');	
+						}
+						
+					}else{
+						//offline
+						$('div[data-device-id="' + data.devices[d].id + '"]').removeClass('plugged').addClass('unplugged');
+						
+					}
+				}
+				  
+			  }
+			  
+			}
+		});
+	
+	
+	}, 3000);
+	
+
+	
 });

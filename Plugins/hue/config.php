@@ -292,12 +292,31 @@
 						echo '<div class="roomContainer bridgeContainer">';
 						echo '<div class="devices">';
 						echo '<div class="room-devices">';
-							foreach( $this->getDevices() as $device ){
-								$device->renderDevice();
+						
+						
+						foreach( $this->groups as $group ){
+							if( $group["type"] == "Room" ){
+								echo '<div class="roomContainer">';
+									echo '<h3>'.$group["name"].'</h3>';
+									echo '<div class="room-devices">';
+									foreach( $this->getDevices() as $device ){
+										//$device->renderDevice();
+										
+										if( in_array( $device->getID(), $group["lights"] ) ){
+											$device->renderDevice();
+										}
+										
+										
+									}
+									echo '</div>';
+								
+									//room controls
+								
+								echo '</div>';
+							
 							}
 							
-							
-							
+						}
 							
 						echo '</div>';
 						if( sizeof( $this->sensors ) > 0 ){
@@ -308,12 +327,15 @@
 								
 								
 								if( $sensor["type"] == "ZLLTemperature" ){
-									echo '<div>';
+									echo '<div device-id="'.$sensor["uniqueid"].'">';
 										echo "<b>Temperature</b>: ";
 										echo ( $sensor["state"]["temperature"] / 100 ) . "&deg; C";	
+										
+										//echo '<pre>'.print_r($sensor, true).'</pre>';
+										
 									echo '</div>';
 								}else if( $sensor["type"] == "ZLLSwitch" ){
-									echo '<div>';
+									echo '<div device-id="'.$sensor["uniqueid"].'">';
 										echo "<b>Switch</b>: ".$sensor["name"]."<br />";
 										
 										
@@ -327,7 +349,7 @@
 										
 									echo '</div>';
 								}else if( $sensor["type"] == "ZLLPresence" ){
-									echo '<div>';
+									echo '<div device-id="'.$sensor["uniqueid"].'">';
 										echo "<b>Motion Sensor</b>: ".$sensor["state"]["presence"]."<br />";
 										
 										
@@ -343,7 +365,7 @@
 										
 									echo '</div>';
 								}else if( $sensor["type"] == "ZLLLightLevel" ){
-									echo '<div>';
+									echo '<div device-id="'.$sensor["uniqueid"].'">';
 										echo "<b>Light Level</b>: ".$sensor["state"]["lightlevel"]."<br />";
 										echo "Dark: ".$sensor["state"]["dark"]."<br />";
 										echo "Daylight:  ".$sensor["state"]["daylight"]."<br />";
