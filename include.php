@@ -12,7 +12,31 @@ define("LOCAL_URL", 	"http://localhost");		// Address of your webserver running 
 define("SCHEME", 		(LIGHTING_PORT == 80) ? 'http' : 'https'); //Don't modify
 
 
-define("USER_EMAIL", "username@gmail.com"); 		// I think this is so you dont have to regenerate tokens if you run this script elsewhere
+/*
+	IFTTT additions Nov 28th / 2017
+	
+	Since I do not know the IFTTT IP range, I can't easily tell you to only allow access from to a specific external IP
+	To mitigate any security risk, I suggest a little security through obscurity. Allow External access to just the API file 
+	this is forced by the .htaccess file.
+	Define a password so your API will only work if the proper password is provide.
+	Restrict the end port to one of your choosing.
+	
+	The likelyhood of someone guessing your port of choice and password of choice is minimal. I also suggest running under https.
+	
+	These settings below should be used in conjunction with your firewall and the .htaccess file.
+	
+	
+	
+*/
+
+define("ALLOW_EXTERNAL_API_ACCESS", 		1); 			//Allow outside access (Non Lan) (1 = true, 0 = false)
+define("REQUIRE_EXTERNAL_API_PASSWORD", 	1);				//require a password for external (non lan) use IE for IFTTT? (1 = true, 0 = false)
+define("EXTERNAL_API_PASSWORD",  			"P@55w0rd");	//set what the password should be
+define("RESTRICT_EXTERNAL_PORT",			1);				//if request is an external (API) user, should they only be on a specific port? (1= yes, 2=no)
+define("EXTERNAL_PORT",						1818);			//port to allow calls on.
+
+
+define("USER_EMAIL", "you@email.com"); 				// I think this is so you dont have to regenerate tokens if you run this script elsewhere
 define("USER_PASSWORD", USER_EMAIL);				// can be anything
 define("USE_TOKEN_FILE", 1); 						// store the token in a file vs hard coding it below otherwise fill in line 29
 
@@ -170,17 +194,32 @@ function pageFooter(){
 	<?php
 }
 
-/* 
-	Some Documentation, links, Repos of interest
-	
-	http://home.stockmopar.com/updated-connected-by-tcp-api/
-	http://home.stockmopar.com/connected-by-tcp-unofficial-api/
-	http://forum.micasaverde.com/index.php/topic,22555.0.html
-	http://code.mios.com/trac/mios_tcplighting
-	https://community.smartthings.com/t/any-interest-in-tcp-connected-hub-local-integration/51926/9
-	https://github.com/hypergolic/greeenwave_firmware
-	https://github.com/twack/TCP-Connect
-	
-*/
+function isLocalIPAddress($IPAddress){
+    if($IPAddress == '127.0.0.1'){return true;} 
+    return ( !filter_var($IPAddress, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) );
+}
+
+$REMOTE_IP = getenv('HTTP_CLIENT_IP')?:
+getenv('HTTP_X_FORWARDED_FOR')?:
+getenv('HTTP_X_FORWARDED')?:
+getenv('HTTP_FORWARDED_FOR')?:
+getenv('HTTP_FORWARDED')?:
+getenv('REMOTE_ADDR');
+
+
+/*do some checks based on parameters above*/
+if( ALLOW_EXTERNAL_API_ACCESS == 0 ){
+	if( ! isLocalIPAddress($REMOTE_IP) ){
+		echo "This application is restricted to the internal network.";
+		exit;
+	}
+}else{
+	//allow external
+}
+
+
+
+
+
 
 ?>

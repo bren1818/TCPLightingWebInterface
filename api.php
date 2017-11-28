@@ -4,6 +4,30 @@
  * PHP API CALLS
  *
  */	
+
+	include "include.php";
+ 
+	global $REMOTE_IP;
+	
+	if( REQUIRE_EXTERNAL_API_PASSWORD && ! isLocalIPAddress($REMOTE_IP)){
+		$password = 		isset($_REQUEST['password']) ? $_REQUEST['password'] : "";		//passed password
+		if( $password != EXTERNAL_API_PASSWORD ){
+			//invalid password
+			echo "Invalid API Password";
+			exit;
+		}
+	}
+	
+	
+	if( RESTRICT_EXTERNAL_PORT == 1 && ! isLocalIPAddress($REMOTE_IP) ){
+		if( $_SERVER['SERVER_PORT'] != EXTERNAL_PORT ){
+			echo "Invalid Port";
+			exit;
+		}
+	}
+		
+ 
+ 
 	$function = isset($_REQUEST['fx']) ? $_REQUEST['fx'] : ""; 		//Toggle or Brightness
 	$type = 	isset($_REQUEST['type']) ? $_REQUEST['type'] : "";		//Device or Room
 	$UID = 		isset($_REQUEST['uid']) ? $_REQUEST['uid'] : "";		//DeviceID or Room ID
