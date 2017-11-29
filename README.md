@@ -11,7 +11,14 @@ The web application will walk you through creating a token (if required) and the
 
 Devices, individual lights, or rooms can be turned on or off by the web interface or dimmed.
 
-#API Commands (for the developers)
+
+#Abstracted API calls for this project. 
+See 'API Notes.txt' for information on api call details, IE if you want to use this with IFTTT.
+See also the 'Using this project with IFTTT.docx' for detailed instructions.
+
+
+
+#RAW Bridge API Commands (for the developers)
 
 Get List of Rooms, devices, info etc:
 

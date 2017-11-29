@@ -18,15 +18,12 @@
 		}
 	}
 	
-	
 	if( RESTRICT_EXTERNAL_PORT == 1 && ! isLocalIPAddress($REMOTE_IP) ){
 		if( $_SERVER['SERVER_PORT'] != EXTERNAL_PORT ){
-			echo "Invalid Port";
+			echo "Invalid Port";	
 			exit;
 		}
 	}
-		
- 
  
 	$function = isset($_REQUEST['fx']) ? $_REQUEST['fx'] : ""; 		//Toggle or Brightness
 	$type = 	isset($_REQUEST['type']) ? $_REQUEST['type'] : "";		//Device or Room
@@ -69,11 +66,22 @@
 	
 	
 	if( $function != "" && $type != "" && $UID != "" && $val != ""){
-		include "include.php";
+		
 		$DEVICES = getDevices();
 		if( $type == "device"){
+			
+			$THE_DEVICE = null;
+			if( sizeof($DEVICES) > 0 ){
+				foreach($DEVICES as $device){
+					if( $device["did"] == $UID ){
+						$THE_DEVICE = $device;
+						break;
+					}
+				}	
+			}
+			
 			switch ($function){
-				case "toggle": //SAMPLE CALL: /api.php?fx=dim&type=device&uid=360187068559174100&val=80
+				case "toggle": 
 				
 					//$val = 1 | 0 - on | off
 					$val = ($val > 0) ? 1 : 0;
@@ -82,16 +90,16 @@
 					if( ($val == 1 && FORCE_FADE_ON) || ($val == 0 && FORCE_FADE_OFF) ){
 						//get current lighitng value
 						
-						if( sizeof($DEVICES) > 0 ){
-							foreach($DEVICES as $device){
-								if( $device["did"] == $UID ){
-									dimOnOff( $device, $val );
+						//if( sizeof($DEVICES) > 0 ){
+						//	foreach($DEVICES as $device){
+						//		if( $device["did"] == $UID ){
+									dimOnOff($THE_DEVICE, $val );
 									echo json_encode( array("toggle" => $val, "device" => $UID, "return" => "DimFade") );
-									break;
-								}
+									//break;
+								//}
 								
-							}
-						}
+							//}
+						//}
 						
 					}else{
 						$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$UID."</did><value>".$val."</value></gip>"; 
@@ -102,28 +110,71 @@
 					
 					
 				break;
-				case "dim": //SAMPLE CALL: /api.php?fx=dim&type=device&uid=360187068559174100&val=80
+				case "dim": 
 				
 					$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$UID."</did><value>".$val."</value><type>level</type></gip>"; 
 					$result = getCurlReturn($CMD);
 					$array = xmlToArray($result);
 					echo json_encode( array("dim" => $val, "device" => $UID, "return" => $array) );
 				break;
+				
+				
+				case "dimby":
+					$darkenTo = $THE_DEVICE['level'] - $val;
+					if( $darkenTo <= 0 ){ $darkenTo = 0; }
+					$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$UID."</did><value>".$darkenTo."</value><type>level</type></gip>"; 
+					$result = getCurlReturn($CMD);
+					$array = xmlToArray($result);
+					echo json_encode( array("dimby" => $val, "device" => $UID, "return" => $array) );
+				
+				
+				break;
+				case "brightenby":
+					$brightenTo = $THE_DEVICE['level'] + $val;
+					if( $brightenTo > 100 ){ $brightenTo = 100; }
+					$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$UID."</did><value>".$brightenTo."</value><type>level</type></gip>"; 
+					$result = getCurlReturn($CMD);
+					$array = xmlToArray($result);
+					echo json_encode( array("brightenby" => $val, "device" => $UID, "return" => $array) );
+					
+				
+				break;
 				default:
 				echo json_encode( array("error" => "unknown function, required: toggle | dim") );
 			}
 		}elseif($type == "room"){
+			
+			$THE_ROOM = null;
+			
+			//Get State of System Data
+			$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
+			$result = getCurlReturn($CMD);
+			$array = xmlToArray($result);
+			$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
+			
+			foreach($DATA as $room){
+				if(  is_array($room["device"]) && $room["rid"] == $UID ){
+					$THE_ROOM = $room;
+					
+					//determine Room Brightness -- for dimby/brightenby
+					$brightness = 0;
+					if( sizeof( $THE_ROOM['device'] ) >= 1 ){
+						foreach( $THE_ROOM['device'] as $d ){
+							$brightness += $d['level'];
+						}
+						$brightness = $brightness / sizeof( $THE_ROOM['device'] );
+						$THE_ROOM['brightness'] = $brightness;
+					}
+					
+					break;
+				}
+			}
 			
 			if( $function == "toggle" ){
 				//turn on | off
 				$tval = ($val > 0) ? 1 : 0;
 				if( ($tval == 1 && FORCE_FADE_ON) || ($tval == 0 && FORCE_FADE_OFF) ){
 					
-					//Get State of System Data
-					$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
-					$result = getCurlReturn($CMD);
-					$array = xmlToArray($result);
-					$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
 					$DEVICES = array();
 					foreach($DATA as $room){
 						if(  is_array($room["device"]) && $room["rid"] == $UID ){
@@ -203,14 +254,37 @@
 			
 				
 				
-			}else{
+			}else if( $function == "dim"){
 				// dim
 				$CMD = "cmd=RoomSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><rid>".$UID."</rid><value>".$val."</value><type>level</type></gip>";
 				
 				$result = getCurlReturn($CMD);
 				$array = xmlToArray($result);
-			}
 			
+			}elseif( $function == "dimby" ){
+				
+				$roomBrightness = $THE_ROOM['brightness'];
+				$roomBrightness -= $val;
+				if( $roomBrightness < 0 ){ $roomBrightness = 0; }
+				
+				$CMD = "cmd=RoomSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><rid>".$UID."</rid><value>".$roomBrightness."</value><type>level</type></gip>";
+				
+				$result = getCurlReturn($CMD);
+				$array = xmlToArray($result);
+						
+			}elseif( $function == "brightenby" ){
+						
+				$roomBrightness = $THE_ROOM['brightness'];
+				$roomBrightness += $val;
+				if( $roomBrightness > 100 ){ $roomBrightness = 100; }
+				
+				$CMD = "cmd=RoomSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><rid>".$UID."</rid><value>".$roomBrightness."</value><type>level</type></gip>";
+				
+				$result = getCurlReturn($CMD);
+				$array = xmlToArray($result);		
+						
+						
+			}
 			
 			
 			echo json_encode( array("room" => $UID, "fx" => $function, "val" => $val,  "return" => $array) );
@@ -249,8 +323,34 @@
 							$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>1</value></gip>"; 
 							$result = getCurlReturn($CMD);
 						}
-					}
 					
+					}elseif ( $function == "dimby" ){
+						
+					
+						
+						$dBrightness = isset($device['level']) ? $device['level'] : 100;
+						$dBrightness -= $val;
+						if( $dBrightness < 0 ){ $dBrightness = 0; }
+						
+						$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>".$dBrightness."</value><type>level</type></gip>"; 
+						
+						$result = getCurlReturn($CMD);
+						$array = xmlToArray($result);		
+						
+						
+					}elseif( $function == "brightenby" ){
+						
+						$dBrightness = isset($device['level']) ? $device['level'] : 0;
+						$dBrightness += $val;
+						if( $dBrightness > 100 ){ $dBrightness = 100; }
+						
+						$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>".$dBrightness."</value><type>level</type></gip>"; 
+						
+						$result = getCurlReturn($CMD);
+						$array = xmlToArray($result);		
+						
+						
+					}
 					
 					
 				}
