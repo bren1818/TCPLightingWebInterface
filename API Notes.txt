@@ -53,3 +53,6 @@ Some simple documentation for the API calls. These are handy to know if you plan
 
 //Home Decrease Brightness
 {host}:{port}/api.php?fx=dimby&type=all&uid=all&val={amount}
+
+
+NOTE** If you want to force a password for the remote API Calls, at the end of each API Call append &password={yourPassword}
