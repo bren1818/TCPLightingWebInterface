@@ -9,3 +9,8 @@ Allow from 192.168.1.1/24   #Local Network - match this to your own
 	Deny from all
 	Allow from all
 </Files>
+<Files scenes.php>
+	Order deny,allow
+	Deny from all
+	Allow from all
+</Files>

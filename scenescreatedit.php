@@ -98,7 +98,9 @@
 				<button data-scene="<?php echo $scenes[$x]["sid"]; ?>" class="deleteScene">Delete</button>
 			</div>
 			<?php
-			pa($scenes[$x]);
+				echo '<h2>Data Dump of Scene</h2>';
+				pa($scenes[$x]);
+				echo '<p>No functions to edit yet. Sorry!</p>';
 			
 			}
 		}
@@ -106,6 +108,7 @@
 	}else{
 		?>
 		<h2>Create Scene</h2>
+		<p>Feature not built yet... sorry!</p>
 		<?php
 	}
 	
