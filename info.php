@@ -157,9 +157,9 @@ if( isset($_REQUEST['did']) && $_REQUEST['did'] != "" ){
 	$did = $_REQUEST['did'];
 	pageHeader("TCP Lighting Controller - Device Controller - Device: ".$did);
 	?>
-	<div id="toolBar"><a href="index.php">Lighting Controls</a> | <a href="scheduler.php">Lighting Scheduler</a> | <a href="apitest.php">API Test Zone</a> | <a href="scenes.php">Scenes/Smart Control</a></div>
+
 	<?php
-	echo '<div class="container">';
+	echo '<div class="container" style="background-color: #fff; padding: 20px; border: 1px solid #000;">';
 	//echo '<h2>Device Info</h2>';
 	//echo '<p><b>Device ID:'.$did.'</b></p>';
 	

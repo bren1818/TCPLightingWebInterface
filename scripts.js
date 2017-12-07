@@ -1,3 +1,5 @@
+//check API path
+
 $(function(){
 	$('.room-slider').slider({
 		range: "min",
@@ -50,7 +52,7 @@ $(function(){
 		value: 50,
 		stop: function(event, ui) {
 			$.get("api.php?fx=dim&type=all&uid=" + $(this).attr('data-device-id') + "&val=" + ui.value, function( data ) {
-			  console.log( data );
+			  //console.log( data );
 			  //set every slider to the new value
 			  
 			});
@@ -66,8 +68,7 @@ $(function(){
 		}
 		
 		$.get( "api.php?fx=toggle&type=room&uid=" + roomID + "&val=" + val, function( data ) {
-			  console.log( data );
-			  
+			  //console.log( data );
 			  $(room).find('.room-devices .device').each(function(){
 				if( val == 1){
 					$(this).addClass('light-on');
@@ -93,7 +94,7 @@ $(function(){
 		}
 		
 		$.get( "api.php?fx=toggle&type=device&uid=" + DID + "&val=" + val, function( data ) {
-			 console.log( data );
+			 //console.log( data );
 			 if( val == 1){
 				$(light).parent().addClass('light-on');
 				var v = $(light).parent().find('.device-slider').slider( "value" );
@@ -113,7 +114,7 @@ $(function(){
 		}
 		
 		$.get( "api.php?fx=toggle&type=all&uid=ALL&val=" + val, function( data ) {
-			  console.log( data );
+			//console.log( data );
 			$('.room-devices .device').each(function(){
 				if( val == 1){
 					$(this).addClass('light-on');
@@ -127,6 +128,19 @@ $(function(){
 			  
 		});
 	});
+	
+	$('.runScene').click(function(event){
+		var sid = $(this).attr('data-scene-id');
+		var mode = $(this).attr('data-scene-mode');
+		
+		//should I make scene dimmable, off / on? hmm..
+		
+		$.get( "api.php?fx=scene&type=" + mode + "&uid=" + sid, function( data ) {
+			console.log( data );
+		
+		});
+	});
+	
 	
 	$('#arrayDump').click(function(){
 		$(this).toggleClass('toggled');

@@ -51,18 +51,13 @@ if( TOKEN != "" ){
 			exit;
 	}
 	
-	?>
-	<div id="toolBar"><a href="scheduler.php">Lighting Scheduler</a> | <a href="apitest.php">API Test Zone</a> | <a href="scenes.php">Scenes/Smart Control</a> | <a href="createDevice.php">Create Virtual Device</a> </div>
-	<?php
+	
 	
 	$deviceCount = 0;
 	
 	if( sizeof($DATA) > 0 ){
 	
-	echo '<div class="container">';
-	echo '<h1>Device control</h1>';
-	echo '<p><a href="setDateTime.php">Set Date Time</a></p>';
-	echo '</div>';	
+	
 		
 	if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
 		
@@ -70,7 +65,11 @@ if( TOKEN != "" ){
 		
 		if( isset($room['rid'] ) ){
 		echo '<div class="roomContainer" data-room-id="'. $room["rid"].'">';
-			echo '<h3>'.$room["name"].' <a href="info.php?rid='.$room["rid"].'"><img src="/images/info.png"/></a></h3>';
+			echo '<div class="room-color room-color-'.$room['colorid'].'"><div class="room-name">'.$room["name"].'</div><a class="info" href="info.php?rid='.$room["rid"].'"><img src="/images/info.png"/></a></div>';
+			echo '<div>';
+			
+			
+			
 
 			$DEVICES = array();
 				
@@ -95,8 +94,9 @@ if( TOKEN != "" ){
 			
 			if( sizeof($DEVICES) > 0 ){
 				echo '<div class="devices">';
-					echo '<p>Room Devices:</p>';
+					
 					echo '<div class="room-devices">';
+					
 					$roomBrightness = 0;
 					$roomDevices = 0;
 					foreach($DEVICES as $device){
@@ -104,8 +104,8 @@ if( TOKEN != "" ){
 						echo '<div class="'.( (isset($device['offline']) && $device['offline'] == 1) ? 'unplugged' : 'plugged' ).' device '.($device['state'] == 1 ? 'light-on' : 'light-off' ).' '.($device['prodtype'] == 'Light Fixture' ? 'light-fixture' : '' ).'" data-device-id="'.$device['did'].'">'; //power > 0 then enabled 
 							//level = brightness
 							//state = on or off
-							echo '<p>'.$device['name'].' <a href="info.php?did='.$device['did'].'"><img src="/images/info.png"/></a></p>';
-							echo '<button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOn">On</button> | <button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOff">Off</button>';
+							echo '<p class="device-name"><b>'.$device['name'].'</b> <a href="info.php?did='.$device['did'].'"><img src="images/info.png"/></a></p>';
+							echo '<p class="on-off-buttons"><button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOn">On</button> | <button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOff">Off</button></p>';
 							echo '<div class="clear"></div>';
 							echo '<p>Brightness:</p>';
 							echo '<div class="device-slider" data-value="'.(isset($device['level']) ? $device['level'] : 100).'" data-device-id="'. $device["did"].'"></div>';
@@ -116,6 +116,7 @@ if( TOKEN != "" ){
 					}
 					echo '</div>';
 					
+				echo '</div>';
 				echo '</div>';
 				
 			}else{
@@ -131,19 +132,58 @@ if( TOKEN != "" ){
 		}
 	}
 	}
+	
+	
+	
+	
 	if( $deviceCount > 0 ){
-		echo '<div class="container">';
-			echo '<h1>Home</h1>';
-			echo '<div class="house">';
-				echo '<button data-device-id="all" class="onOffHouseToggleButton buttonOn">On</button> | <button data-device-id="all" class="onOffHouseToggleButton buttonOff">Off</button>';
-				echo '<div class="clear"></div>';
+		echo '<div class="roomContainer">';
+			echo '<div class="room-color" style="background-color: #ccc;"><div class="room-name">Home Controller</div></div>';
+			
+			//echo '<h1>Home</h1>';
+			echo '<div class="home-devices">';
+				echo '<p><img src="css/images/scene/home.png"><br /><br /></p>';
+				echo '<p><button data-device-id="all" class="onOffHouseToggleButton buttonOn">On</button> | <button data-device-id="all" class="onOffHouseToggleButton buttonOff">Off</button></p>';
+				
+			echo '</div>';
+			
+			echo '<div class="home-controls">';	
 				echo '<p>Brightness:</p>';
 				echo '<div class="house-slider" data-device-id="all"></div>';
 			echo '</div>';
 		echo '</div>';
 	}
 	
+	
+	echo '<div id="scenes" class="roomContainer">';
+		echo '<div class="room-color" style="background-color: #ccc;"><div class="room-name">Scenes</div></div>';
+	
+		$CMD = "cmd=SceneGetListDetails&data=<gip><version>1</version><token>".TOKEN."</token><bigicon>1</bigicon></gip>";
+		$result = getCurlReturn($CMD);
+		$array = xmlToArray($result);
+		$scenes = $array["scene"];
+		if( is_array($scenes) ){
+			for($x = 0; $x < sizeof($scenes); $x++){
+				?>
+				<div class="scene-container" id="scene-id-<?php echo $scenes[$x]["sid"]; ?>">
+                	<div class="scene-info"><a href="scenescreatedit.php?SID=<?php echo $scenes[$x]["sid"]; ?>"><img src="images/info.png"/></a></div>
+					<p><b><?php echo $scenes[$x]["name"]; ?></b> (<?php echo is_array($scenes[$x]["device"]) ? sizeof($scenes[$x]["device"]) : ""; ?>)</p>
+					<p><img src="css/<?php echo $scenes[$x]["icon"]; ?>" /></p>
+					<p>
+                        <button data-scene-mode="run" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene">Run Scene</button> 
+                        <button data-scene-mode="off" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene">Scene Devices Off</button> 
+                        <button data-scene-mode="on" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene">Scene Devices On</button>
+                    </p>
+				</div>
+				<?php
+			}
+			echo '<div class="clear"></div>';
+	}
+	echo '</div>';
+	
+	
 }else{
+	echo '<div class="roomContainer" style="padding:20px;">';
 	echo "<h2>If you are seeing this, you haven't generated your token yet.</h2>";
 	
 	$CMD = "cmd=GWRLogin&data=<gip><version>1</version><email>".USER_EMAIL."</email><password>".USER_PASSWORD."</password></gip>&fmt=xml";
@@ -168,7 +208,8 @@ if( TOKEN != "" ){
 			echo '<p><img src="images/syncgateway.png" /></p>';
 		}
 	}
+	echo '</div>';
 } 
+
+pageFooter();
 ?>
-</body>
-</html>

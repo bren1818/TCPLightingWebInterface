@@ -94,6 +94,7 @@
 		.taskNote{ width: 100%; clear: both; }
 		.taskNote textarea{ height: 50px; width: 100%; }
 		
+		p{ margin: 4px 0; }
 	</style>
 	<script>
 		$(function(){
@@ -244,7 +245,7 @@
 		$( "#events" ).disableSelection();
 	});
 	</script>
-<div id="toolBar"><a href="index.php">Lighting Controls</a> | <a href="apitest.php">API Test Zone</a> | <a href="scenes.php">Scenes/Smart Control</a></div>
+
 <?php
 	/*
 	 *
@@ -399,9 +400,9 @@
 <?php
 }
 
-	echo '<div class="container">';
+	echo '<div class="container" style="background-color: #fff; padding: 20px;">';
 		echo '<h1>Device Schedule</h1>';
-		echo '<button id="runOnce">Run Now</button> <button id="poll">Poll continuously</button>';
+		echo '<p><button id="runOnce">Run Now</button> <button id="poll">Poll continuously</button></p>';
 		echo '<p>Note, polling continuously will work if the tab this script is running on has focus. Consider setting up a batch file to run the schedule. See documentation and runschedule.bat</p>';
 		echo '<p>Tasks can be dragged and dropped to re-order. Just click save after.</p>';
 		$sun_info = date_sun_info(time(), LATITUDE, LONGITUDE);

@@ -4,93 +4,20 @@
  * PHP includes
  *
  */
-
-define("LIGTHING_URL", 	"192.168.1.TCP"); 			// IP address of TCP Bridge/Gateway
-define("LIGHTING_PORT", "443");						// 443 for new firmware, 80 for legacy - If you don't know, leave it at 443
-
-define("LOCAL_URL", 	"http://localhost");		// Address of your webserver running this - this is used in runSchedule to call the API
-define("SCHEME", 		(LIGHTING_PORT == 80) ? 'http' : 'https'); //Don't modify
+include "config.inc.php";
 
 
-/*
-	IFTTT additions Nov 28th / 2017
-	
-	Since I do not know the IFTTT IP range, I can't easily tell you to only allow access from to a specific external IP
-	To mitigate any security risk, I suggest a little security through obscurity. Allow External access to just the API file 
-	this is forced by the .htaccess file.
-	Define a password so your API will only work if the proper password is provide.
-	Restrict the end port to one of your choosing.
-	
-	The likelyhood of someone guessing your port of choice and password of choice is minimal. I also suggest running under https.
-	
-	These settings below should be used in conjunction with your firewall and the .htaccess file.
-	
-	
-	
-*/
-
-define("ALLOW_EXTERNAL_API_ACCESS", 		1); 			//Allow outside access (Non Lan) (1 = true, 0 = false)
-define("REQUIRE_EXTERNAL_API_PASSWORD", 	1);				//require a password for external (non lan) use IE for IFTTT? (1 = true, 0 = false)
-define("EXTERNAL_API_PASSWORD",  			"P@55w0rd");	//set what the password should be
-define("RESTRICT_EXTERNAL_PORT",			1);				//if request is an external (API) user, should they only be on a specific port? (1= yes, 2=no)
-define("EXTERNAL_PORT",						1818);			//port to allow calls on.
-
-
-define("USER_EMAIL", "you@email.com"); 				// I think this is so you dont have to regenerate tokens if you run this script elsewhere
-define("USER_PASSWORD", USER_EMAIL);				// can be anything
-define("USE_TOKEN_FILE", 1); 						// store the token in a file vs hard coding it below otherwise fill in line 29
-
-if( SCHEME == 'http'){
-	define("TOKEN","NotRequired"); 
-}else{
-	if(USE_TOKEN_FILE){
-		//load from file
-		if( file_exists("tcp.token") ){
-			$token = file_get_contents("tcp.token");
-		}else{ $token = ""; }
-		define("TOKEN", $token);
-	}else{
-		define("TOKEN", "PASTE_TOKEN_HERE_IF_NOT_USING_TOKEN_FILE");	// paste your token here once you get it - leave empty for 	legacy 
-	}
+function isLocalIPAddress($IPAddress){
+    if($IPAddress == '127.0.0.1'){return true;} 
+    return ( !filter_var($IPAddress, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) );
 }
 
-define("SAVE_SCHEDULE", 	1); 						//saves schedule to a binary file on save sched.sched
-define("LOG_ACTIONS", 		1); 						//saves completed actions to schedule.actioned
-define("FORCE_FADE_ON", 	1);							//makes it so when lights are turned off they fade to 0 (Like Philips Bulbs)
-define("FORCE_FADE_OFF", 	1);							//makes it so when lights are turned on they fade to their assigned value from 0 (Like Philips Bulbs)
-
-
-define("API_PATH", "/gwr/gop.php");							//API Path on bridge - do not change
-define("IMAGE_PATH", "https://".LIGTHING_URL."/gwr/"); 		//append urls to this eg: images/lighting/TCP/TCP-A19.png
-
-define("ENABLE_PLUGINS", 	0);
-
-date_default_timezone_set("America/New_York");                 //Ensure this matches your timezone so if you use scheduler the hours match
-
-
-/*************************************START OF INSERTED CODE FOR SUNRISE SUNSET MOD *************************/
-/* 
-/* look up your own location at http://latlong.net
-/* 
-/* for LATITUDE, locations N of equator are positive values, S of equator are negative values
-/* for LONGITUDE, locations E of the prime meridian are positive, W of prime meridian are negative
-/* 
-/* You *must* set your time zone correctly, refer to http://php.net/manual/en/timezones.php for the formal list
-/* 
-/* examples: 	Vancouver, Canada would be LATITUDE 49.28 LONGITUDE -123.12 timezone "America/Vancouver"
-/*           	Paris, France would be LATITUDE 48.85 LONGITUDE 2.35 timezone "Europe/Paris"
-/* 		Rio de Janeiro, Brazil would be LATITUDE -22.91 LONGITUDE -43.17 timezone "America/Sao_Paulo"
-/* 
-/* 
- */
-
-define("LATITUDE", 43.59);
-define("LONGITUDE", -80.24);
-
-
-
-/************************************* END OF INSERTED CODE FOR SUNRISE SUNSET MOD **************************/
-
+$REMOTE_IP = getenv('HTTP_CLIENT_IP')?:
+getenv('HTTP_X_FORWARDED_FOR')?:
+getenv('HTTP_X_FORWARDED')?:
+getenv('HTTP_FORWARDED_FOR')?:
+getenv('HTTP_FORWARDED')?:
+getenv('REMOTE_ADDR');
 
 
 /*Function to Print Array*/
@@ -99,7 +26,7 @@ function pa($array){
 }
 
 function getCurlReturn($postDataString){
-	$URL = SCHEME."://".LIGTHING_URL.":".LIGHTING_PORT.API_PATH;
+	$URL = SCHEME."://".LIGTHING_BRIDGE_IP.":".LIGHTING_BRIDGE_PORT."/gwr/gop.php";
 	
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $URL);
@@ -160,11 +87,11 @@ function getDevices(){
 
 function pageHeader($title){
 	?>
-	<!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
 	<title>TCP Control Script</title>
-	<link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-touch-icon.png">
 	<link rel="icon" type="image/png" href="favicons/favicon-32x32.png" sizes="32x32">
 	<link rel="icon" type="image/png" href="favicons/favicon-16x16.png" sizes="16x16">
 	<link rel="manifest" href="favicons/manifest.json">
@@ -175,51 +102,68 @@ function pageHeader($title){
 	<meta name="application-name" content="TCP Lighting">
 	<meta name="msapplication-config" content="favicons/browserconfig.xml">
 	<meta name="theme-color" content="#ffffff">
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-	<link rel="stylesheet" href="style.css">
-	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-	<script src="js/jquery.ui.touch-punch.min.js"></script>
+	<link rel="stylesheet" href="css/jquery-ui.min.css" />
+	<link rel="stylesheet" href="style.css" />
+	<script src="js/libs.js"></script>
+	<script>
+		//local IP
+		<?php
+			if( USE_LOCAL_API_IP ){
+				global $REMOTE_IP;
+				if( isLocalIPAddress($REMOTE_IP) ){
+					?>
+					var API_IP = '<?php echo LOCAL_URL; ?>';
+					<?php
+				}else{
+				?>
+				var API_IP = '<?php echo $_SERVER['REQUEST_URI']; ?>';
+				<?php
+				}
+			}else{
+			?>
+			var API_IP = '<?php echo $_SERVER['REQUEST_URI']; ?>';
+			<?php
+			}
+		?>
+	</script>
 	<script src="scripts.js"></script>
+    
 	<title><?php echo $title; ?></title>
 </head>
 <body>
+<div id="headerBar">
+	<a href="index.php">Home</a>
+    <a href="index.php#scenes">Scenes</a>
+	<a target="_blank" href="https://github.com/bren1818/TCPLightingWebInterface">GitHub Link</a>
+    <a target="_blank" href="https://github.com/bren1818/TCPLightingWebInterface/wiki">Wiki</a>
+    <a href="queryBuilder.php">IFTTT Query Builder</a>
+</div>
 	<?php
 }
 
 function pageFooter(){
-	?>
+?>
+	<div id="toolBar"><a href="scheduler.php">Lighting Scheduler</a> | <a href="createDevice.php">Create Virtual Device</a> | <a href="setDateTime.php">Set Bridge Date Time</a></div>
 </body>
 </html>	
 	<?php
 }
 
-function isLocalIPAddress($IPAddress){
-    if($IPAddress == '127.0.0.1'){return true;} 
-    return ( !filter_var($IPAddress, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) );
-}
 
-$REMOTE_IP = getenv('HTTP_CLIENT_IP')?:
-getenv('HTTP_X_FORWARDED_FOR')?:
-getenv('HTTP_X_FORWARDED')?:
-getenv('HTTP_FORWARDED_FOR')?:
-getenv('HTTP_FORWARDED')?:
-getenv('REMOTE_ADDR');
 
 
 /*do some checks based on parameters above*/
-if( ALLOW_EXTERNAL_API_ACCESS == 0 ){
-	if( ! isLocalIPAddress($REMOTE_IP) ){
-		echo "This application is restricted to the internal network.";
-		exit;
-	}
-}else{
+if( ALLOW_EXTERNAL_API_ACCESS == 1 ){
 	//allow external
+}else{
+	//if not allowing external access, check you're a local IP
+	if( ! isLocalIPAddress($REMOTE_IP) ){
+		//if not local you can only hit the API
+		if( basename($_SERVER["SCRIPT_FILENAME"], '.php') != "api" ){
+			echo "This application is restricted to the internal network.";
+			exit;
+		}
+	}
 }
-
-
-
-
-
 
 ?>

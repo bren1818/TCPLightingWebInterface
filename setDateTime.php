@@ -4,7 +4,8 @@ pageHeader("TCP Lighting Controller");
 
 if( TOKEN != "" ){
 ?>
-<h3>Set Date Time</h3>
+<div class="container" style="padding: 20px; background-color: #fff;">
+<h3>Set Date Time</h3><br />
 <?php	
 	if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 		
@@ -86,7 +87,7 @@ if( TOKEN != "" ){
 		<input type="submit" value="Save" />
 	</form>
 	<?php
-	echo '<h3>Other Info</h3><hr />';
+	echo '<br /><h3>Other Info</h3><br /><hr /><br />';
 	$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>GatewayGetInfo</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
 	$result = getCurlReturn($CMD);
 	
@@ -97,7 +98,7 @@ if( TOKEN != "" ){
 	
 }
 ?>
-
-
-</body>
-</html>
+</div>
+<?php
+pageFooter();
+?>

@@ -30,6 +30,11 @@
 	$UID = 		isset($_REQUEST['uid']) ? $_REQUEST['uid'] : "";		//DeviceID or Room ID
 	$val = 		isset($_REQUEST['val']) ? $_REQUEST['val'] : "";		//DeviceID or Room ID
 	
+	
+	if( LOG_API_CALLS == 1 ){
+		file_put_contents("API-Request.log", date('Y-m-d H:i:s').' - Function: '.$function." Type: " . $type . " ID : " . $UID . " Value: " . $val . "\n", FILE_APPEND | LOCK_EX);
+	}
+	
 	$val = $val < 0 ? 0 : $val;
 	$val = $val > 100 ? 100 : $val;
 	
@@ -366,6 +371,30 @@
 			echo json_encode( array("error" => "unknown type, required: device | room") );
 		}
 	}else{
-		echo json_encode( array("error" => "argument empty or invalid. Required: fx, type, UID, val", "recieved" => $_REQUEST) );
+		
+		if( $function == "scene" && $type != "" && $UID != "" ){
+			//Run scene
+			$CMD = "";
+			if($type == "run"){
+				$CMD = "cmd=SceneRun&data=<gip><version>1</version><token>".TOKEN."</token><sid>".$UID."</sid></gip>";
+			}elseif( $type == "off" ){
+				$CMD = "cmd=SceneRun&data=<gip><version>1</version><token>".TOKEN."</token><sid>".$UID."</sid><val>0</val></gip>";
+			}elseif( $type == "on"){
+				$CMD = "cmd=SceneRun&data=<gip><version>1</version><token>".TOKEN."</token><sid>".$UID."</sid><val>1</val></gip>";
+			}elseif( $type == "delete" ){
+				//$CMD = "cmd=SceneDelete&data=<gip><version>1</version><token>".TOKEN."</token><sid>".$UID."</sid></gip>"; 
+			}
+			
+			if( $CMD != "" ){
+				$result = getCurlReturn($CMD);
+				$array = xmlToArray($result);
+				echo json_encode( array("success" => 1, "scene" => $UID, "fx" => $function, "resp" => $array) );
+			}else{
+				echo json_encode( array("error" => "No Scene mode specified") );
+			}
+			
+		}else{
+			echo json_encode( array("error" => "argument empty or invalid. Required: fx, type, UID, val", "recieved" => $_REQUEST) );
+		}
 	}
 ?>	

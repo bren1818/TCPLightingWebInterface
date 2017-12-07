@@ -47,9 +47,9 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 
 pageHeader("TCP Lighting Controller - Create Device");
 ?>
-<div id="toolBar"><a href="index.php">Lighting Controls</a> | <a href="scheduler.php">Lighting Scheduler</a> | <a href="apitest.php">API Test Zone</a> | <a href="scenes.php">Scenes/Smart Control</a></div>
+
 <?php
-echo '<div class="container">';
+echo '<div class="container" style="padding: 20px; background-color: #fff;">';
 ?>
 <script type="text/javascript">
 	function SelectMoveRows(SS1,SS2){

@@ -1,16 +1,14 @@
-							#delete the contents of this file if you dont want to restrict access.
+Options -Indexes
+
 Order deny,allow 
-Deny from all 
+Deny from all
 Allow from 127.0.0.1 		#localhost
 Allow from ::1  			#localhost
-Allow from 192.168.1.1/24   #Local Network - match this to your own
-<Files api.php>				#By default allow the api.php external access. 
+Allow from 192.168.1.1/24   #Local Network
+
+
+<Files api.php>
 	Order deny,allow
-	Deny from all
-	Allow from all
-</Files>
-<Files scenes.php>
-	Order deny,allow
-	Deny from all
-	Allow from all
+	deny from all
+	allow from all
 </Files>
