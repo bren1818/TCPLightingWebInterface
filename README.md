@@ -11,58 +11,11 @@ The web application will walk you through creating a token (if required) and the
 
 Devices, individual lights, or rooms can be turned on or off by the web interface or dimmed.
 
-
-#Abstracted API calls for this project. 
-See 'API Notes.txt' for information on api call details, IE if you want to use this with IFTTT.
-See also the 'Using this project with IFTTT.docx' for detailed instructions.
-
-
-
-#RAW Bridge API Commands (for the developers)
-
-Get List of Rooms, devices, info etc:
-
-`cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>{TOKEN_STRING}</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml`
-
-Turning a device (bulb or appliance) on/off:
-
-`cmd=DeviceSendCommand&data=<gip><version>1</version><token>{TOKEN_STRING}</token><did>{DEVICE_ID}</did><value>{VALUE 1 | 0}</value></gip>`
-  
-Dimming a device (bulb or appliance):
-
-`cmd=DeviceSendCommand&data=<gip><version>1</version><token>{TOKEN_STRING}</token><did>{DEVICE_ID}</did><value>{VALUE 0 - 100}</value><type>level</type></gip>`
-
-Turning a room (group of bulbs or appliances) on/off:
-
-`cmd=RoomSendCommand&data=<gip><version>1</version><token>{TOKEN_STRING}</token><rid>{ROOM_ID}</rid><value>{VALUE 1 | 0}</value></gip>`
-
-Dimming a room (group of bulbs or appliances):
-`cmd=RoomSendCommand&data=<gip><version>1</version><token>{TOKEN_STRING}</token><rid>{ROOM_ID}</rid><value>{VALUE 0 - 100}</value><type>level</type></gip>`
-
-These commands must be issued to your Connected by TCP Bridge. For example, perform a curl POST to:
-
-https://{BRIDGE_IP}:443/gwr/gop.php the data posted to this url would be the string data of the commands outlined above.
-
-#Other API Commands (see apitest.php)
-`cmd=AccountGetExtras&data=<gip><version>1</version><token>{TOKEN_STRING}</token></gip>`
-
-`cmd=GatewayGetInfo&data=<gip><version>1</version><token>{TOKEN_STRING}</token></gip>`
-
-`cmd=RoomGetList&data=<gip><version>1</version><token>{TOKEN_STRING}</token></gip>`
-
-`cmd=SceneGetList&data=<gip><version>1</version><token>{TOKEN_STRING}</token><bigicon>1</bigicon></gip>`
-
-`cmd=SceneGetListDetails&data=<gip><version>1</version><token>{TOKEN_STRING}</token><bigicon>1</bigicon></gip>`
-
-`cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>UserGetListDefaultRooms</gcmd><gdata><gip><version>1</version><token>{TOKEN_STRING}</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml`
-
-`cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>UserGetListDefaultColors</gcmd><gdata><gip><version>1</version><token>{TOKEN_STRING}</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml`
-
-`cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>SceneGetList</gcmd><gdata><gip><version>1</version><token>{TOKEN_STRING}</token><fields>bigicon,detail,imageurl</fields><islocal>1</islocal></gip></gdata></gwrcmd></gwrcmds>&fmt=xml`
+Please see Wiki for Bridge commands and setup on a Raspberry Pi
 
 #Scheduler
 
-I have created an interface where you can create a schedule for devices to turn on or off or dim depending on day of week and time of day. If you plan on using this, I recommend setting up an event which runs every minute and executes the runSchedule.bat file. You may need to edit this file to match your setup.
+I have created an interface where you can create a schedule for devices to turn on or off or dim depending on day of week and time of day. If you plan on using this, I recommend setting up an event which runs every minute and executes the runSchedule.bat file. You may need to edit this file to match your setup. - documentation to come in the wiki
 
 I really hope you enjoy this project and it works well for you!
 
