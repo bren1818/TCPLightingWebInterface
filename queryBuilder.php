@@ -50,9 +50,9 @@ $(function(){
 				$('#command_off_response').html("Turning " + roomName + " Lights off");
 				$('#command_off_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=room&uid=' + id + '&val=0' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 				
-				$('#command_dim_1').html("Dim " +  roomName + " lights to # percent");
-				$('#command_dim_2').html("Set " + roomName + " lights brightness to # percent");
-				$('#command_dim_3').html(roomName + " brightness # percent");
+				$('#command_dim_1').html("Dim " +  roomName + " lights to # %");
+				$('#command_dim_2').html("Set " + roomName + " lights brightness to # %");
+				$('#command_dim_3').html(roomName + " brightness # %");
 				$('#command_dim_response').html("Dimming " + roomName + " lights");
 				$('#command_dim_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=dimby&type=room&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 			}
@@ -70,9 +70,9 @@ $(function(){
 				$('#command_off_response').html("Turning " + roomName + " Light off");
 				$('#command_off_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=device&uid=' + id + '&val=0' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 				
-				$('#command_dim_1').html("Dim " +  roomName + " light to # percent");
-				$('#command_dim_2').html("Set " + roomName + " light brightness to # percent");
-				$('#command_dim_3').html(roomName + " brightness # percent");
+				$('#command_dim_1').html("Dim " +  roomName + " light to # %");
+				$('#command_dim_2').html("Set " + roomName + " light brightness to # %");
+				$('#command_dim_3').html(roomName + " brightness # %");
 				$('#command_dim_response').html("Dimming " + roomName + " lights");
 				$('#command_dim_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=dimby&type=device&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 			}
