@@ -35,46 +35,71 @@ $(function(){
 			
 			roomName = $(this).find('option:selected').attr('data-room-name');
 			console.log("Type: " + type + ", id: " + id + ", RN: " + roomName );
-			$('#appletImage').html('<img src="images/IFTTTAppletPhrase.png"/>');
+			$('#appletImage').html('<img src="css/images/IFTTTAppletPhrase.png"/>');
 			
-			if( type == "room" ){
+			if( type == "room"  ){
 				$('#command_on_1').html("TCP " +  roomName + " lights ON");
-				$('#command_on_2').html("Turn " + roomName + " TCP Lights ON");
-				$('#command_on_3').html(roomName + " on");
-				$('#command_on_response').html("Turning " + roomName + " Lights ON");
-				$('#command_on_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=room&uid=' + id + '&val=1' + ( requireExtPass == 1 ? '&password=' + externalPass : '')  );
+				$('#command_on_2').html(roomName + " TCP lights ON");
+				$('#command_on_3').html(roomName + " lights on");
+				$('#command_on_response').html("Turning " + roomName + " lights ON");
+				$('#command_on_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=room&uid=' + id + '&val=1' + ( requireExtPass == 1 ? '&password=' + externalPass : '')  );
 				
 				$('#command_off_1').html("TCP " +  roomName + " lights off");
-				$('#command_off_2').html("Turn " + roomName + " TCP Lights off");
-				$('#command_off_3').html(roomName + " off");
-				$('#command_off_response').html("Turning " + roomName + " Lights off");
-				$('#command_off_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=room&uid=' + id + '&val=0' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+				$('#command_off_2').html(roomName + " TCP Lights off");
+				$('#command_off_3').html(roomName + " lights off");
+				$('#command_off_response').html("Turning off " + roomName + " lights");
+				$('#command_off_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=room&uid=' + id + '&val=0' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 				
-				$('#command_dim_1').html("Dim " +  roomName + " lights to # %");
-				$('#command_dim_2').html("Set " + roomName + " lights brightness to # %");
+				$('#command_dim_1').html("TCP " +  roomName + " lights to # % brightness");
+				$('#command_dim_2').html(roomName + " TCP light brightness # %");
 				$('#command_dim_3').html(roomName + " brightness # %");
-				$('#command_dim_response').html("Dimming " + roomName + " lights");
-				$('#command_dim_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=dimby&type=room&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+				$('#command_dim_response').html("Adjusting " + roomName + " lights");
+				$('#command_dim_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=dimby&type=room&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+				
+				$('#command_brighten_1').html("Brighten TCP " +  roomName + " lights by # %");
+				$('#command_brighten_2').html(roomName + "lights increase brightness by # %");
+				$('#command_brighten_3').html("Increase " + roomName + " brightness # %");
+				$('#command_brighten_response').html("Brightening " + roomName + " light");
+				$('#command_brighten_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=brightenby&type=room&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+				
+				$('#command_dimby_1').html("Dim TCP " +  roomName + " light by # %");
+				$('#command_dimby_2').html(roomName + " lights decrease brightness by # %");
+				$('#command_dimby_3').html("Decrease " + roomName + " brightness by # %");
+				$('#command_dimby_response').html("Dimming " + roomName + " lights");
+				$('#command_dimby_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=dimby&type=room&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 			}
 			
 			if( type == "light" ){
 				$('#command_on_1').html("TCP " +  roomName + " light ON");
-				$('#command_on_2').html("Turn " + roomName + " TCP Light ON");
-				$('#command_on_3').html(roomName + " on");
-				$('#command_on_response').html("Turning " + roomName + " Light ON");
-				$('#command_on_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=device&uid=' + id + '&val=1' + ( requireExtPass == 1 ? '&password=' + externalPass : '')  );
+				$('#command_on_2').html(roomName + " TCP light ON");
+				$('#command_on_3').html(roomName + " light on");
+				$('#command_on_response').html("Turning " + roomName + " light ON");
+				$('#command_on_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=room&uid=' + id + '&val=1' + ( requireExtPass == 1 ? '&password=' + externalPass : '')  );
 				
 				$('#command_off_1').html("TCP " +  roomName + " light off");
-				$('#command_off_2').html("Turn " + roomName + " TCP Light off");
-				$('#command_off_3').html(roomName + " off");
-				$('#command_off_response').html("Turning " + roomName + " Light off");
-				$('#command_off_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=device&uid=' + id + '&val=0' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+				$('#command_off_2').html(roomName + " TCP Light off");
+				$('#command_off_3').html(roomName + " light off");
+				$('#command_off_response').html("Turning off " + roomName + " light");
+				$('#command_off_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=room&uid=' + id + '&val=0' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 				
-				$('#command_dim_1').html("Dim " +  roomName + " light to # %");
-				$('#command_dim_2').html("Set " + roomName + " light brightness to # %");
-				$('#command_dim_3').html(roomName + " brightness # %");
-				$('#command_dim_response').html("Dimming " + roomName + " lights");
-				$('#command_dim_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=dimby&type=device&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+				$('#command_dim_1').html("TCP " +  roomName + " light to # % brightness");
+				$('#command_dim_2').html(roomName + " TCP light brightness # %");
+				$('#command_dim_3').html(roomName + " light brightness # %");
+				$('#command_dim_response').html("Adjusting " + roomName + " brightness");
+				$('#command_dim_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=dimby&type=device&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+				
+				
+				$('#command_brighten_1').html("Brighten TCP" +  roomName + " light by # %");
+				$('#command_brighten_2').html(roomName + " light brightness increase by # %");
+				$('#command_brighten_3').html("increase " + roomName + " light brightness # %");
+				$('#command_brighten_response').html("Brightening " + roomName + " light");
+				$('#command_brighten_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=brightenby&type=device&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+				
+				$('#command_dimby_1').html("Dim TCP " +  roomName + " light by # %");
+				$('#command_dimby_2').html("Darken " + roomName + " light by # %");
+				$('#command_dimby_3').html("Decrease " + roomName + " brightness by # %");
+				$('#command_dimby_response').html("Dimming " + roomName + " lights");
+				$('#command_dimby_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=dimby&type=device&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 			}
 			
 			
@@ -86,7 +111,7 @@ $(function(){
 			$('#roomLights').hide();
 			var sceneName = $(this).find('option:selected').attr('data-device-name');
 			console.log("Type: " + type + ", id: " + id + ", scene: " + sceneName );
-			$('#appletImage').html('<img src="images/IFTTTAppletPhrase.png"/>');
+			$('#appletImage').html('<img src="css/images/IFTTTAppletPhrase.png"/>');
 			
 			$('#scene_command_on_1').html("Activate " + sceneName );
 			$('#scene_command_on_2').html("Turn " + sceneName + " scene ON");
@@ -202,13 +227,33 @@ $(function(){
             <p>URL: <span class="response" id="command_off_url"></span></p>
             <p>Method: Get</p>
             
-            <h1>Dim Command (Say a phrase with a number)</h1>
+            <h1>Dim To Command (Say a phrase with a number)</h1>
             <p>What do you want to say: <span class="response" id="command_dim_1"></span></p>
             <p>Whats another way to say it? (Optional): <span class="response" id="command_dim_2"></span></p>
             <p>And another way?(optional): <span class="response" id="command_dim_3"></span></p>
             <p>What do you want the Assistant to say in Response: <span class="response" id="command_dim_response"></span></p>
             <p>URL: <span class="response" id="command_dim_url"></span></p>
             <p>Method: Get</p>
+			
+			<h1>Brighten By (Say a phrase with a number)</h1>
+            <p>What do you want to say: <span class="response" id="command_brighten_1"></span></p>
+            <p>Whats another way to say it? (Optional): <span class="response" id="command_brighten_2"></span></p>
+            <p>And another way?(optional): <span class="response" id="command_brighten_3"></span></p>
+            <p>What do you want the Assistant to say in Response: <span class="response" id="command_brighten_response"></span></p>
+            <p>URL: <span class="response" id="command_brighten_url"></span></p>
+            <p>Method: Get</p>
+			
+			<h1>Dim By (Darken By) (Say a phrase with a number)</h1>
+            <p>What do you want to say: <span class="response" id="command_dimby_1"></span></p>
+            <p>Whats another way to say it? (Optional): <span class="response" id="command_dimby_2"></span></p>
+            <p>And another way?(optional): <span class="response" id="command_dimby_3"></span></p>
+            <p>What do you want the Assistant to say in Response: <span class="response" id="command_dimby_response"></span></p>
+            <p>URL: <span class="response" id="command_dimby_url"></span></p>
+            <p>Method: Get</p>
+			
+			
+			<!-- Brighten By, Dim By -->
+			
     	</div>
         
         <div id="sceneLights">

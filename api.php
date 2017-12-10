@@ -14,13 +14,15 @@
 		if( $password != EXTERNAL_API_PASSWORD ){
 			//invalid password
 			echo "Invalid API Password";
+			APILog("Attempted API Access, invalid or no password provided.");
 			exit;
 		}
 	}
 	
 	if( RESTRICT_EXTERNAL_PORT == 1 && ! isLocalIPAddress($REMOTE_IP) ){
 		if( $_SERVER['SERVER_PORT'] != EXTERNAL_PORT ){
-			echo "Invalid Port";	
+			echo "Invalid Port";
+			APILog("Attempted API Access on invalid port");			
 			exit;
 		}
 	}
@@ -31,9 +33,7 @@
 	$val = 		isset($_REQUEST['val']) ? $_REQUEST['val'] : "";		//DeviceID or Room ID
 	
 	
-	if( LOG_API_CALLS == 1 ){
-		file_put_contents("API-Request.log", date('Y-m-d H:i:s').' - Function: '.$function." Type: " . $type . " ID : " . $UID . " Value: " . $val . "\n", FILE_APPEND | LOCK_EX);
-	}
+	APILog('- Function: '.$function." Type: " . $type . " ID : " . $UID . " Value: " . $val);
 	
 	$val = $val < 0 ? 0 : $val;
 	$val = $val > 100 ? 100 : $val;
@@ -68,7 +68,11 @@
 		return $result;
 	}
 	
-	
+	function deviceOn($UID){
+		$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$UID."</did><value>1</value></gip>"; 
+		$result = getCurlReturn($CMD);
+		$array = xmlToArray($result);
+	}
 	
 	if( $function != "" && $type != "" && $UID != "" && $val != ""){
 		
@@ -116,6 +120,10 @@
 					
 				break;
 				case "dim": 
+					if( $THE_DEVICE['state'] == 0){
+						//turn light on
+						deviceOn( $UID );
+					}
 				
 					$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$UID."</did><value>".$val."</value><type>level</type></gip>"; 
 					$result = getCurlReturn($CMD);
@@ -135,6 +143,12 @@
 				
 				break;
 				case "brightenby":
+					
+					if( $THE_DEVICE['state'] == 0){
+						//turn light on
+						deviceOn( $UID );
+					}
+				
 					$brightenTo = $THE_DEVICE['level'] + $val;
 					if( $brightenTo > 100 ){ $brightenTo = 100; }
 					$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$UID."</did><value>".$brightenTo."</value><type>level</type></gip>"; 
@@ -260,6 +274,13 @@
 				
 				
 			}else if( $function == "dim"){
+				
+				//turn room on if by chance it is off
+				$CMD = "cmd=RoomSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><rid>".$UID."</rid><value>1</value></gip>";					
+				$result = getCurlReturn($CMD);
+				$array = xmlToArray($result);
+				
+				
 				// dim
 				$CMD = "cmd=RoomSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><rid>".$UID."</rid><value>".$val."</value><type>level</type></gip>";
 				
@@ -276,8 +297,16 @@
 				
 				$result = getCurlReturn($CMD);
 				$array = xmlToArray($result);
+				
+				//turn room on if by chance it is off
+				$CMD = "cmd=RoomSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><rid>".$UID."</rid><value>1</value></gip>";					
+				$result = getCurlReturn($CMD);
+				$array = xmlToArray($result);
 						
 			}elseif( $function == "brightenby" ){
+				
+			
+				
 						
 				$roomBrightness = $THE_ROOM['brightness'];
 				$roomBrightness += $val;
@@ -287,8 +316,11 @@
 				
 				$result = getCurlReturn($CMD);
 				$array = xmlToArray($result);		
-						
-						
+				
+				//turn room on if by chance it is off
+				$CMD = "cmd=RoomSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><rid>".$UID."</rid><value>1</value></gip>";					
+				$result = getCurlReturn($CMD);
+				$array = xmlToArray($result);
 			}
 			
 			
@@ -328,6 +360,7 @@
 							$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>1</value></gip>"; 
 							$result = getCurlReturn($CMD);
 						}
+						
 					
 					}elseif ( $function == "dimby" ){
 						
@@ -342,8 +375,21 @@
 						$result = getCurlReturn($CMD);
 						$array = xmlToArray($result);		
 						
+						//turn light on if it is not in order to dim it
+						if( isset($device['state']) && $device['state']  == 0 ){
+							$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>1</value></gip>"; 
+							$result = getCurlReturn($CMD);
+						}
+						
 						
 					}elseif( $function == "brightenby" ){
+						
+						//turn light on if it is not in order to dim it
+						if( isset($device['state']) && $device['state']  == 0 ){
+							$CMD = "cmd=DeviceSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><did>".$device['did']."</did><value>1</value></gip>"; 
+							$result = getCurlReturn($CMD);
+						}
+						
 						
 						$dBrightness = isset($device['level']) ? $device['level'] : 0;
 						$dBrightness += $val;

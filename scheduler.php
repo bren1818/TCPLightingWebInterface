@@ -97,12 +97,18 @@
 		p{ margin: 4px 0; }
 	</style>
 	<script>
+		function randomString(length, chars) {
+			var result = '';
+			for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+			return result;
+		}
+	
 		$(function(){
 			function runSchedule(){
 				var d = new Date();
 				console.log("Running Schedule " + d);
-				$.get("/runSchedule.php", function( data ) {
-					console.log(data);
+				$.get("runSchedule.php", function( data ) {
+					console.log("Schedule Runnner returns: " + data);
 				});
 			}
 			
@@ -120,7 +126,7 @@
 
 		
 		/* Output Add Scheduled Task */
-		<?php ob_start(); getScheduleView();$schedule = ob_get_clean();	?>	
+		<?php ob_start(); getScheduleView("__REPLACE__");$schedule = ob_get_clean();	?>	
 		var addSchedule = '<?php echo preg_replace( "/\r|\n/", "",$schedule); ?>';	
 		
 		function SelectMoveRows(SS1,SS2){
@@ -201,7 +207,8 @@
 		}
 		
 		$('#add').click(function(){
-			$('#events').append(addSchedule);
+			
+			$('#events').append(   addSchedule.replace(/__REPLACE__/g, randomString(10, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')  ) );
 			bindEvents();
 		});
 		
@@ -255,6 +262,11 @@
 	 */
 	
 	function getScheduleView($task=array()){
+		if( $task == "__REPLACE__"){
+			$randID = "__REPLACE__";
+		}else{
+			$randID = generateRandomString();
+		}
 		?>
 		<form class="scheduledTask">
 		<div class="delTask">X</div>
@@ -263,16 +275,15 @@
 				<textarea name="TITLE_NOTE"><?php echo (isset($task["TITLE_NOTE"])) ? $task["TITLE_NOTE"] : ""; ?></textarea>
 			</div>
 			<div class="daysOfWeek">
-				<label><input type="checkbox" name="DAY_MON" <?php echo (isset($task["DAY_MON"]) && $task["DAY_MON"] == "on") ? " checked" : "";  ?>/> Monday</label>
-				<label><input type="checkbox" name="DAY_TUE" <?php echo (isset($task["DAY_TUE"]) && $task["DAY_TUE"] == "on") ? " checked" : "";  ?>/> Tuesday</label>
-				<label><input type="checkbox" name="DAY_WED" <?php echo (isset($task["DAY_WED"]) && $task["DAY_WED"] == "on") ? " checked" : "";  ?>/> Wednesday</label>
-				<label><input type="checkbox" name="DAY_THU" <?php echo (isset($task["DAY_THU"]) && $task["DAY_THU"] == "on") ? " checked" : "";  ?>/> Thursday</label>
-				<label><input type="checkbox" name="DAY_FRI" <?php echo (isset($task["DAY_FRI"]) && $task["DAY_FRI"] == "on") ? " checked" : "";  ?>/> Friday</label>
-				<label><input type="checkbox" name="DAY_SAT" <?php echo (isset($task["DAY_SAT"]) && $task["DAY_SAT"] == "on") ? " checked" : "";  ?>/> Saturday</label>
-				<label><input type="checkbox" name="DAY_SUN" <?php echo (isset($task["DAY_SUN"]) && $task["DAY_SUN"] == "on") ? " checked" : "";  ?>/> Sunday</label>
-				<label><input type="checkbox" name="DAY_ALL" <?php echo (isset($task["DAY_ALL"]) && $task["DAY_ALL"] == "on") ? " checked" : "";  ?>/> Everyday</label>
+				<label for="<?php echo $randID; ?>_MON"><input id="<?php echo $randID; ?>_MON" type="checkbox" name="DAY_MON" <?php echo (isset($task["DAY_MON"]) && $task["DAY_MON"] == "on") ? " checked" : "";  ?>/> Monday</label><br />
+				<label for="<?php echo $randID; ?>_TUE"><input id="<?php echo $randID; ?>_TUE" type="checkbox" name="DAY_TUE" <?php echo (isset($task["DAY_TUE"]) && $task["DAY_TUE"] == "on") ? " checked" : "";  ?>/> Tuesday</label><br />
+				<label for="<?php echo $randID; ?>_WED"><input id="<?php echo $randID; ?>_WED" type="checkbox" name="DAY_WED" <?php echo (isset($task["DAY_WED"]) && $task["DAY_WED"] == "on") ? " checked" : "";  ?>/> Wednesday</label><br />
+				<label for="<?php echo $randID; ?>_THU"><input id="<?php echo $randID; ?>_THU" type="checkbox" name="DAY_THU" <?php echo (isset($task["DAY_THU"]) && $task["DAY_THU"] == "on") ? " checked" : "";  ?>/> Thursday</label><br />
+				<label for="<?php echo $randID; ?>_FRI"><input id="<?php echo $randID; ?>_FRI" type="checkbox" name="DAY_FRI" <?php echo (isset($task["DAY_FRI"]) && $task["DAY_FRI"] == "on") ? " checked" : "";  ?>/> Friday</label><br />
+				<label for="<?php echo $randID; ?>_SAT"><input id="<?php echo $randID; ?>_SAT" type="checkbox" name="DAY_SAT" <?php echo (isset($task["DAY_SAT"]) && $task["DAY_SAT"] == "on") ? " checked" : "";  ?>/> Saturday</label><br />
+				<label for="<?php echo $randID; ?>_SUN"><input id="<?php echo $randID; ?>_SUN" type="checkbox" name="DAY_SUN" <?php echo (isset($task["DAY_SUN"]) && $task["DAY_SUN"] == "on") ? " checked" : "";  ?>/> Sunday</label><br />
+				<label for=""<?php echo $randID; ?>_ALL><input id="<?php echo $randID; ?>_ALL" type="checkbox" name="DAY_ALL" <?php echo (isset($task["DAY_ALL"]) && $task["DAY_ALL"] == "on") ? " checked" : "";  ?>/> Everyday</label>
 			</div>
-
 			<div class="timeOfDay">
 				<label>Time: 
 					<select name="TIME_TYPE"><option value="FIXED" <?php echo (isset($task["TIME_TYPE"]) && $task["TIME_TYPE"] == "FIXED") ? " selected" : ""; ?>>FIXED</option><option value="SUNRISE" <?php echo (isset($task["TIME_TYPE"]) && $task["TIME_TYPE"] == "SUNRISE") ? " selected" : ""; ?>>SUNRISE</option><option value="SUNSET" <?php echo (isset($task["TIME_TYPE"]) && $task["TIME_TYPE"] == "SUNSET") ? " selected" : ""; ?>>SUNSET</option>
@@ -340,8 +351,6 @@
 				</div>
 			</div>
 
-
-
 			<div class="functionTrigger">
 				<label>Function: <select name="FX"><option value="DIM" <?php echo (isset($task["FX"]) && $task["FX"] == "DIM") ? " selected" : ""; ?>>DIM</option><option value="SWITCH" <?php echo (isset($task["FX"]) && $task["FX"] != "DIM") ? " selected" : ""; ?>>SWITCH</option></select></label>
 			</div>
@@ -366,15 +375,46 @@
 					<td>
 						<select size="9" class="available" name="DEVICE_AVAILABLE" multiple>
 						<?php
-							$devices = getDevices();
-							$selected = "";
-							foreach($devices as $device){
-								//if did is not in here
-								if( isset($task) && isset($task["devices"]) && is_array($task["devices"]) && in_array($device['did'], $task["devices"]) ){
-									$selected.= '<option value="'.$device['did'].'" selected>'.$device['prodtype'].' - '.$device['name'].'</option>';
-								}else{
-									echo '<option value="'.$device['did'].'">'.$device['prodtype'].' - '.$device['name'].'</option>';
+							$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
+							$result = getCurlReturn($CMD);
+							$array = xmlToArray($result);
+							if( isset( $array["gwrcmd"]["gdata"]["gip"]["room"] ) ){
+								$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
+							}
+							
+							if( sizeof($DATA) > 0 ){
+								if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
+								
+								foreach($DATA as $room){
+									echo '<optgroup label="Room - '.$room["name"].'">';
+									//echo '<option data-device-type="room" data-device-id="'.$room["rid"].'" data-room-name="'.$room["name"].'">'    .  $room["name"] .    '</option>';
+									if(  is_array($room["device"]) ){
+										$device = (array)$room["device"];
+										if( isset($device["did"]) ){
+											//$DEVICES[] = "<option data-device-type='light' data-device-id='".$room["device"]["did"]."' data-room-name='".$room["name"]."'>".  $room["device"]["name"] ."</option>";
+
+											if( isset($task) && isset($task["devices"]) && is_array($task["devices"]) && in_array($device['did'], $task["devices"]) ){
+												$selected.= '<option value="'.$device['did'].'" selected>'.$device['prodtype'].' - '.$device['name'].'</option>';
+											}else{
+												echo '<option value="'.$device['did'].'">'.$device['prodtype'].' - '.$device['name'].'</option>';
+											}
+										}else{	
+											for( $x = 0; $x < sizeof($device); $x++ ){
+												if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
+													//$DEVICES[] = '<option data-device-type="light" data-device-id="'.$device[$x]["did"].'" data-room-name="'.$room["name"].'">'. $device[$x]["name"] ."</option>";
+													if( isset($task) && isset($task["devices"]) && is_array($task["devices"]) && in_array($device[$x]['did'], $task["devices"]) ){
+														$selected.= '<option value="'.$device[$x]['did'].'" selected>'.$device[$x]['prodtype'].' - '.$device[$x]['name'].'</option>';
+													}else{
+														echo '<option value="'.$device[$x]['did'].'">'.$device[$x]['prodtype'].' - '.$device[$x]['name'].'</option>';
+													}
+													
+												}
+											}
+										}
+									}
+									echo '</optgroup>';
 								}
+								
 							}
 						?>
 						</select>
@@ -387,7 +427,9 @@
 					<td>
 						<select size="9" class="selected" name="DEVICE_SELECTED" multiple>
 						<?php
-							echo $selected;
+							if( isset($selected) && $selected != ""){
+								echo $selected;
+							}
 						?>
 						</select>
 					</td>
@@ -432,7 +474,5 @@
  </div>
 
 <?php
-
   pageFooter();
-
 ?>

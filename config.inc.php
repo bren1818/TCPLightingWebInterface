@@ -44,9 +44,9 @@ if( SCHEME == 'http'){
 	}
 }
 
+
 define("USE_LOCAL_API_IP", 					1); 				/*To do - hook in JS */
-
-
+define("LOG_DIR",							dirname(__FILE__) . DIRECTORY_SEPARATOR . "logs");
 
 
 date_default_timezone_set("America/New_York");                 //Ensure this matches your timezone so if you use scheduler the hours match

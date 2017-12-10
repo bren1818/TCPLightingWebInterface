@@ -56,81 +56,82 @@ if( TOKEN != "" ){
 	$deviceCount = 0;
 	
 	if( sizeof($DATA) > 0 ){
-	
-	
+		if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
 		
-	if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
-		
-	foreach($DATA as $room){
-		
-		if( isset($room['rid'] ) ){
-		echo '<div class="roomContainer" data-room-id="'. $room["rid"].'">';
-			echo '<div class="room-color room-color-'.$room['colorid'].'"><div class="room-name">'.$room["name"].'</div><a class="info" href="info.php?rid='.$room["rid"].'"><img src="/images/info.png"/></a></div>';
-			echo '<div>';
+		foreach($DATA as $room){
 			
-			
-			
-
-			$DEVICES = array();
+			if( isset($room['rid'] ) ){
+				echo '<div class="roomContainer" data-room-id="'. $room["rid"].'">';
+				echo '<div class="room-color room-color-'.$room['colorid'].'"><div class="room-name">'.$room["name"].'</div><a class="info" href="info.php?rid='.$room["rid"].'"><img src="css/images/info.png"/></a></div>';
+				echo '<div>';
 				
-			if( ! is_array($room["device"]) ){
 				
-			}else{
-				$device = (array)$room["device"];
-				if( isset($device["did"]) ){
-					//item is singular device
-					$DEVICES[] = $room["device"];
-					$deviceCount++;
+				$DEVICES = array();
+					
+				if( ! is_array($room["device"]) ){
+					
 				}else{
-				
-					for( $x = 0; $x < sizeof($device); $x++ ){
-						if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
-							$DEVICES[] = $device[$x];
-							$deviceCount++;
+					$device = (array)$room["device"];
+					if( isset($device["did"]) ){
+						//item is singular device
+						$DEVICES[] = $room["device"];
+						$deviceCount++;
+					}else{
+					
+						for( $x = 0; $x < sizeof($device); $x++ ){
+							if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
+								$DEVICES[] = $device[$x];
+								$deviceCount++;
+							}
 						}
 					}
 				}
-			}
-			
-			if( sizeof($DEVICES) > 0 ){
-				echo '<div class="devices">';
-					
-					echo '<div class="room-devices">';
-					
-					$roomBrightness = 0;
-					$roomDevices = 0;
-					foreach($DEVICES as $device){
+				
+				if( sizeof($DEVICES) > 0 ){
+					echo '<div class="devices">';
 						
-						echo '<div class="'.( (isset($device['offline']) && $device['offline'] == 1) ? 'unplugged' : 'plugged' ).' device '.($device['state'] == 1 ? 'light-on' : 'light-off' ).' '.($device['prodtype'] == 'Light Fixture' ? 'light-fixture' : '' ).'" data-device-id="'.$device['did'].'">'; //power > 0 then enabled 
-							//level = brightness
-							//state = on or off
-							echo '<p class="device-name"><b>'.$device['name'].'</b> <a href="info.php?did='.$device['did'].'"><img src="images/info.png"/></a></p>';
-							echo '<p class="on-off-buttons"><button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOn">On</button> | <button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOff">Off</button></p>';
-							echo '<div class="clear"></div>';
-							echo '<p>Brightness:</p>';
-							echo '<div class="device-slider" data-value="'.(isset($device['level']) ? $device['level'] : 100).'" data-device-id="'. $device["did"].'"></div>';
+						echo '<div class="room-devices">';
+						$unplugged = 0;
+						$roomBrightness = 0;
+						$roomDevices = 0;
+						foreach($DEVICES as $device){
+							
+							echo '<div class="'.( (isset($device['offline']) && $device['offline'] == 1) ? 'unplugged' : 'plugged' ).' device '.($device['state'] == 1 ? 'light-on' : 'light-off' ).' '.($device['prodtype'] == 'Light Fixture' ? 'light-fixture' : '' ).'" data-device-id="'.$device['did'].'">'; //power > 0 then enabled 
+								//level = brightness
+								//state = on or off
+								
+								if( isset($device['offline']) && $device['offline'] == 1){ $unplugged++; }
+									
+								
+								echo '<p class="device-name"><b>'.$device['name'].'</b> <a href="info.php?did='.$device['did'].'"><img src="css/images/info.png"/></a></p>';
+								echo '<p class="on-off-buttons"><button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOn">On</button> | <button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOff">Off</button></p>';
+								echo '<div class="clear"></div>';
+								echo '<p>Brightness:</p>';
+								echo '<div class="device-slider" data-value="'.(isset($device['level']) ? $device['level'] : 100).'" data-device-id="'. $device["did"].'"></div>';
+							echo '</div>';
+							$roomBrightness += (isset($device['level']) ? $device['level'] : 100);
+							$roomDevices++;
+							
+						}
 						echo '</div>';
-						$roomBrightness += (isset($device['level']) ? $device['level'] : 100);
-						$roomDevices++;
 						
-					}
+					echo '</div>';
 					echo '</div>';
 					
+				}else{
+					echo 'No devices?';
+					pa( $room );
+				}
+				// dont render if not more than 1 device, or all devices unplugged
+				if( sizeof($DEVICES) > 1 && $unplugged != sizeof($DEVICES) ){
+					echo '<div class="room-controls">';
+						echo 'Room Brightness: <div class="room-slider" data-value="'.($roomBrightness/$roomDevices).'" data-room-id="'. $room["rid"].'"></div>';
+						echo 'Room <button data-room-id="'. $room["rid"].'" class="onOffToggleButton buttonOn">On</button> | <button data-room-id="'. $room["rid"].'" class="onOffToggleButton buttonOff">Off</button>';
+					echo '</div>';
+				}
 				echo '</div>';
-				echo '</div>';
-				
-			}else{
-				echo 'No devices?';
-				pa( $room );
 			}
-		
-			echo '<div class="room-controls">';
-				echo 'Room Brightness: <div class="room-slider" data-value="'.($roomBrightness/$roomDevices).'" data-room-id="'. $room["rid"].'"></div>';
-				echo 'Room <button data-room-id="'. $room["rid"].'" class="onOffToggleButton buttonOn">On</button> | <button data-room-id="'. $room["rid"].'" class="onOffToggleButton buttonOff">Off</button>';
-			echo '</div>';
-		echo '</div>';
 		}
-	}
 	}
 	
 	
@@ -166,7 +167,7 @@ if( TOKEN != "" ){
 			for($x = 0; $x < sizeof($scenes); $x++){
 				?>
 				<div class="scene-container" id="scene-id-<?php echo $scenes[$x]["sid"]; ?>">
-                	<div class="scene-info"><a href="scenescreatedit.php?SID=<?php echo $scenes[$x]["sid"]; ?>"><img src="images/info.png"/></a></div>
+                	<div class="scene-info"><a href="scenescreatedit.php?SID=<?php echo $scenes[$x]["sid"]; ?>"><img src="css/images/info.png"/></a></div>
 					<p><b><?php echo $scenes[$x]["name"]; ?></b> (<?php echo is_array($scenes[$x]["device"]) ? sizeof($scenes[$x]["device"]) : ""; ?>)</p>
 					<p><img src="css/<?php echo $scenes[$x]["icon"]; ?>" /></p>
 					<p>

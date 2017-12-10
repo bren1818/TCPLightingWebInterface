@@ -96,12 +96,12 @@ $(function(){
 		$.get( "api.php?fx=toggle&type=device&uid=" + DID + "&val=" + val, function( data ) {
 			 //console.log( data );
 			 if( val == 1){
-				$(light).parent().addClass('light-on');
-				var v = $(light).parent().find('.device-slider').slider( "value" );
-				$(light).parent().css('background-color', 'rgba(255,255,0,' + ( v / 100 ) + ')');
+				$(light).parents('.device').addClass('light-on');
+				var v = $(light).parents().find('.device-slider').slider( "value" );
+				$(light).parents('.device').css('background-color', 'rgba(255,255,0,' + ( v / 100 ) + ')');
 			}else{
-				$(light).parent().removeClass('light-on');
-				$(light).parent().css('background-color','transparent');
+				$(light).parents('.device').removeClass('light-on');
+				$(light).parents('.device').css('background-color','transparent');
 			}
 		});
 	});

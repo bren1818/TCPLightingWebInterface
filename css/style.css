@@ -1,19 +1,24 @@
 html *{
   box-sizing: border-box;
   font-family: arial;
-  margin: 0;
 }
 
+html, body{ margin: 0;}
+
 body{
-	background-image:url(css/grey_wash_wall.png);
+	background-image:url(grey_wash_wall.png);
 	background-repeat: repeat;
 }
 
+p{
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
 
 #headerBar{
 	width: 100%;
 	clear: both;
-	height: 30px;
+	min-height: 30px;
 	margin-bottom: 20px;
 	background-color: #000;
 	line-height: 30px;
@@ -42,6 +47,7 @@ a.info{ display: block; height: 30px; line-height: 30px; width: 30px; float: rig
 .roomContainer{ border: 1px solid #000; background-color: #fff; }
 
 .roomContainer, .room-devices, .room-controls{
+	max-width: 1024px;
 	width: 100%;
 	clear: both;
 }
@@ -58,11 +64,6 @@ a.info{ display: block; height: 30px; line-height: 30px; width: 30px; float: rig
 	overflow: hidden;
 }
 
-.scene-container p,
-.room-devices p{
-	margin: 10px 0;
-}
-
 .device{
 	width: 200px;
 	height: 200px;
@@ -71,6 +72,7 @@ a.info{ display: block; height: 30px; line-height: 30px; width: 30px; float: rig
 	padding: 10px;
 	float: left;
 	border: 1px solid #000;
+	background-position-x: center;
 }
 
 .room-controls{
@@ -79,24 +81,20 @@ a.info{ display: block; height: 30px; line-height: 30px; width: 30px; float: rig
 
 .light-on{background-color: rgba(255,255,0,1); }
 
-.device{ background-image: url('../images/genericbulbicon.png');}
+.device{ background-image: url('images/genericbulbicon.png');}
 
-.device.light-fixture{ background-image: url('../images/genericmultibulbicon.png'); }
+.device.light-fixture{ background-image: url('images/genericmultibulbicon.png'); }
 
 .clear{ clear: both; width: 100%; }
 
 .unplugged{ 
-	background-image: url(css/unplugged.png);
+	background-image: url(unplugged.png);
 	background-repeat: no-repeat; 
 }
 
 
 
-@media all and (max-width: 600px) {
-	.room-devices{ border: none; }
-	.device{clear: both; width: 100%; margin:0px; margin-bottom: 10px; background-repeat: no-repeat; }
-	.room-slider, .device-slider{ max-width: 80%; }
-}
+
 
 #arrayDump::before{
 	content: 'Click to Show Array info';
@@ -184,3 +182,23 @@ a.info{ display: block; height: 30px; line-height: 30px; width: 30px; float: rig
 	line-height: 30px;
 	text-align: center;
 }
+
+@media (max-width: 1024px) {
+	.roomContainer, .room-devices, .room-controls{
+		max-width: 90%;
+		margin-left: 5%;
+		margin-right: 5%;
+	}
+}
+
+@media (max-width: 700px) {
+	#headerBar a{ display: inline-block; width: 50%; margin: 10px 0; float: left; text-align: center; }
+}
+
+
+@media all and (max-width: 600px) {
+	.room-devices{ border: none; }
+	.device{clear: both; width: 100%; margin:0px; margin-bottom: 10px; background-repeat: no-repeat; }
+	.room-slider, .device-slider{ max-width: 80%; }
+}
+

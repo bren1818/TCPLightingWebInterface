@@ -116,11 +116,20 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 						}
 						//do it for each device
 						foreach($task["devices"] as $U=>$ID ){
-							$req = LOCAL_URL."/api.php?fx=".$fx."&type=device&uid=".$ID."&val=".$val;
-							$data = file_get_contents($req);
+							
+							$req = LOCAL_URL . "/api.php?fx=".$fx."&type=device&uid=".$ID."&val=".$val;
+														
+							$ch = curl_init();
+							curl_setopt($ch, CURLOPT_URL, $req);
+							curl_setopt($ch, CURLOPT_POST, false);
+							curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+							$result = curl_exec($ch);
+							curl_close($ch);
+							
 							if(LOG_ACTIONS){
-								file_put_contents("schedule.actioned", date('Y-m-d H:i:s').' - '.$req." - Response: ".$data."\n", FILE_APPEND | LOCK_EX);
+								SCHEDLog( 'Running Task - '.$req. " - Result: " . print_r($result, true) );
 							}
+							echo $result;
 						}
 					}else{
 						//next task
