@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL);
 /*
  *
  * TCP Ligthing Scheduler Script - By Brendon Irwin
@@ -38,7 +39,7 @@ $tasks = array();
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
-
+echo date("Y-m-d h:i:s");
 if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 	
 	$sched = $_POST["schedule"];
@@ -62,18 +63,25 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 	
 	if( SAVE_SCHEDULE ){
 		$serialized = serialize($tasks);
-		file_put_contents("schedule.sched", $serialized);
+		$curDir = dirname(__FILE__);		
+		file_put_contents($curDir . DIRECTORY_SEPARATOR . "schedule.sched", $serialized);
 	}
 	
 }else{
-	if( file_exists("schedule.sched") ){
-		$array = file_get_contents("schedule.sched");
+	echo "looking for tasks";
+	$curDir = dirname(__FILE__);
+
+	if( file_exists( $curDir . DIRECTORY_SEPARATOR .  "schedule.sched") ){
+		$array = file_get_contents( $curDir . DIRECTORY_SEPARATOR .  "schedule.sched");
 		$tasks = unserialize ($array);	
+	}else{
+		echo "No Schedule file!";
 	}
 }
 
 
 	if( sizeof($tasks) > 0 ){
+
 		$HOUR_NOW = date('H');
 		$MIN_NOW = date('i');
 		$DAY_NOW = date('D');
