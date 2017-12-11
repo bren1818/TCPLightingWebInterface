@@ -171,24 +171,38 @@
 			$array = xmlToArray($result);
 			$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
 			
-			foreach($DATA as $room){
-				if(  is_array($room["device"]) && $room["rid"] == $UID ){
-					$THE_ROOM = $room;
-					
-					//determine Room Brightness -- for dimby/brightenby
-					$brightness = 0;
-					if( sizeof( $THE_ROOM['device'] ) >= 1 ){
-						foreach( $THE_ROOM['device'] as $d ){
-							$brightness += $d['level'];
+				foreach($DATA as $room){
+						if(  is_array($room["device"]) && $room["rid"] == $UID ){
+							$device = (array)$room["device"];
+							$THE_ROOM == $room;
+
+							
+							if( isset($device["did"]) ){
+								//item is singular device
+								//$room['device']["roomID"] = $room["rid"];
+								//$room['device']["roomName"] = $room["name"];
+								$THE_ROOM['brightness'] = $room['device']['level'];
+								//$DEVICES[] = $room["device"];
+							}else{
+								for( $x = 0; $x < sizeof($device); $x++ ){
+									if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
+										//$device[$x]["roomID"] = $room["rid"];
+										//$device[$x]["roomName"] = $room["name"];
+										//$DEVICES[] = $device[$x];
+										$THE_ROOM['brightness'] += $device[$x]['level'];
+
+
+									}
+								}
+								$THE_ROOM['brightness'] = $THE_ROOM['brightness'] / sizeof($device);
+
+							}
+						break;	
 						}
-						$brightness = $brightness / sizeof( $THE_ROOM['device'] );
-						$THE_ROOM['brightness'] = $brightness;
-					}
-					
-					break;
-				}
-			}
+					}	
+		
 			
+
 			if( $function == "toggle" ){
 				//turn on | off
 				$tval = ($val > 0) ? 1 : 0;
@@ -292,35 +306,32 @@
 				$roomBrightness = $THE_ROOM['brightness'];
 				$roomBrightness -= $val;
 				if( $roomBrightness < 0 ){ $roomBrightness = 0; }
+
 				
 				$CMD = "cmd=RoomSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><rid>".$UID."</rid><value>".$roomBrightness."</value><type>level</type></gip>";
 				
 				$result = getCurlReturn($CMD);
 				$array = xmlToArray($result);
 				
-				//turn room on if by chance it is off
-				$CMD = "cmd=RoomSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><rid>".$UID."</rid><value>1</value></gip>";					
-				$result = getCurlReturn($CMD);
-				$array = xmlToArray($result);
-						
+										
 			}elseif( $function == "brightenby" ){
 				
-			
+				
 				
 						
-				$roomBrightness = $THE_ROOM['brightness'];
+				$roomBrightness = $THE_ROOM['brightness'];			
 				$roomBrightness += $val;
+
 				if( $roomBrightness > 100 ){ $roomBrightness = 100; }
+
+
 				
 				$CMD = "cmd=RoomSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><rid>".$UID."</rid><value>".$roomBrightness."</value><type>level</type></gip>";
 				
 				$result = getCurlReturn($CMD);
 				$array = xmlToArray($result);		
 				
-				//turn room on if by chance it is off
-				$CMD = "cmd=RoomSendCommand&data=<gip><version>1</version><token>".TOKEN."</token><rid>".$UID."</rid><value>1</value></gip>";					
-				$result = getCurlReturn($CMD);
-				$array = xmlToArray($result);
+				
 			}
 			
 			
