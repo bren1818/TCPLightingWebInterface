@@ -196,7 +196,7 @@ if( TOKEN != "" ){
 	if( !isset($tokenArray["token"]) ){
 		echo '<p>Could not fetch token. Ensure you have the correct IP for your bridge and that you have hit the <b>sync</b> button before running this.</p>';
 		if(USE_TOKEN_FILE){
-			echo '<p>Since you are not using the token file option, ensure you paste your token in the include.php.</p>';
+			echo '<p>Since you are not using the token file option, ensure you paste your token in the config.inc.php.</p>';
 		}
 		echo '<p><img src="/css/images/syncgateway.png" /></p>';
 	}else{ 
