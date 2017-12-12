@@ -1,17 +1,12 @@
 <?php
 include "include.php";
 pageHeader("TCP Lighting Controller");
-?>
 
-
-<?php
 /*
  *
- * TCP Ligthing Web UI Test Script - By Brendon Irwin
+ * TCP Ligthing Web UI 
  * 
  */
-
-
 
 if( TOKEN != "" ){
 	
@@ -50,8 +45,6 @@ if( TOKEN != "" ){
 			pageFooter();
 			exit;
 	}
-	
-	
 	
 	$deviceCount = 0;
 	
@@ -133,8 +126,6 @@ if( TOKEN != "" ){
 			}
 		}
 	}
-	
-	
 	
 	
 	if( $deviceCount > 0 ){
