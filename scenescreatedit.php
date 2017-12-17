@@ -6,11 +6,15 @@
 	 */
 
 	include "include.php";
-	pageHeader("TCP Lighting - Scene Controller");
 	if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
+		/*For Saving Scene*/
+		
+		echo '<pre>'.print_r($_POST,true).'</pre>';
 		
 		exit;
 	}
+	pageHeader("TCP Lighting - Scene Controller");
+	
 ?>
 <script>
 	$(function(){
@@ -44,23 +48,68 @@
 			}
 		});
 		
-		
 		$('.scene-slider').slider({
-				range: "min",
-				min: 0,
-				max: 100,
-				//value: $(this).attr('data-level'),
-				create: function( event, ui ){
-					$(this).slider("option", "value", $(this).parent().find("input[name='DIM_SCENE']").val() );
-				},
-				stop: function(event, ui) {
-					$(this).parent().find('input[name="DIM_SCENE"]').val( ui.value );
-				},
-				slide: function( event, ui ) {
-					$(this).parent().find('input[name="DIM_SCENE"]').val( ui.value );
-				}
-			});
+			range: "min",
+			min: 0,
+			max: 100,
+			//value: $(this).attr('data-level'),
+			create: function( event, ui ){
+				$(this).slider("option", "value", $(this).parent().find("input[name='DIM_SCENE']").val() );
+			},
+			stop: function(event, ui) {
+				$(this).parent().find('input[name="DIM_SCENE"]').val( ui.value );
+			},
+			slide: function( event, ui ) {
+				$(this).parent().find('input[name="DIM_SCENE"]').val( ui.value );
+			}
+		});
 		
+		$('.roomToggle').change(function(){
+			console.log( $(this).attr('value') + ( $(this).prop('checked') ? ' checked' : '' ) );
+			if( $(this).prop('checked') == true){
+				//toggling on the room
+				$(this).closest('.roomSceneContainer').find('.room-controls').removeClass('controls-toggled-0').addClass('controls-toggled-1');
+				$(this).closest('.roomSceneContainer').find('.room-devices').removeClass('room-devices-toggled-0').addClass('room-devices-toggled-1');
+			}else{
+				//toggling off the room
+				$(this).closest('.roomSceneContainer').find('.room-controls').removeClass('controls-toggled-1').addClass('controls-toggled-0');
+				$(this).closest('.roomSceneContainer').find('.room-devices').removeClass('room-devices-toggled-1').addClass('room-devices-toggled-0');
+				$(this).closest('.roomSceneContainer').find('.deviceToggle').prop('checked', false);
+			}	
+		});
+		
+		$('.deviceToggle').change(function(){
+			console.log( $(this).attr('value') + ( $(this).prop('checked') ? ' checked' : '' ) );
+			if( $(this).prop('checked') == true){
+				$(this).closest('.roomDeviceContainer').find('.device-controls').removeClass('controls-toggled-0').addClass('controls-toggled-1');
+			}else{
+				$(this).closest('.roomDeviceContainer').find('.device-controls').removeClass('controls-toggled-1').addClass('controls-toggled-0');
+			}
+		});
+		
+		$('.control-switch').click(function(event){
+			event.preventDefault();
+			if( $(this).hasClass('switch-val-1') ){
+				console.log("Toggle switch from on to off");
+				$(this).removeClass('switch-val-1').addClass('switch-val-0');
+				$(this).find('input[type="checkbox"]').prop('checked', false);
+			}else{
+				console.log("Toggle switch from of to o");
+				$(this).removeClass('switch-val-0').addClass('switch-val-1');
+				$(this).find('input[type="checkbox"]').prop('checked', true);
+			}
+		});
+		
+		$('#saveScene').click(function(){
+			/*To Do*/
+		});
+		
+		$('#deleteScene').click(function(){
+			/*To Do*/	
+		});
+		
+		//functions Not complete yet.
+		$('#saveScene, #deleteScene, input.roomToggle, input.deviceToggle, input.device-toggle').attr('disabled', 'disabled');
 		
 	});
 </script>	
@@ -75,11 +124,13 @@
 	$scenes = $array["scene"];
 	if( is_array($scenes) && isset($_REQUEST['SID']) && $_REQUEST['SID'] != ""){
 		$scene =  $_REQUEST['SID'];
+		//thought -> if -1 New Scene?
+		
 		for($x = 0; $x < sizeof($scenes); $x++){
 			if($scenes[$x]["sid"] == $scene ){
 			?>
 			<div class="scene-container" id="scene-id-<?php echo $scenes[$x]["sid"]; ?>">
-                	<!--<div class="scene-info"><a href="scenescreatedit.php?SID=<?php echo $scenes[$x]["sid"]; ?>"><img src="images/info.png"/></a></div>-->
+                	
 					<p><b><?php echo $scenes[$x]["name"]; ?></b> (<?php echo is_array($scenes[$x]["device"]) ? sizeof($scenes[$x]["device"]) : ""; ?>)</p>
 					<p><img src="css/<?php echo $scenes[$x]["icon"]; ?>" /></p>
 					<p>
@@ -88,6 +139,12 @@
                         <button data-scene-mode="on" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene">Scene Devices On</button>
                     </p>
 			</div>
+			
+			<p>Scene Name: <input type="text" value="<?php echo $scenes[$x]["name"]; ?>" /><p>
+			<p>Save Scene: <button id="saveScene" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>">Save Scene</button></p>
+			<p>Delete Scene: <button id="deleteScene" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>">Delete Scene</button></p>
+			<input type="hidden" value="<?php echo $scenes[$x]["sid"]; ?>" name="sceneID" id="sceneId" />
+			
             <div class="clear"></div>
            
 			<?php
@@ -104,8 +161,6 @@
 			
 			}
 		}
-		
-		//pa( $devices );
 		
 		if( !isset( $scene ) ){
 			echo "Invalid Scene";
@@ -172,13 +227,13 @@
 		</style>
 	
 
-		<div style="padding: 20px;">    				
+		<div id="sceneSettings" style="padding: 20px;">    				
 		<?php
 			function renderSwitch($roomID, $deviceID, $ON_OFF){
 				?>
 				<div class="control control-switch switch-val-<?php echo $ON_OFF; ?>">
 					<label class="switch">
-					  <input name="SWITCH_SCHED" value="1" type="checkbox" <?php echo ($ON_OFF == 1) ? "checked" : ""; ?>>
+					  <input class="device-toggle" data-device-id="<?php echo $deviceID; ?>" data-room-id="<?php echo $roomID; ?>" name="SWITCH_SCHED" value="1" type="checkbox" <?php echo ($ON_OFF == 1) ? "checked" : ""; ?>>
 					  <div class="slider round"></div>
 					</label>
 				</div>
@@ -189,11 +244,10 @@
 				?>
 				<div class="control control-slider">
 					<div class="scene-slider" data-device-id="all"></div>
-					<input name="DIM_SCENE" type="hidden" value="<?php echo $VALUE ?>" />
+					<input class="value-slider" data-device-id="<?php echo $deviceID; ?>" data-room-id="<?php echo $roomID; ?>" name="DIM_SCENE" type="hidden" value="<?php echo $VALUE ?>" />
 				</div>
 				<?php
 			}
-		
 		
 			function renderDevice($d, $rtoggled, $rid){
 				global $devices;
@@ -206,7 +260,6 @@
 					$toggled = 0;
 					
 					if(  isset( $scene['device'][0]["id"] ) ){
-						
 						foreach(  $scene['device'] as $sd ){
 							if( $d["did"] == $sd["id"] ){
 								if( isset( $sd["cmd"]["0"] ) ){
@@ -236,7 +289,7 @@
 						}
 					}
 
-					if( $rtoggled== 1 || in_array( $d['did'], $devices ) ){
+					if( in_array( $d['did'], $devices ) ){
 						$toggled = 1;
 						echo '<div class="EnabledOrNot">Enabled: <input class="deviceToggle" type="checkbox" name="device[]" value="'.$d["did"].'" checked /></div>';
 					}else{
@@ -297,24 +350,18 @@
 			
 			if( sizeof($DATA) > 0 ){
 				echo '<hr />';
-			
 				echo '<h1>Scene Settings</h1>';
 				if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
 			
-
-			foreach($DATA as $room){
-					//echo '<optgroup label="Room - '.$room["name"].'">';
+				foreach($DATA as $room){
 					$toggled = 0;
 
 					//check if roomID is in scene...
 					if( in_array( $room['rid'], $devices ) ){
 						$toggled = 1;
 						renderRoom($room, 1);
-						//pa( $scene );
-						
 					}else{
 						renderRoom($room, 0);
-						
 					}
 					
 					echo '<div class="room-devices room-devices-toggled-'.$toggled.'">';

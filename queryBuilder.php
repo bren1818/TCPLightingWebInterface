@@ -7,7 +7,10 @@ p{margin: 10px 0; }
 </style>
 <div class="container" style="padding: 20px; background-color: #fff; border: 1px solid #000;">
 <p>Use this to assist with creation of the IFTTT web-hooks quickly</p>
-<p>I suggest setting up a Google Assistant Hook which then calls a webhook with the API string. Follow the guides in the wiki and feel free to ask a question in the forum</p>
+<p>I suggest setting up a Google Assistant Hook which then calls a webhook with the API string. Follow the <a target="_blank" href="https://github.com/bren1818/TCPLightingWebInterface/wiki/IFTTT-Integration">excellent guide</a> written by <a target="_blank" href="https://github.com/sktaylortrash">@sktaylortrash</a> in the wiki and feel free to ask a question in the forum</p>
+
+<p>It is recommended that use SSL if you're able. This will work on non-standard ports, (ports other than 80/443) but you will need to setup port-forwarding and setup your webserver to listen on those ports. <a target="_blank" href="https://github.com/sktaylortrash">@sktaylortrash</a> has <a target="_blank" href="https://github.com/bren1818/TCPLightingWebInterface/wiki/Installation">documented</a> how to set everything up on both a <a target="_blank" href="https://github.com/bren1818/TCPLightingWebInterface/wiki/Installation-for-Apache-on-Raspbian">Raspberry Pi / Linux Environment</a>, or using <a target="_blanks" href="https://github.com/bren1818/TCPLightingWebInterface/wiki/Installation-for-Apache-on-XAMPP-Windows">XAMPP on Windows</a>.</p> 
+
 <?php 
 if( ALLOW_EXTERNAL_API_ACCESS == 1 ){
 ?>
