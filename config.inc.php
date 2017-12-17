@@ -18,7 +18,7 @@ define("LOG_API_CALLS", 					1);							//log issued API calls
 
 /*
 	IFTTT additions Nov 28th / 2017
-	These settings  should be used in conjunction with your firewall the .htaccess file and a non standard port.
+	These settings  should be used in conjunction with your firewall and the .htaccess file.
 */
 
 define("ALLOW_EXTERNAL_API_ACCESS", 		0); 						//Allow outside access (Non Lan) (1 = true, 0 = false)
@@ -27,7 +27,7 @@ define("EXTERNAL_DDNS_URL", 				"http://your-address.ddns.net");
 define("REQUIRE_EXTERNAL_API_PASSWORD", 	1);							//require a password for external (non lan) use IE for IFTTT? (1 = true, 0 = false)
 define("EXTERNAL_API_PASSWORD",  			"P@ssW0rd");				//set what the password should be
 define("RESTRICT_EXTERNAL_PORT",			1);							//if request is an external (API) user, should they only be on a specific port? (1= yes, 2=no)
-define("EXTERNAL_PORT",						1818);						//port to allow calls on.
+define("EXTERNAL_PORT",						443);						//if you wish to use an alternate external port change this number to the corresponding port number
 
 define("SCHEME", 		(LIGHTING_BRIDGE_PORT == 80) ? 'http' : 'https'); //Don't modify
 if( SCHEME == 'http'){
