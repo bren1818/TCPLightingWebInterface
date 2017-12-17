@@ -8,9 +8,37 @@
 	include "include.php";
 	if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 		/*For Saving Scene*/
+		$action = "";
+		$sceneID = "";
 		
-		echo '<pre>'.print_r($_POST,true).'</pre>';
+		if( isset( $_POST ) && isset( $_POST['action'] ) && $_POST['action'] != "" ){
+			$action = $_POST['action'];
+		}
 		
+		if( isset( $_POST ) && isset( $_POST['sceneID'] ) && $_POST['sceneID'] != "" ){
+			$sceneID = $_POST['sceneID'];
+		}
+		
+		if( $sceneID == "" || $action == "" ){
+			echo json_encode( array("error" => "Invalid SceneID or Action") );
+			exit;
+		}
+		
+		
+		echo "SceneID: ".$sceneID." Action: ". $action;
+		
+		if( $action == "save"){
+			echo '<pre>'.print_r($_POST,true).'</pre>';
+		}
+		
+		if( $action == "delete"){
+			//<gip><version>1</version><token>%s</token><sid>%s</sid></gip>
+			$CMD = "cmd=SceneDelete&data=<gip><version>1</version><token>".TOKEN."</token><sid>".$sceneID."</sid></gip>"; 
+			$result = getCurlReturn($CMD);
+			$array = xmlToArray($result);
+			ob_clean();
+			echo json_encode( array("success" => 1, "scene" => $sceneID, "fx" => $action, "resp" => $array) );
+		}
 		exit;
 	}
 	pageHeader("TCP Lighting - Scene Controller");
@@ -100,21 +128,128 @@
 			}
 		});
 		
-		$('#saveScene').click(function(){
-			/*To Do*/
+		$('#saveScene').click(function(event){
+			/*To Do - In Progress*/
+			event.preventDefault();
+			var rooms = [];
+			var devices = [];
+			
+			
+			//get rooms, then devices
+			$('.roomSceneContainer').each(function(){
+				
+				console.log( $(this).attr('data-room-name') + " Room ID: " + $(this).attr('data-room-id') + " - toggled: " + $(this).find(' > .EnabledOrNot > input.roomToggle').prop('checked') );
+				var rid = $(this).attr('data-room-id');
+				var rname = $(this).attr('data-room-name');
+				var ron = "";
+				var rval = "";
+				
+				//if checked, get the on or off setting, 
+				if( $(this).find(' > .EnabledOrNot > input.roomToggle').prop('checked') == true ){
+					//if on, get slider value
+				
+					if( $(this).find('.control-switch input.device-toggle').prop('checked') == true ){
+						ron = 1;
+						console.log("Room " + $(this).attr('data-room-name') + " is set to ON.");
+						console.log("Room is set to: " + $(this).find('.control-slider input.value-slider').attr('value') );
+						rval = $(this).find('.control-slider input.value-slider').attr('value');
+						
+					}else{
+						console.log("Room " + $(this).attr('data-room-name') + " is set to OFF.");
+						ron = 0;
+						rval = 0;
+					}
+					
+					rooms.push({ rid: rid, name: rname, toggled : ron, value: rval  });
+	
+				}else{
+					//if off, check rooms
+					$(this).find('.roomDeviceContainer').each(function(){	
+						var did = $(this).attr('data-device-id');
+						var don = "";
+						var dval = "";
+						
+						var dname = $(this).find(' > p').html();
+						if( $(this).find('.EnabledOrNot > input.deviceToggle').prop('checked') == true ){
+							console.log(dname + " is part of scene.");
+							//check if device is set to ON or OFF.
+							if( $(this).find('.control-switch input.device-toggle').attr('value') == 1 ){
+								don = 1;
+								console.log( dname + " is set to ON");
+								
+								//get value.
+								console.log("Light is set to: " + $(this).find('.control-slider input.value-slider').attr('value') );
+								dval = $(this).find('.control-slider input.value-slider').attr('value');
+							}else{
+								console.log( dname + " is set to OFF");
+								don = 0;
+								dval = 0;
+							}
+							
+							devices.push( { did: did, name: dname, toggled: don, value: dval } );
+						}else{
+							//ignore device
+							console.log(dname + " not part of scene.");
+						}
+					});
+				}
+				
+			});
+			var sID = $('#sceneID').attr('value');
+			var sName = $('#SceneName').attr('value');
+			var icon = $('#sceneIcon option:selected').attr('value');
+			
+			var scene = {action : "save", sceneID: sID, name: sName, icon: icon,  rooms: rooms, devices: devices };
+			
+			console.log( scene );
+			
+			$.post( "scenescreatedit.php",  scene ).done( function( data ){
+					console.log("Response: " + data);
+				});
+			
+			//post the scene data and save or update
+			
+			
 		});
 		
-		$('#deleteScene').click(function(){
-			/*To Do*/	
+		$('#deleteScene').click(function(event){
+			event.preventDefault();
+			var SID = $('#sceneID').attr('value');
+			var SName = $('#SceneName').attr('value');
+			
+			var c = confirm("Are you sure you wish to delete the scene: '" + SName + "' Scene ID: " + SID + "?" );
+			
+			if ( c == true ){
+				$.post( "scenescreatedit.php",  { action: 'delete', sceneID: SID } ).done( function( data ){
+					var resp =  jQuery.parseJSON( data );
+					if( resp.resp.rc == 200 ){
+						window.alert("Scene Deleted OK!");
+						window.location = "index.php#scenes";
+					}else{
+						window.alert("There may have been an error in deleting the scene.");
+					}	
+				});
+			}
 		});
+		
+		
+		$('#sceneIcon').change(function(event){
+			event.preventDefault();
+			var icon = $('#sceneIcon option:selected').attr('value');
+			$('#icon').attr('src', 'css/images/scene/' + icon );
+		});
+		
+		
+		
+		
 		
 		//functions Not complete yet.
-		$('#saveScene, #deleteScene, input.roomToggle, input.deviceToggle, input.device-toggle').attr('disabled', 'disabled');
+		$('#saveScene, input.roomToggle, input.deviceToggle, input.device-toggle').attr('disabled', 'disabled');
 		
 	});
 </script>	
 <?php
-	echo '<div class="roomContainer">';
+	echo '<div class="roomContainer" style="padding: 20px;">';
 	echo '<h2>Scenes / Smart Control</h2>';
 	
 	$CMD = "cmd=SceneGetListDetails&data=<gip><version>1</version><token>".TOKEN."</token><bigicon>1</bigicon></gip>";
@@ -125,25 +260,38 @@
 	if( is_array($scenes) && isset($_REQUEST['SID']) && $_REQUEST['SID'] != ""){
 		$scene =  $_REQUEST['SID'];
 		//thought -> if -1 New Scene?
-		
+		$foundScene = 0;
 		for($x = 0; $x < sizeof($scenes); $x++){
 			if($scenes[$x]["sid"] == $scene ){
+				$foundScene = 1;
 			?>
 			<div class="scene-container" id="scene-id-<?php echo $scenes[$x]["sid"]; ?>">
                 	
-					<p><b><?php echo $scenes[$x]["name"]; ?></b> (<?php echo is_array($scenes[$x]["device"]) ? sizeof($scenes[$x]["device"]) : ""; ?>)</p>
-					<p><img src="css/<?php echo $scenes[$x]["icon"]; ?>" /></p>
+					<!--<p><b><?php echo $scenes[$x]["name"]; ?></b> (<?php echo is_array($scenes[$x]["device"]) ? sizeof($scenes[$x]["device"]) : ""; ?>)</p>-->
+					<p><img id="icon" src="css/<?php echo $scenes[$x]["icon"]; ?>" /></p>
+					<p>
+						<?php $icons = array("away.png", "bolt.png", "clock.png", "coffee.png", "dim.png", "eat.png", "e_car.png", "fan_cool.png", "fan_heat.png", "heart.png", "home.png", "lamp.png", "light.png", "music.png", "night.png", "off_to_work.png", "rainy.png", "sensor.png", "star.png", "target.png", "thermostat.png", "tree.png", "tv.png", "vacation.png", "washing_machine.png", "zroom_00.png", "zroom_01.png", "zroom_02.png", "zroom_03.png", "zroom_04.png", "zroom_05.png", "zroom_06.png", "zroom_07.png", "zroom_08.png", "zroom_09.png"); ?>
+						<select name="sceneIcon" id="sceneIcon">
+							<?php foreach($icons as $icon ){
+								echo '<option value="'.$icon.'"'.($scenes[$x]["icon"] == "images/scene/".$icon ? " selected" : "").'>'. ucfirst( pathinfo($icon)['filename'] ).'</option>';
+							}
+							?>
+						</select>
+					</p>
 					<p>
                         <button data-scene-mode="run" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene">Run Scene</button> 
                         <button data-scene-mode="off" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene">Scene Devices Off</button> 
                         <button data-scene-mode="on" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene">Scene Devices On</button>
                     </p>
 			</div>
-			
-			<p>Scene Name: <input type="text" value="<?php echo $scenes[$x]["name"]; ?>" /><p>
+			<p>Scene ID: <?php echo $scenes[$x]["sid"]; ?></p>
+			<p>Scene Name: <input id="SceneName" type="text" value="<?php echo $scenes[$x]["name"]; ?>" /><p>
 			<p>Save Scene: <button id="saveScene" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>">Save Scene</button></p>
 			<p>Delete Scene: <button id="deleteScene" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>">Delete Scene</button></p>
-			<input type="hidden" value="<?php echo $scenes[$x]["sid"]; ?>" name="sceneID" id="sceneId" />
+			<input type="hidden" value="<?php echo $scenes[$x]["sid"]; ?>" name="sceneID" id="sceneID" />
+			<!--<input type="hidden" value="<?php echo $scenes[$x]["sid"]; ?>" name="sceneIcon" id="sceneIcon" />-->
+			
+			
 			
             <div class="clear"></div>
            
@@ -157,13 +305,14 @@
 				}else{
 					$devices[] = $scenes[$x]['device']["id"];
 				}
-					
-			
 			}
 		}
 		
-		if( !isset( $scene ) ){
-			echo "Invalid Scene";
+		if( !isset( $scene )  || $foundScene == 0){
+			echo "<p>Invalid Scene</p>
+			<p>You may have an invalid ID, or the Scene may have been deleted.<p>";
+			echo '</div>';
+			pageFooter();
 			exit;
 		}
 		?>
@@ -280,10 +429,18 @@
 					}else{
 						//check
 						if($d["did"] == $scene['device']["id"] ){
-						
-							$SWITCH_ON = $scene['device']["0"]["value"];
-							//echo "<p>Level: ". $scene['device']["cmd"]["1"]["value"]."</p>";
-							$LEVEL = $scene['device']["cmd"]["1"]["value"];
+							
+							if( isset( $scene['device']["0"] ) ){
+								$SWITCH_ON = $scene['device']["0"]["value"];
+								//echo "<p>Level: ". $scene['device']["cmd"]["1"]["value"]."</p>";
+								$LEVEL = $scene['device']["cmd"]["1"]["value"];
+							}else{
+								//echo "Here!";
+								$SWITCH_ON = $scene['device']['cmd']['0']["value"];
+								$LEVEL = $scene['device']["cmd"]['1']["value"];
+								//pa( $scene );
+							}
+							
 						}else{
 							//echo "Not in Scene";
 						}
