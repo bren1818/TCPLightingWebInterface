@@ -86,13 +86,13 @@ $(function(){
 				$('#command_on_2').html("Switch " + roomName + preface + " light ON");
 				$('#command_on_3').html("Turn " + roomName + preface + " light on");
 				$('#command_on_response').html("Turning " + roomName + " light ON");
-				$('#command_on_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=room&uid=' + id + '&val=1' + ( requireExtPass == 1 ? '&password=' + externalPass : '')  );
+				$('#command_on_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=device&uid=' + id + '&val=1' + ( requireExtPass == 1 ? '&password=' + externalPass : '')  );
 				
 				$('#command_off_1').html( roomName + preface + " light off" );
 				$('#command_off_2').html("Switch " + roomName + preface + " light off");
 				$('#command_off_3').html("Turn " + roomName + preface + " light off");
 				$('#command_off_response').html("Turning off " + roomName + " light");
-				$('#command_off_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=room&uid=' + id + '&val=0' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+				$('#command_off_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=device&uid=' + id + '&val=0' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 				
 				$('#command_dim_1').html( roomName +  preface + " light to # % brightness" );
 				$('#command_dim_2').html("Dim " + roomName + preface + " light to # %");
