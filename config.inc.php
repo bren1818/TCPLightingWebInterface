@@ -12,7 +12,7 @@ define("USE_TOKEN_FILE", 					1); 						// store the token in a file vs hard cod
 define("FORCE_FADE_ON", 					0);							//makes it so when lights are turned off they fade to 0 (Like Philips Bulbs)
 define("FORCE_FADE_OFF", 					0);							//makes it so when lights are turned on they fade to their assigned value from 0 (Like Philips Bulbs)
 
-define("SAVE_SCHEDULE", 					1); 						//saves schedule to a binary file on save sched.sched
+define("SAVE_SCHEDULE", 					1); 						//saves schedule to a binary file on save schedule.sched
 define("LOG_ACTIONS", 						1); 						//saves completed actions to schedule.actioned
 define("LOG_API_CALLS", 					1);							//log issued API calls
 
