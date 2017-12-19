@@ -64,7 +64,7 @@ $(function(){
 				$('#command_dim_2').html("Dim " + roomName + preface + " lights to # %");
 				$('#command_dim_3').html("Set " + roomName + preface + " lights to # %");
 				$('#command_dim_response').html("Adjusting " + roomName + " lights");
-				$('#command_dim_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=dimby&type=room&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+				$('#command_dim_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=dim&type=room&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 				
 				$('#command_brighten_1').html("Increase " +  roomName +  preface + " lights brightness by # %");
 				$('#command_brighten_2').html("Brighten " + roomName + preface + " lights by # %");
@@ -98,7 +98,7 @@ $(function(){
 				$('#command_dim_2').html("Dim " + roomName + preface + " light to # %");
 				$('#command_dim_3').html("Set " + roomName + preface + " light brightness to # %");
 				$('#command_dim_response').html("Adjusting " + roomName + " brightness");
-				$('#command_dim_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=dimby&type=device&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+				$('#command_dim_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=dim&type=device&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 				
 				
 				$('#command_brighten_1').html("Increase " +  roomName +  preface + " light brightness by # %");
