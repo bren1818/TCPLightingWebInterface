@@ -169,6 +169,16 @@ if( TOKEN != "" ){
 				</div>
 				<?php
 			}
+			
+			?>
+			<div class="scene-container" id="scene-id--1">
+				<div class="scene-info"><a href="scenescreatedit.php?SID=-1"><img src="css/images/info.png"/></a></div>
+				<p><a href="scenescreatedit.php?SID=-1"><b>Create New</b></a></p>
+				<p><img src="css/images/scene/bolt.png" /></p>
+			</div>
+			<?php
+			
+			
 			echo '<div class="clear"></div>';
 	}
 	echo '</div>';
