@@ -160,7 +160,7 @@ if( TOKEN != "" ){
 				<div class="scene-container" id="scene-id-<?php echo $scenes[$x]["sid"]; ?>">
                 	<div class="scene-info"><a href="scenescreatedit.php?SID=<?php echo $scenes[$x]["sid"]; ?>"><img src="css/images/info.png"/></a></div>
 					<p><b><?php echo $scenes[$x]["name"]; ?></b></p>
-					<p><img src="css/<?php echo $scenes[$x]["icon"]; ?>" /></p>
+					<p><img src="css/<?php echo $scenes[$x]["icon"]; ?>" /> <?php echo ($scenes[$x]["active"] == 0 ? "&#10074;&#10074; (deactivated)" : "" )  ?></p>
 					<p>
                         <button data-scene-mode="run" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene">Run Scene</button> 
                         <button data-scene-mode="off" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene">Scene Devices Off</button> 

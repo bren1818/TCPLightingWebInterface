@@ -6,6 +6,7 @@
 	 */
 
 	include "include.php";
+	
 	if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST'){
 		/*For Saving Scene*/
 		$action = "";
@@ -40,7 +41,7 @@
 			
 			$icon = "images/scene/". $_POST['icon'];
 			$type = "manualcustom";
-			$active = "1";
+			$active = $_POST["active"];
 			$name = $_POST['name'];
 			
 			
@@ -64,7 +65,7 @@
 			
 						
 		
-			$cmd = "cmd=SceneCreateEdit&data=<gip><version>1</version><token>".TOKEN."</token>".$sceneID."<active>1</active>";
+			$cmd = "cmd=SceneCreateEdit&data=<gip><version>1</version><token>".TOKEN."</token>".$sceneID."<active>".$active."</active>";
 			$cmd .= "<name>".$name."</name>";
 			$cmd .= "<type>".$type."</type>";
 			$cmd .= "<islocal>1</islocal>"; //unknown...
@@ -80,25 +81,7 @@
 			ob_clean();
 			echo json_encode( array("success" => 1, "cmd" => $cmd, "scene" => $array["sid"], "fx" => $action, "resp" => $array) );
 			
-			/*
-			if (this.every != null && this.every.length() > 0) {
-				dataString.append(String.format("<every>%s</every>", new Object[]{xmlEscape(this.every)}));
-			}
-			if (this.starttime != null && this.starttime.length() > 0) {
-				dataString.append(String.format("<starttime>%s</starttime>", new Object[]{xmlEscape(this.starttime)}));
-			}
-			if (this.stoptime != null && this.stoptime.length() > 0) {
-				dataString.append(String.format("<stoptime>%s</stoptime>", new Object[]{xmlEscape(this.stoptime)}));
-			}
-			if (this.masterid != null && this.masterid.length() > 0) {
-				dataString.append(String.format("<masterid>%s</masterid>", new Object[]{xmlEscape(this.masterid)}));
-			}
-			if (this.image != null && this.image.length() > 0) {
-				dataString.append(String.format("<icon>%s</icon>", new Object[]{xmlEscape(this.image)}));
-			}
-			
-			*/
-			
+		
 			
 		}
 		
@@ -110,6 +93,10 @@
 			ob_clean();
 			echo json_encode( array("success" => 1, "scene" => $sceneID, "fx" => $action, "resp" => $array) );
 		}
+		
+
+		
+		
 		exit;
 	}
 	pageHeader("TCP Lighting - Scene Controller");
@@ -188,12 +175,12 @@
 			//get rooms, then devices
 			$('.roomSceneContainer').each(function(){
 				
-				console.log( $(this).attr('data-room-name') + " Room ID: " + $(this).attr('data-room-id') + " - toggled: " + $(this).find(' > .EnabledOrNot > input.roomToggle').prop('checked') );
+				//console.log( $(this).attr('data-room-name') + " Room ID: " + $(this).attr('data-room-id') + " - toggled: " + $(this).find(' > .EnabledOrNot > input.roomToggle').prop('checked') );
 				var rid = $(this).attr('data-room-id');
 				var rname = $(this).attr('data-room-name');
 				var ron = "";
 				var rval = "";
-				var renabled = 1;
+				
 				
 				//if checked, get the on or off setting, 
 				if( $(this).find(' > .EnabledOrNot > input.roomToggle').prop('checked') == true ){
@@ -211,7 +198,7 @@
 						rval = 0;
 					}
 					
-					rooms.push({ rid: rid, name: rname, toggled : ron, value: rval, enabled: renabled  });
+					rooms.push({ rid: rid, name: rname, toggled : ron, value: rval, renabled: 1  });
 	
 				}else{
 					//if off, check rooms
@@ -219,7 +206,7 @@
 						var did = $(this).attr('data-device-id');
 						var don = "";
 						var dval = "";
-						var denabled = 1;
+						
 						
 						var dname = $(this).find(' > p').html();
 						if( $(this).find('.EnabledOrNot > input.deviceToggle').prop('checked') == true ){
@@ -238,7 +225,7 @@
 								dval = 0;
 							}
 							
-							devices.push( { did: did, name: dname, toggled: don, value: dval, enabled: denabled } );
+							devices.push( { did: did, name: dname, toggled: don, value: dval, enabled: 1 } );
 						}else{
 							//ignore device
 							console.log(dname + " not part of scene.");
@@ -250,8 +237,9 @@
 			var sID = $('#sceneID').attr('value');
 			var sName = $('#SceneName').attr('value');
 			var icon = $('#sceneIcon option:selected').attr('value');
+			var enabled = $('input[name="sceneActive"]:checked').attr('value');
 			
-			var scene = {action : "save", sceneID: sID, name: sName, icon: icon,  rooms: rooms, devices: devices };
+			var scene = {action : "save", sceneID: sID, name: sName, icon: icon,  rooms: rooms, devices: devices, active: enabled };
 			
 			console.log( scene );
 			
@@ -292,6 +280,19 @@
 			}
 		});
 		
+		$('#sceneDisabled').click(function(event){
+			event.preventDefault();
+			var SID = $('#sceneID').attr('value');
+			$.post( "scenescreatedit.php",  { action: 'disable', sceneID: SID } ).done( function( data ){
+				var resp =  jQuery.parseJSON( data );
+				if( resp.resp.rc == 200 ){
+					window.alert("Scene Disabled!");
+				}else{
+					window.alert("There may have been an error in disabling the scene.");
+				}	
+			});
+		});
+		
 		
 		$('#sceneIcon').change(function(event){
 			event.preventDefault();
@@ -322,7 +323,7 @@
 			if($scenes[$x]["sid"] == $scene ){
 				$foundScene = 1;
 				
-				//pa( $scenes[$x] );
+			
 			?>
 			<div class="scene-container" id="scene-id-<?php echo $scenes[$x]["sid"]; ?>">
                 	
@@ -341,12 +342,21 @@
                         <button id="runScene" data-scene-mode="run" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene">Run Scene</button> 
                         <button id="sceneOff" data-scene-mode="off" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene">Scene Devices Off</button> 
                         <button id="sceneOn" data-scene-mode="on" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene">Scene Devices On</button>
+						
+                        
                     </p>
 			</div>
 			<p>Scene ID: <?php echo $scenes[$x]["sid"]; ?></p>
 			<p>Scene Name: <input id="SceneName" type="text" value="<?php echo $scenes[$x]["name"]; ?>" /><p>
+			<p>Scene Enabled: <input type="radio" value="1" name="sceneActive" <?php echo ($scenes[$x]["active"] == 1 ? "checked" : "" ); ?>/> Scene Disabled: <input type="radio" value="0" name="sceneActive" <?php echo ($scenes[$x]["active"] == 0 ? "checked" : "" ); ?>/></p>
+			
 			<p>Save Scene: <button id="saveScene" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>">Save Scene</button></p>
 			<p>Delete Scene: <button id="deleteScene" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>">Delete Scene</button></p>
+			
+			
+			
+			
+			
 			<input type="hidden" value="<?php echo $scenes[$x]["sid"]; ?>" name="sceneID" id="sceneID" />
 			<!--<input type="hidden" value="<?php echo $scenes[$x]["sid"]; ?>" name="sceneIcon" id="sceneIcon" />-->
 			
@@ -399,7 +409,7 @@
 			
 			<?php
 			
-			error_reporting(0);
+			
 		}
 		
 		?>

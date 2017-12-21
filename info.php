@@ -223,7 +223,7 @@ if( isset($_REQUEST['did']) && $_REQUEST['did'] != "" ){
 		}
 		?>
 		<br />
-<label for="remote">Assigned Remote Control Button: <br />
+		<label for="remote">Assigned Remote Control Button: <br />
 		<?php
 			if( isset($array['other']['rcgroup']) &&  $array['other']['rcgroup'] != "" ){
 				$rcID = $array['other']['rcgroup'];
@@ -296,9 +296,10 @@ if( isset($_REQUEST['rid']) && $_REQUEST['rid'] != "" ){
 			echo '<h3>&lsquo;'.$room["name"].'&rsquo; - Room ID: '.$rid.'</h3>';
 			?>
 			<input type="hidden" name="rid" value="<?php echo $rid; ?>" />
-			<label for="name">Name: <input name="name" id="name" value="<?php echo $room["name"]; ?>" /></label><br />
 			
-			<label for="color">Color: 
+			<p><label for="name">Name: <input name="name" id="name" value="<?php echo $room["name"]; ?>" /></label></p>
+			
+			<p><label for="color">Color: 
 			<select name="color">
 				<option value="0" <?php echo ($room["colorid"] == 0 ? "selected" : ""); ?>>Black <?php echo isset( $ROOM_COLOURS[0] ) ?  ' ('.$ROOM_COLOURS[0]['name'].')' : ''; ?></option>
 				<option value="1" <?php echo ($room["colorid"] == 1 ? "selected" : ""); ?>>Green <?php echo isset( $ROOM_COLOURS[1] ) ?  ' ('.$ROOM_COLOURS[1]['name'].')' : ''; ?></option>
@@ -312,13 +313,12 @@ if( isset($_REQUEST['rid']) && $_REQUEST['rid'] != "" ){
 			</select> 
 			<?php
 				if( isset($ROOM_COLOURS[ $room["colorid"] ]) ){
-					echo '<div style="display: inline-block; background-color: #'.$ROOM_COLOURS[ $room["colorid"] ]["hex"].';">'.$ROOM_COLOURS[ $room["colorid"] ]["hex"].'</div>'; //<img src="'.IMAGE_PATH.'rooms/'.$ROOM_COLOURS[ $room["colorid"] ]["image"].'" alt="'.$ROOM_COLOURS[ $room["colorid"] ]["hex"].'" />
+					echo '<div style="display: inline-block; background-color: #'.$ROOM_COLOURS[ $room["colorid"] ]["hex"].'; padding: 5px;">'.$ROOM_COLOURS[ $room["colorid"] ]["hex"].'</div>'; 
 				}
 			?>
-		</label><br />
+		</label></p>
 		
-		
-		
+	
 		<input type="submit" value="UPDATE" />
 		</fieldset>
 		</form>

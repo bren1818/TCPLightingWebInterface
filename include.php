@@ -4,6 +4,8 @@
  * PHP includes
  *
  */
+ error_reporting(0);
+ 
 include "config.inc.php";
 
 
