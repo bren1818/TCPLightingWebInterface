@@ -159,7 +159,7 @@ if( TOKEN != "" ){
 				?>
 				<div class="scene-container" id="scene-id-<?php echo $scenes[$x]["sid"]; ?>">
                 	<div class="scene-info"><a href="scenescreatedit.php?SID=<?php echo $scenes[$x]["sid"]; ?>"><img src="css/images/info.png"/></a></div>
-					<p><b><?php echo $scenes[$x]["name"]; ?></b> (<?php echo is_array($scenes[$x]["device"]) ? sizeof($scenes[$x]["device"]) : ""; ?>)</p>
+					<p><b><?php echo $scenes[$x]["name"]; ?></b></p>
 					<p><img src="css/<?php echo $scenes[$x]["icon"]; ?>" /></p>
 					<p>
                         <button data-scene-mode="run" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene">Run Scene</button> 

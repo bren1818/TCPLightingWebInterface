@@ -88,9 +88,18 @@ if( TOKEN != "" ){
 	</form>
 	<?php
 	echo '<br /><h3>Other Info</h3><br /><hr /><br />';
+	
+	
+	
+	$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>AccountGetExtras</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
+	$result = getCurlReturn($CMD);
+	$array = xmlToArray($result);
+	$time = $array["gwrcmd"]["gdata"]["gip"]["datetime"];
+	echo "<p>Bridge Time: " . $time. "</p>";
+	
+	
 	$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>GatewayGetInfo</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
 	$result = getCurlReturn($CMD);
-	
 	$array = xmlToArray($result);
 	$array =  $array["gwrcmd"]["gdata"]["gip"]["gateway"];
 	pa($array);
