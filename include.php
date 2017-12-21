@@ -152,7 +152,7 @@ function pageHeader($title){
 
 function pageFooter(){
 ?>
-	<div id="toolBar"><a href="scheduler.php">Lighting Scheduler</a> | <a href="createDevice.php">Create Virtual Device</a> | <a href="setDateTime.php">Set Bridge Date Time</a></div>
+	<div id="toolBar"><a href="scheduler.php">Lighting Scheduler</a> | <a href="createDevice.php">Create Virtual Device</a> | <a href="setDateTime.php">Set Bridge Date Time</a> | <a href="discoverBulbs.php">Search for New Bulbs. (Beta)</a> </div>
 </body>
 </html>	
 	<?php

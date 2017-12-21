@@ -159,7 +159,7 @@ if( isset($_REQUEST['did']) && $_REQUEST['did'] != "" ){
 	?>
 
 	<?php
-	echo '<div class="container" style="background-color: #fff; padding: 20px; border: 1px solid #000;">';
+	echo '<div class="roomContainer" style="background-color: #fff; padding: 20px; border: 1px solid #000;">';
 	//echo '<h2>Device Info</h2>';
 	//echo '<p><b>Device ID:'.$did.'</b></p>';
 	
@@ -267,7 +267,7 @@ if( isset($_REQUEST['did']) && $_REQUEST['did'] != "" ){
 	echo '</div>';
 	?>
 	</div>
-	<div id="arrayDump" class="container">
+	<div id="arrayDump" class="roomContainer">
 	<?php
 	pa( $array );
 	?>
@@ -279,23 +279,21 @@ if( isset($_REQUEST['did']) && $_REQUEST['did'] != "" ){
 if( isset($_REQUEST['rid']) && $_REQUEST['rid'] != "" ){	
 	$rid = $_REQUEST['rid'];
 	pageHeader("TCP Lighting Controller - Room Controller - Room: ".$rid);
-	?>
-	<div id="toolBar"><a href="index.php">Lighting Controls</a> | <a href="scheduler.php">Lighting Scheduler</a> | <a href="apitest.php">API Test Zone</a> | <a href="scenes.php">Scenes/Smart Control</a></div>
-	<?php
+	
 	$CMD = "cmd=RoomGetInfoAll&data=<gip><version>1</version><token>".TOKEN."</token><rid>".$rid."</rid><fields>name,power,product,class,image,imageurl,control,other</fields></gip>";
 	
 	$result = getCurlReturn($CMD);
 	$room = xmlToArray($result);
 	
 	
-	echo '<div class="container">';
+	echo '<div class="roomContainer" style="background-color: #fff; padding: 20px; border: 1px solid #000; margin-top: 20px;">';
 	?>
 	<form method="post" action="info.php" enctype="multipart/form-data">
 		<fieldset>
 			<legend>Update Room</legend>
 			<?php	
 
-			echo '<h3>&lsquo;'.$room["name"].'&rsquo; - room ID: '.$rid.'</h3>';
+			echo '<h3>&lsquo;'.$room["name"].'&rsquo; - Room ID: '.$rid.'</h3>';
 			?>
 			<input type="hidden" name="rid" value="<?php echo $rid; ?>" />
 			<label for="name">Name: <input name="name" id="name" value="<?php echo $room["name"]; ?>" /></label><br />
@@ -325,7 +323,7 @@ if( isset($_REQUEST['rid']) && $_REQUEST['rid'] != "" ){
 		</fieldset>
 		</form>
 			<?php
-			echo '<div class="roomContainer" data-room-id="'. $rid.'">';
+			echo '<div class="roomContainer" data-room-id="'. $rid.'" style="margin-top:20px;">';
 			$DEVICES = array();
 			$deviceCount = 0;	
 			if( ! is_array($room["device"]) ){
@@ -358,7 +356,7 @@ if( isset($_REQUEST['rid']) && $_REQUEST['rid'] != "" ){
 						echo '<div class="'.( (isset($device['offline']) && $device['offline'] == 1) ? 'unplugged' : 'plugged' ).' device '.($device['state'] == 1 ? 'light-on' : 'light-off' ).' '.($device['prodtype'] == 'Light Fixture' ? 'light-fixture' : '' ).'" data-device-id="'.$device['did'].'">'; //power > 0 then enabled 
 							//level = brightness
 							//state = on or off
-							echo '<p>'.$device['name'].' <a href="info.php?did='.$device['did'].'"><img src="/images/info.png"/></a></p>';
+							echo '<p style="display: block !important;">'.$device['name'].' <a href="info.php?did='.$device['did'].'"><img src="css/images/info.png"/></a></p>';
 							echo '<button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOn">On</button> | <button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOff">Off</button>';
 							echo '<div class="clear"></div>';
 							echo '<p>Brightness:</p>';
@@ -386,7 +384,7 @@ if( isset($_REQUEST['rid']) && $_REQUEST['rid'] != "" ){
 
 	
 	?>
-	<div id="arrayDump" class="container">
+	<div id="arrayDump" class="roomContainer" style="padding: 20px;">
 	<?php
 	pa( $room );
 	?>
