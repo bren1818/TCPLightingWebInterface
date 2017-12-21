@@ -150,7 +150,7 @@ echo '<div class="container" style="padding: 20px; background-color: #fff;">';
 					<option value="3">Button 3</option>
 					<option value="4">Button 4</option>
 				</select><br />
-				<img id="remote" style="display: none;" src="<?php echo LOCAL_URL; ?>/images/remote.png" />
+				<img id="remote" style="display: none;" src="css/images/remote.png" />
 			</label><br />
 			
 		<table>
