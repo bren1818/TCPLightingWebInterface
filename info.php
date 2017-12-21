@@ -30,7 +30,7 @@ Array
             [type] => 0
             [color] => 000000
             [colorid] => 0
-            [img] => images/black.png
+            [img] => css/images/black.png
             [power] => 0
             [poweravg] => 0
             [energy] => 0
@@ -238,7 +238,7 @@ if( isset($_REQUEST['did']) && $_REQUEST['did'] != "" ){
 				<option value="3" <?php echo ($rcID == 3 ? " Selected" : ""  ); ?>>Button 3</option>
 				<option value="4" <?php echo ($rcID == 4 ? " Selected" : ""  ); ?>>Button 4</option>
 			</select><br />
-			<img id="remote" style="display: none;" src="<?php echo LOCAL_URL; ?>/images/remote.png" />
+			<img id="remote" style="display: none;" src="<?php echo LOCAL_URL; ?>/css/images/remote.png" />
 		</label><br />
 		
 		<input type="hidden" name="did" value="<?php echo $did; ?>" /><br />
@@ -356,7 +356,9 @@ if( isset($_REQUEST['rid']) && $_REQUEST['rid'] != "" ){
 						echo '<div class="'.( (isset($device['offline']) && $device['offline'] == 1) ? 'unplugged' : 'plugged' ).' device '.($device['state'] == 1 ? 'light-on' : 'light-off' ).' '.($device['prodtype'] == 'Light Fixture' ? 'light-fixture' : '' ).'" data-device-id="'.$device['did'].'">'; //power > 0 then enabled 
 							//level = brightness
 							//state = on or off
+
 							echo '<p style="display: block !important;">'.$device['name'].' <a href="info.php?did='.$device['did'].'"><img src="css/images/info.png"/></a></p>';
+
 							echo '<button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOn">On</button> | <button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOff">Off</button>';
 							echo '<div class="clear"></div>';
 							echo '<p>Brightness:</p>';
