@@ -94,7 +94,10 @@ if( TOKEN != "" ){
 								//state = on or off
 								
 								if( isset($device['offline']) && $device['offline'] == 1){ $unplugged++; }
-									
+								
+								if( isset($device["other"]) && isset( $device["other"]["rcgroup"] ) && $device["other"]["rcgroup"] != null ){
+									echo '<div class="control-button">'.$device["other"]["rcgroup"].'</div>';
+								}								
 								
 								echo '<p class="device-name"><b>'.$device['name'].'</b> <a href="info.php?did='.$device['did'].'"><img src="css/images/info.png"/></a></p>';
 								echo '<p class="on-off-buttons"><button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOn">On</button> | <button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOff">Off</button></p>';

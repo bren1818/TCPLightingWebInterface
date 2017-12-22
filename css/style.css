@@ -73,6 +73,7 @@ a.info{ display: block; height: 30px; line-height: 30px; width: 30px; float: rig
 	float: left;
 	border: 1px solid #000;
 	background-position-x: center;
+	position: relative;
 }
 
 .room-controls{
@@ -154,7 +155,7 @@ a.info{ display: block; height: 30px; line-height: 30px; width: 30px; float: rig
 .unplugged .device-slider,
 .unplugged button{ display: none; }
 
-.unplugged p.device-name{ display: block; background-color: rgba(255,255,255,.7); padding: 20px; }
+.unplugged p.device-name{ display: block; background-color: rgba(255,255,255,.7); padding: 10px; }
 
 .home-controls,
 .home-devices{
@@ -265,3 +266,30 @@ input:checked + .slider:before {
 }
 
 /*End Switch*/
+
+div.control-button{
+	border: 1px solid #000;
+	border-radius: 2px;
+	background-color: #fff;
+	text-align: center;
+	width: 25px;
+	height: 25px;
+	line-height: 20px;
+	position: absolute;
+	right: 4px;
+	top: 4px;
+}
+
+.device.unplugged div.control-button::after,
+.device.plugged div.control-button::after{
+	content: '•';
+	color: #0f0;
+	position: relative;
+	bottom: -7px;
+	left: 2px;
+}
+
+.device.unplugged div.control-button::after{
+	color: #f00;
+}
+

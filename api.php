@@ -449,9 +449,101 @@
 			}else{
 				echo json_encode( array("error" => "No Scene mode specified") );
 			}
-			
-		}else{
-			echo json_encode( array("error" => "argument empty or invalid. Required: fx, type, UID, val", "recieved" => $_REQUEST) );
+			exit;
 		}
+		
+		if( $function == "getState" ){
+			
+			$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
+			$result = getCurlReturn($CMD);
+			$array = xmlToArray($result);
+			if( !isset($array["gwrcmd"]) ){
+				exit;
+			}
+			
+			$DEVICES = array();
+			if( isset( $array["gwrcmd"]["gdata"]["gip"]["room"] ) ){
+				$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
+			}else{
+				exit;
+			}
+			$ROOMS  = array();
+			$BRIDGE = array();
+			if( sizeof($DATA) > 0 ){
+				if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
+				
+				
+				foreach($DATA as $room){
+					$thisRoom = array();
+					
+					
+					if( isset($room['rid'] ) ){
+						$thisRoom["room_id"] = $room['rid'];
+						$thisRoom["name"] = $room['name'];
+						$thisRoom["color"] = $room['color'];
+						$thisRoom["colorid"] = $room['colorid'];
+						$thisRoom["brightness"] = 0;
+						//$thisRoom["data"] = $room;
+						
+						if( ! is_array($room["device"]) ){
+						
+						}else{
+							
+							$device = (array)$room["device"];
+							if( isset($device["did"]) ){
+								$rd = array();
+								$rd["id"] = $device["did"];
+								$rd["name"] = $device["name"];
+								$rd["level"] = ($device["level"] != null ? (int)$device["level"] : 0);
+								$rd["state"] = $device["state"];
+								$rd["online"] = (isset($device['offline']) && $device['offline'] == 1) ? 1 : 0;
+								if( isset($device["other"]) && isset( $device["other"]["rcgroup"] ) && $device["other"]["rcgroup"] != null ){
+									$rd["buttonNum"] = $device["other"]["rcgroup"];
+								}
+								$thisRoom["brightness"] += $rd["level"];
+								$thisRoom["devices"][] = $rd;
+									
+							}else{
+								for( $x = 0; $x < sizeof($device); $x++ ){
+									if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
+										$rd = array();
+										
+										$rd["id"] = $device[$x]["did"];
+										$rd["name"] = $device[$x]["name"];
+										$rd["level"] = ( $device[$x]["level"] != null ? (int)$device[$x]["level"] : 0);
+										$rd["state"] = $device[$x]["state"];
+										$rd["online"] = (isset($device[$x]['offline']) && $device[$x]['offline'] == 1) ? 1 : 0;
+										if( isset($device[$x]["other"]) && isset( $device[$x]["other"]["rcgroup"] ) && $device[$x]["other"]["rcgroup"] != null ){
+											$rd["buttonNum"] = $device[$x]["other"]["rcgroup"];
+										}
+								
+										$thisRoom["brightness"]+= $rd["level"];
+										$thisRoom["devices"][] = $rd;
+									}
+								}
+							}
+						}
+					
+						$thisRoom["devicesCount"] = sizeof( $thisRoom["devices"] );
+						$thisRoom["brightness"] = (int)($thisRoom["brightness"] / $thisRoom["devicesCount"]);
+						
+						$ROOMS[] = $thisRoom;
+					}
+				}
+				
+			}
+			
+			$BRIDGE["rooms"] = $ROOMS;
+			$BRIDGE["roomCount"] = sizeof($ROOMS);
+			
+			
+			
+			header('Content-Type: application/json');
+			echo json_encode( $BRIDGE );
+			exit;
+		}
+		
+		echo json_encode( array("error" => "argument empty or invalid. Required: fx, type, UID, val", "recieved" => $_REQUEST) );
+		
 	}
 ?>	

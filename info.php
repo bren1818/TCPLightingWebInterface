@@ -253,7 +253,7 @@ if( isset($_REQUEST['did']) && $_REQUEST['did'] != "" ){
 			echo '<div class="'.( (isset($device['offline']) && $device['offline'] == 1) ? 'unplugged' : 'plugged' ).' device '.($device['state'] == 1 ? 'light-on' : 'light-off' ).' '.($device['prodtype'] == 'Light Fixture' ? 'light-fixture' : '' ).'" data-device-id="'.$device['did'].'">'; //power > 0 then enabled 
 				//level = brightness
 				//state = on or off
-				echo '<p>'.$device['name'].'</p>';
+				echo '<p style="display: block !important">'.$device['name'].'</p>';
 				echo '<button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOn">On</button> | <button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOff">Off</button>';
 				echo '<div class="clear"></div>';
 				echo '<p>Brightness:</p>';
@@ -267,7 +267,7 @@ if( isset($_REQUEST['did']) && $_REQUEST['did'] != "" ){
 	echo '</div>';
 	?>
 	</div>
-	<div id="arrayDump" class="roomContainer">
+	<div id="arrayDump" class="roomContainer" style="padding: 20px;">
 	<?php
 	pa( $array );
 	?>
