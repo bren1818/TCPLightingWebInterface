@@ -268,8 +268,8 @@ input:checked + .slider:before {
 /*End Switch*/
 
 div.control-button{
-	border: 1px solid #000;
-	border-radius: 2px;
+	border: 1px solid #999;
+	border-radius: 4px;
 	background-color: #fff;
 	text-align: center;
 	width: 25px;
@@ -278,6 +278,7 @@ div.control-button{
 	position: absolute;
 	right: 4px;
 	top: 4px;
+	font-size: 12px;
 }
 
 .device.unplugged div.control-button::after,

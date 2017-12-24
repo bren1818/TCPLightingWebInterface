@@ -95,7 +95,7 @@ if( TOKEN != "" ){
 								
 								if( isset($device['offline']) && $device['offline'] == 1){ $unplugged++; }
 								
-								if( isset($device["other"]) && isset( $device["other"]["rcgroup"] ) && $device["other"]["rcgroup"] != null ){
+								if( isset($device["other"]) && isset( $device["other"]["rcgroup"] ) && $device["other"]["rcgroup"] != null &&  $device["other"]["rcgroup"]  <= 4 ){
 									echo '<div class="control-button">'.$device["other"]["rcgroup"].'</div>';
 								}								
 								
