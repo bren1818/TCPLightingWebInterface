@@ -130,21 +130,21 @@ $(function(){
 			$('#scene_command_on_3').html(sceneName + preface + " scene on");
 			$('#scene_command_on_response').html("Turning " + sceneName + preface + " devices ON");
 			
-			$('#scene_command_on_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=on&uid=' + id + '&val=1' + ( requireExtPass == 1 ? '&password=' + externalPass : '')  );
+			$('#scene_command_on_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=on&uid=' + id + '' + ( requireExtPass == 1 ? '&password=' + externalPass : '')  );
 			
 			$('#scene_command_off_1').html("Deactivate " +  sceneName + preface + " scene");
 			$('#scene_command_off_2').html("Turn " + sceneName + preface + " scene off");
 			$('#scene_command_off_3').html(sceneName  + preface + " scene off");
 			$('#scene_command_off_response').html("Turning " + sceneName + preface + " devices off");
 			
-			$('#scene_command_off_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=off&uid=' + id + '&val=0' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+			$('#scene_command_off_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=off&uid=' + id + '' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 			
 			$('#command_run_1').html("Activate " +  sceneName + preface +" scene");
 			$('#command_run_2').html("Turn " + sceneName + preface + " scene on");
 			$('#command_run_3').html(sceneName + " scene on");
 			$('#command_run_response').html("Running " + preface + sceneName + " scene");
 			
-			$('#command_run_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=run&uid=' + id + '&val=' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+			$('#command_run_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=run&uid=' + id + '' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 			
 		}
 
