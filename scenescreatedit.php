@@ -183,6 +183,10 @@
 
 	#scheduleContainer .scheduleEnabled-1{ display: block; }
 	#scheduleContainer .scheduleEnabled-0{ display: none; }
+	
+	.scene-disabled #runScene, .scene-disabled #sceneOff, .scene-disabled #sceneOn{
+		display: none;
+	}
 </style>
 <script>
 	$(function(){
@@ -369,6 +373,12 @@
 				var json =  jQuery.parseJSON( data );
 				if( json.resp.rc == 200 ){
 					window.alert("Scene Saved");
+					$('#scene-id-' + sID ).removeClass("scene-disabled scene-enabled");
+					if( enabled == 1 ){
+						$('#scene-id-' + sID ).addClass("scene-enabled");
+					}else{
+						$('#scene-id-' + sID ).addClass("scene-disabled");
+					}
 				}
 				
 				if( sID != json.resp.sid && sID == -1){
@@ -465,7 +475,7 @@
 			if($scenes[$x]["sid"] == $scene ){
 				$foundScene = 1;
 			?>
-			<div class="scene-container" id="scene-id-<?php echo $scenes[$x]["sid"]; ?>">
+			<div class="scene-container <?php echo $scenes[$x]["active"] == 1 ? "scene-enabled" : "scene-disabled"; ?>" id="scene-id-<?php echo $scenes[$x]["sid"]; ?>">
                 	
 					<!--<p><b><?php echo $scenes[$x]["name"]; ?></b> (<?php echo is_array($scenes[$x]["device"]) ? sizeof($scenes[$x]["device"]) : ""; ?>)</p>-->
 					<p><img id="icon" src="css/<?php echo $scenes[$x]["icon"]; ?>" /></p>
