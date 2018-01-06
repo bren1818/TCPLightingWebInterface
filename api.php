@@ -452,7 +452,8 @@
 			exit;
 		}
 		
-		if( $function == "getState" ){
+		if( $function == "getState" || $function == "getDeviceState" || $function == "getRoomState"){
+			
 			
 			$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
 			$result = getCurlReturn($CMD);
@@ -484,6 +485,8 @@
 						$thisRoom["colorid"] = $room['colorid'];
 						$thisRoom["brightness"] = 0;
 						//$thisRoom["data"] = $room;
+						$thisRoom["state"] = 0;
+						
 						
 						if( ! is_array($room["device"]) ){
 						
@@ -502,6 +505,16 @@
 								}
 								$thisRoom["brightness"] += $rd["level"];
 								$thisRoom["devices"][] = $rd;
+								
+								if( $device["state"] > 0 ){
+									$thisRoom["state"] = (int)$thisRoom["state"] + 1;
+								}
+									
+								if( $function == "getDeviceState" && $UID ==  $device["did"] ){
+									ob_clean();
+									echo trim($device["state"]);
+									exit;
+								}	
 									
 							}else{
 								for( $x = 0; $x < sizeof($device); $x++ ){
@@ -519,13 +532,34 @@
 								
 										$thisRoom["brightness"]+= $rd["level"];
 										$thisRoom["devices"][] = $rd;
+										
+										if( $device[$x]["state"] > 0 ){
+											$thisRoom["state"] = (int)$thisRoom["state"] + 1;
+										}
+								
+										if( $function == "getDeviceState" && $UID == $device[$x]["did"] ){
+											ob_clean();
+											echo trim($device[$x]["state"]);
+											exit;
+										}	
+										
 									}
 								}
 							}
 						}
 					
+						
+						if( $function == "getRoomState" && $UID ==  $room['rid'] ){
+							ob_clean();
+							echo ( $thisRoom["state"] > 0 ) ? 1 : 0;
+							exit;
+						}
+					
+						
+						
 						$thisRoom["devicesCount"] = sizeof( $thisRoom["devices"] );
 						$thisRoom["brightness"] = (int)($thisRoom["brightness"] / $thisRoom["devicesCount"]);
+						$thisRoom["state"] = ( $thisRoom["state"] > 0 ) ? ( $thisRoom["state"] / sizeof( $thisRoom["devices"] ) ) : 0; 
 						
 						$ROOMS[] = $thisRoom;
 					}
@@ -537,10 +571,14 @@
 			$BRIDGE["roomCount"] = sizeof($ROOMS);
 			
 			
-			
-			header('Content-Type: application/json');
-			echo json_encode( $BRIDGE );
-			exit;
+			if( $function == "getState"  ){
+				header('Content-Type: application/json');
+				echo json_encode( $BRIDGE );
+				exit;
+			}else{
+				echo '-1';
+				exit;
+			}
 		}
 		
 		echo json_encode( array("error" => "argument empty or invalid. Required: fx, type, UID, val", "recieved" => $_REQUEST) );
