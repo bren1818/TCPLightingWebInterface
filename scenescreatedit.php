@@ -41,8 +41,8 @@
 			
 			$icon = "images/scene/". $_POST['icon'];
 			$type = "manualcustom";
-			$active = $_POST["active"];
-			$name = $_POST['name'];
+			$active = isset($_POST["active"]) ? $_POST["active"] : 1 ;
+			$name = isset($_POST['name']) ? $_POST['name'] : "New Scene";
 			$schedule = -1;
 			$startTime = -1;
 			$stopTime = -1;
@@ -79,6 +79,7 @@
 					//exit;
 
 			$cmd = "cmd=SceneCreateEdit&data=<gip><version>1</version><token>".TOKEN."</token>".$sceneID."<active>".$active."</active>";
+			
 			$cmd .= "<name>".$name."</name>";
 			$cmd .= "<type>".$type."</type>";
 			$cmd .= "<islocal>1</islocal>"; //unknown...
@@ -240,14 +241,18 @@
 			}
 		});
 		
-		$('#saveScene, #save2').click(function(event){
+		
+		$('#saveScene').click(function(event){
+			event.preventDefault();
+			
+			console.log("here");
 			
 			$('.switch-val-0 .switch input.device-toggle').each(function(){
 				$(this).attr('value', 0); //fix for non zeroed out switches
 			});
 			
 			/*To Do - In Progress*/
-			event.preventDefault();
+			
 			var rooms = [];
 			var devices = [];
 			
@@ -314,8 +319,9 @@
 				}
 				
 			});
-			var sID = $('#sceneID').attr('value');
-			var sName = $('#SceneName').attr('value');
+			
+			var sID = $('#sceneID').val();
+			var sName = $('#SceneName').val();
 			var icon = $('#sceneIcon option:selected').attr('value');
 			var enabled = $('input[name="sceneActive"]:checked').attr('value');
 			var schedule = 0;
@@ -356,7 +362,6 @@
 				
 			}
 			
-			
 			var scene = {action : "save", sceneID: sID, name: sName, icon: icon,  rooms: rooms, devices: devices, active: enabled, schedule : schedule };
 			
 			$.post( "scenescreatedit.php",  scene ).done( function( data ){
@@ -368,6 +373,8 @@
 				
 				if( sID != json.resp.sid && sID == -1){
 					window.location = "scenescreatedit.php?SID=" + json.resp.sid;
+				
+				console.log( json );
 				}
 				
 			});
@@ -375,6 +382,12 @@
 			//post the scene data and save or update
 			
 		});
+		
+		$('#save2').click(function(event){
+			event.preventDefault();
+			$('#saveScene').click();
+		});
+		
 		
 		$('#deleteScene').click(function(event){
 			event.preventDefault();
