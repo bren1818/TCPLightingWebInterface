@@ -452,8 +452,72 @@
 			exit;
 		}
 		
-		if( $function == "getState" || $function == "getDeviceState" || $function == "getRoomState"){
+		$sceneDevices = array("rooms"=> array(), "devices" => array(), "count" => 0);
+		$sceneList = array();
+		
+		
+		if( $function == "getSceneState" || $function == "getState"){
+			if( $UID != "" || $function == "getState" ){
+				
+				$CMD = "cmd=SceneGetListDetails&data=<gip><version>1</version><token>".TOKEN."</token><bigicon>1</bigicon></gip>";
+				$result = getCurlReturn($CMD);
+				$array = xmlToArray($result);
+				$scenes = $array["scene"];
+				if( is_array($scenes) ){
+					$sceneItemCount = 0;
+					for($x = 0; $x < sizeof($scenes); $x++){
+						$sceneList[] = array("id" => $scenes[$x]["sid"], "name" => $scenes[$x]["name"], "icon" => $scenes[$x]["icon"], "active" =>  $scenes[$x]["active"] );
+						if( $scenes[$x]["sid"] == $UID ){
+							
+							//echo '<pre>'.print_r( $scenes[$x], true ).'</pre>';
+							
+							if( isset( $scenes[$x]["device"]["id"] ) ){
+								
+								$sceneItemCount = $sceneItemCount + 1;
+								//one item in scene
+								
+								$item = $scenes[$x]["device"];
+								if( $item["type"] == "D" ){
+									$sceneDevices["devices"][] = $item["id"];
+								}elseif( $item["type"] == "R" ){
+									$sceneDevices["rooms"][] = $item["id"];
+								}
+								
+								
+							}elseif( is_array(  $scenes[$x]["device"] ) ){
+								foreach( $scenes[$x]["device"] as $d ){
+									if( isset( $d["id"] ) ){
+										
+										$sceneItemCount = $sceneItemCount + 1;
+										if( $d["type"] == "D" ){
+											$sceneDevices["devices"][] = $d["id"];
+										}elseif( $d["type"] == "R" ){
+											$sceneDevices["rooms"][] = $d["id"];
+										}
+										
+									}
+								}
+							}
+							
+							$sceneDevices["count"] = $sceneItemCount;
+							//echo '<pre>'.print_r( $sceneDevices, true ).'</pre>';
+							//exit;
+						}
+					}
+					
+					
+				}	
+				
+				
+			}else{
+				echo json_encode( array("error" => "No Scene ID specified") );
+			}
+		}
+		
+		
+		if( $function == "getState" || $function == "getDeviceState" || $function == "getRoomState" || $function == "getSceneState" ){
 			
+			$sceneDeviceObjectsON = 0;
 			
 			$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
 			$result = getCurlReturn($CMD);
@@ -488,6 +552,8 @@
 						$thisRoom["state"] = 0;
 						
 						
+						
+						
 						if( ! is_array($room["device"]) ){
 						
 						}else{
@@ -509,6 +575,13 @@
 								if( $device["state"] > 0 ){
 									$thisRoom["state"] = (int)$thisRoom["state"] + 1;
 								}
+								
+								//
+								
+								if( $function == "getSceneState" && in_array( $rd["id"], $sceneDevices["devices"] ) && $rd["state"] > 0 ){
+									$sceneDeviceObjectsON++;
+								}
+								
 									
 								if( $function == "getDeviceState" && $UID ==  $device["did"] ){
 									ob_clean();
@@ -536,6 +609,13 @@
 										if( $device[$x]["state"] > 0 ){
 											$thisRoom["state"] = (int)$thisRoom["state"] + 1;
 										}
+										
+										//
+										
+										if( $function == "getSceneState" && in_array( $rd["id"], $sceneDevices["devices"] ) && $rd["state"] > 0 ){
+											$sceneDeviceObjectsON++;
+										}
+										
 								
 										if( $function == "getDeviceState" && $UID == $device[$x]["did"] ){
 											ob_clean();
@@ -555,6 +635,9 @@
 							exit;
 						}
 					
+						if( $function == "getSceneState" && in_array( $room['rid'], $sceneDevices["rooms"] ) && $thisRoom["state"] > 0 ){
+							$sceneDeviceObjectsON++;
+						}
 						
 						
 						$thisRoom["devicesCount"] = sizeof( $thisRoom["devices"] );
@@ -569,11 +652,23 @@
 			
 			$BRIDGE["rooms"] = $ROOMS;
 			$BRIDGE["roomCount"] = sizeof($ROOMS);
+			$BRIDGE["scenes"] = $sceneList;
+			$BRIDGE["sceneCount"] = sizeof( $sceneList );
 			
 			
 			if( $function == "getState"  ){
 				header('Content-Type: application/json');
 				echo json_encode( $BRIDGE );
+				exit;
+			}elseif( $function == "getSceneState" ){
+				
+				if( $sceneDeviceObjectsON == 0){
+					echo 0;
+				}elseif( $sceneDeviceObjectsON == $sceneDevices["count"] ){
+					echo 1;
+				}else{
+					echo $sceneDeviceObjectsON / $sceneDevices["count"];
+				}
 				exit;
 			}else{
 				echo '-1';
