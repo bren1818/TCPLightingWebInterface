@@ -449,9 +449,234 @@
 			}else{
 				echo json_encode( array("error" => "No Scene mode specified") );
 			}
-			
-		}else{
-			echo json_encode( array("error" => "argument empty or invalid. Required: fx, type, UID, val", "recieved" => $_REQUEST) );
+			exit;
 		}
+		
+		$sceneDevices = array("rooms"=> array(), "devices" => array(), "count" => 0);
+		$sceneList = array();
+		
+		
+		if( $function == "getSceneState" || $function == "getState"){
+			if( $UID != "" || $function == "getState" ){
+				
+				$CMD = "cmd=SceneGetListDetails&data=<gip><version>1</version><token>".TOKEN."</token><bigicon>1</bigicon></gip>";
+				$result = getCurlReturn($CMD);
+				$array = xmlToArray($result);
+				$scenes = $array["scene"];
+				if( is_array($scenes) ){
+					$sceneItemCount = 0;
+					for($x = 0; $x < sizeof($scenes); $x++){
+						$sceneList[] = array("id" => $scenes[$x]["sid"], "name" => $scenes[$x]["name"], "icon" => $scenes[$x]["icon"], "active" =>  $scenes[$x]["active"] );
+						if( $scenes[$x]["sid"] == $UID ){
+							
+							//echo '<pre>'.print_r( $scenes[$x], true ).'</pre>';
+							
+							if( isset( $scenes[$x]["device"]["id"] ) ){
+								
+								$sceneItemCount = $sceneItemCount + 1;
+								//one item in scene
+								
+								$item = $scenes[$x]["device"];
+								if( $item["type"] == "D" ){
+									$sceneDevices["devices"][] = $item["id"];
+								}elseif( $item["type"] == "R" ){
+									$sceneDevices["rooms"][] = $item["id"];
+								}
+								
+								
+							}elseif( is_array(  $scenes[$x]["device"] ) ){
+								foreach( $scenes[$x]["device"] as $d ){
+									if( isset( $d["id"] ) ){
+										
+										$sceneItemCount = $sceneItemCount + 1;
+										if( $d["type"] == "D" ){
+											$sceneDevices["devices"][] = $d["id"];
+										}elseif( $d["type"] == "R" ){
+											$sceneDevices["rooms"][] = $d["id"];
+										}
+										
+									}
+								}
+							}
+							
+							$sceneDevices["count"] = $sceneItemCount;
+							//echo '<pre>'.print_r( $sceneDevices, true ).'</pre>';
+							//exit;
+						}
+					}
+					
+					
+				}	
+				
+				
+			}else{
+				echo json_encode( array("error" => "No Scene ID specified") );
+			}
+		}
+		
+		
+		if( $function == "getState" || $function == "getDeviceState" || $function == "getRoomState" || $function == "getSceneState" ){
+			
+			$sceneDeviceObjectsON = 0;
+			
+			$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
+			$result = getCurlReturn($CMD);
+			$array = xmlToArray($result);
+			if( !isset($array["gwrcmd"]) ){
+				exit;
+			}
+			
+			$DEVICES = array();
+			if( isset( $array["gwrcmd"]["gdata"]["gip"]["room"] ) ){
+				$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
+			}else{
+				exit;
+			}
+			$ROOMS  = array();
+			$BRIDGE = array();
+			if( sizeof($DATA) > 0 ){
+				if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
+				
+				
+				foreach($DATA as $room){
+					$thisRoom = array();
+					
+					
+					if( isset($room['rid'] ) ){
+						$thisRoom["room_id"] = $room['rid'];
+						$thisRoom["name"] = $room['name'];
+						$thisRoom["color"] = $room['color'];
+						$thisRoom["colorid"] = $room['colorid'];
+						$thisRoom["brightness"] = 0;
+						//$thisRoom["data"] = $room;
+						$thisRoom["state"] = 0;
+						
+						
+						
+						
+						if( ! is_array($room["device"]) ){
+						
+						}else{
+							
+							$device = (array)$room["device"];
+							if( isset($device["did"]) ){
+								$rd = array();
+								$rd["id"] = $device["did"];
+								$rd["name"] = $device["name"];
+								$rd["level"] = ($device["level"] != null ? (int)$device["level"] : 0);
+								$rd["state"] = $device["state"];
+								$rd["online"] = (isset($device['offline']) && $device['offline'] == 1) ? 1 : 0;
+								if( isset($device["other"]) && isset( $device["other"]["rcgroup"] ) && $device["other"]["rcgroup"] != null ){
+									$rd["buttonNum"] = $device["other"]["rcgroup"];
+								}
+								$thisRoom["brightness"] += $rd["level"];
+								$thisRoom["devices"][] = $rd;
+								
+								if( $device["state"] > 0 ){
+									$thisRoom["state"] = (int)$thisRoom["state"] + 1;
+								}
+								
+								//
+								
+								if( $function == "getSceneState" && in_array( $rd["id"], $sceneDevices["devices"] ) && $rd["state"] > 0 ){
+									$sceneDeviceObjectsON++;
+								}
+								
+									
+								if( $function == "getDeviceState" && $UID ==  $device["did"] ){
+									ob_clean();
+									echo trim($device["state"]);
+									exit;
+								}	
+									
+							}else{
+								for( $x = 0; $x < sizeof($device); $x++ ){
+									if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
+										$rd = array();
+										
+										$rd["id"] = $device[$x]["did"];
+										$rd["name"] = $device[$x]["name"];
+										$rd["level"] = ( $device[$x]["level"] != null ? (int)$device[$x]["level"] : 0);
+										$rd["state"] = $device[$x]["state"];
+										$rd["online"] = (isset($device[$x]['offline']) && $device[$x]['offline'] == 1) ? 1 : 0;
+										if( isset($device[$x]["other"]) && isset( $device[$x]["other"]["rcgroup"] ) && $device[$x]["other"]["rcgroup"] != null ){
+											$rd["buttonNum"] = $device[$x]["other"]["rcgroup"];
+										}
+								
+										$thisRoom["brightness"]+= $rd["level"];
+										$thisRoom["devices"][] = $rd;
+										
+										if( $device[$x]["state"] > 0 ){
+											$thisRoom["state"] = (int)$thisRoom["state"] + 1;
+										}
+										
+										//
+										
+										if( $function == "getSceneState" && in_array( $rd["id"], $sceneDevices["devices"] ) && $rd["state"] > 0 ){
+											$sceneDeviceObjectsON++;
+										}
+										
+								
+										if( $function == "getDeviceState" && $UID == $device[$x]["did"] ){
+											ob_clean();
+											echo trim($device[$x]["state"]);
+											exit;
+										}	
+										
+									}
+								}
+							}
+						}
+					
+						
+						if( $function == "getRoomState" && $UID ==  $room['rid'] ){
+							ob_clean();
+							echo ( $thisRoom["state"] > 0 ) ? 1 : 0;
+							exit;
+						}
+					
+						if( $function == "getSceneState" && in_array( $room['rid'], $sceneDevices["rooms"] ) && $thisRoom["state"] > 0 ){
+							$sceneDeviceObjectsON++;
+						}
+						
+						
+						$thisRoom["devicesCount"] = sizeof( $thisRoom["devices"] );
+						$thisRoom["brightness"] = (int)($thisRoom["brightness"] / $thisRoom["devicesCount"]);
+						$thisRoom["state"] = ( $thisRoom["state"] > 0 ) ? ( $thisRoom["state"] / sizeof( $thisRoom["devices"] ) ) : 0; 
+						
+						$ROOMS[] = $thisRoom;
+					}
+				}
+				
+			}
+			
+			$BRIDGE["rooms"] = $ROOMS;
+			$BRIDGE["roomCount"] = sizeof($ROOMS);
+			$BRIDGE["scenes"] = $sceneList;
+			$BRIDGE["sceneCount"] = sizeof( $sceneList );
+			
+			
+			if( $function == "getState"  ){
+				header('Content-Type: application/json');
+				echo json_encode( $BRIDGE );
+				exit;
+			}elseif( $function == "getSceneState" ){
+				
+				if( $sceneDeviceObjectsON == 0){
+					echo 0;
+				}elseif( $sceneDeviceObjectsON == $sceneDevices["count"] ){
+					echo 1;
+				}else{
+					echo $sceneDeviceObjectsON / $sceneDevices["count"];
+				}
+				exit;
+			}else{
+				echo '-1';
+				exit;
+			}
+		}
+		
+		echo json_encode( array("error" => "argument empty or invalid. Required: fx, type, UID, val", "recieved" => $_REQUEST) );
+		
 	}
 ?>	

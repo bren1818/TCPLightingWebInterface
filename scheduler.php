@@ -1,13 +1,8 @@
 <?php 
 	include "include.php"; 
 	pageHeader("TCP Lighting Scheduler");
-
-	/*** includes Sunrise/Sunset mod by Andrew Tsui ***/
-
 ?>
-
 	<style>
-
 		.scheduledTask{
 			margin: 20px 0px;
 			background-color: #fff;
@@ -63,8 +58,6 @@
 				$(this).addClass('running');
 				setInterval(runSchedule, 30000);
 			});
-		
-
 		
 		/* Output Add Scheduled Task */
 		<?php ob_start(); getScheduleView("__REPLACE__");$schedule = ob_get_clean();	?>	
@@ -153,9 +146,6 @@
 			bindEvents();
 		});
 		
-		
-	
-		
 		$('#save').click(function(){
 			$('select[name="DEVICE_SELECTED"] option').each(function(){ $(this).attr('selected','selected'); });
 			var schedules = [];
@@ -168,10 +158,7 @@
 			[[{"name":"DAY_MON","value":"on"},{"name":"DAY_WED","value":"on"},{"name":"DAY_FRI","value":"on"},{"name":"HOUR","value":"8"},{"name":"MIN","value":"1"},{"name":"FX","value":"SWITCH"},{"name":"DIM_SCHED","value":""},{"name":"SWITCH_SCHED","value":"1"},{"name":"DEVICE_SELECTED","value":"359905593582463444"}],[{"name":"DAY_MON","value":"on"},{"name":"DAY_WED","value":"on"},{"name":"DAY_FRI","value":"on"},{"name":"HOUR","value":"8"},{"name":"MIN","value":"10"},{"name":"FX","value":"SWITCH"},{"name":"DIM_SCHED","value":""},{"name":"DEVICE_SELECTED","value":"359905593582463444"}]]
 			*/
 			//$.ajaxSetup({ cache: false, async: false }); 
-			
-		
-			
-			
+
 			$.ajax({
 				type: 'POST',
 				url: 'runSchedule.php',
@@ -186,10 +173,10 @@
 		
 		bindEvents();
 		
-		
 		$( "#events" ).sortable({
-      placeholder: "ui-state-highlight"
-    });
+			placeholder: "ui-state-highlight"
+		});
+		
 		$( "#events" ).disableSelection();
 	});
 	</script>
@@ -382,17 +369,19 @@
 
 <?php
 }
-
-	echo '<div class="container" style="background-color: #fff; padding: 20px;">';
-		echo '<h1>Device Schedule</h1>';
-		echo '<p><button id="runOnce">Run Now</button> <button id="poll">Poll continuously</button></p>';
-		echo '<p>Note, polling continuously will work if the tab this script is running on has focus. Consider setting up a batch file to run the schedule. See documentation and runschedule.bat</p>';
-		echo '<p>Tasks can be dragged and dropped to re-order. Just click save after.</p>';
-		$sun_info = date_sun_info(time(), LATITUDE, LONGITUDE);
-		echo "Sunrise Today: " . date("H:i", $sun_info['sunrise']) . "    ";
-		echo "Sunset Today:  " . date("H:i", $sun_info['sunset'])  . "<br>";
-	echo '</div>';
 ?>
+	<div class="container" style="background-color: #fff; padding: 20px;">
+		<h1>Device Scheduler <span style="font-size: 10px;">an alternative to using <a href="scenescreatedit.php?SID=-1">scenes</a></span></h1>
+		<p><button id="runOnce">Run Now</button> <button id="poll">Poll continuously</button></p>
+		<p>Note, polling continuously will work if the tab this script is running on has focus. Consider setting up a batch file to run the schedule. See documentation and runschedule.bat</p>
+		<p>Tasks can be dragged and dropped to re-order. Just click save after.</p>
+		<?php
+			$sun_info = date_sun_info(time(), LATITUDE, LONGITUDE);
+			echo "Sunrise Today: " . date("H:i", $sun_info['sunrise']) . "    ";
+			echo "Sunset Today:  " . date("H:i", $sun_info['sunset'])  . "<br />";
+		?>
+	</div>
+
  
 <div id="events" class="container"> 
 	<?php

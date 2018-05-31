@@ -64,7 +64,7 @@ $(function(){
 				$('#command_dim_2').html("Dim " + roomName + preface + " lights to # %");
 				$('#command_dim_3').html("Set " + roomName + preface + " lights to # %");
 				$('#command_dim_response').html("Adjusting " + roomName + " lights");
-				$('#command_dim_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=dimby&type=room&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+				$('#command_dim_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=dim&type=room&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 				
 				$('#command_brighten_1').html("Increase " +  roomName +  preface + " lights brightness by # %");
 				$('#command_brighten_2').html("Brighten " + roomName + preface + " lights by # %");
@@ -86,19 +86,19 @@ $(function(){
 				$('#command_on_2').html("Switch " + roomName + preface + " light ON");
 				$('#command_on_3').html("Turn " + roomName + preface + " light on");
 				$('#command_on_response').html("Turning " + roomName + " light ON");
-				$('#command_on_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=room&uid=' + id + '&val=1' + ( requireExtPass == 1 ? '&password=' + externalPass : '')  );
+				$('#command_on_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=device&uid=' + id + '&val=1' + ( requireExtPass == 1 ? '&password=' + externalPass : '')  );
 				
 				$('#command_off_1').html( roomName + preface + " light off" );
 				$('#command_off_2').html("Switch " + roomName + preface + " light off");
 				$('#command_off_3').html("Turn " + roomName + preface + " light off");
 				$('#command_off_response').html("Turning off " + roomName + " light");
-				$('#command_off_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=room&uid=' + id + '&val=0' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+				$('#command_off_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=toggle&type=device&uid=' + id + '&val=0' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 				
 				$('#command_dim_1').html( roomName +  preface + " light to # % brightness" );
 				$('#command_dim_2').html("Dim " + roomName + preface + " light to # %");
 				$('#command_dim_3').html("Set " + roomName + preface + " light brightness to # %");
 				$('#command_dim_response').html("Adjusting " + roomName + " brightness");
-				$('#command_dim_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=dimby&type=device&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+				$('#command_dim_url').html( externalAddr + ( (externalPort != 80 || externalPort != 443) ?  ':' + externalPort : '' ) + '/api.php?fx=dim&type=device&uid=' + id + '&val={{NumberField}}' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 				
 				
 				$('#command_brighten_1').html("Increase " +  roomName +  preface + " light brightness by # %");
@@ -130,21 +130,21 @@ $(function(){
 			$('#scene_command_on_3').html(sceneName + preface + " scene on");
 			$('#scene_command_on_response').html("Turning " + sceneName + preface + " devices ON");
 			
-			$('#scene_command_on_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=on&uid=' + id + '&val=1' + ( requireExtPass == 1 ? '&password=' + externalPass : '')  );
+			$('#scene_command_on_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=on&uid=' + id + '' + ( requireExtPass == 1 ? '&password=' + externalPass : '')  );
 			
 			$('#scene_command_off_1').html("Deactivate " +  sceneName + preface + " scene");
 			$('#scene_command_off_2').html("Turn " + sceneName + preface + " scene off");
 			$('#scene_command_off_3').html(sceneName  + preface + " scene off");
 			$('#scene_command_off_response').html("Turning " + sceneName + preface + " devices off");
 			
-			$('#scene_command_off_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=off&uid=' + id + '&val=0' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+			$('#scene_command_off_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=off&uid=' + id + '' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 			
 			$('#command_run_1').html("Activate " +  sceneName + preface +" scene");
 			$('#command_run_2').html("Turn " + sceneName + preface + " scene on");
 			$('#command_run_3').html(sceneName + " scene on");
 			$('#command_run_response').html("Running " + preface + sceneName + " scene");
 			
-			$('#command_run_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=run&uid=' + id + '&val=' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+			$('#command_run_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=run&uid=' + id + '' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 			
 		}
 

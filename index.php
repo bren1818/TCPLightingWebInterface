@@ -94,7 +94,10 @@ if( TOKEN != "" ){
 								//state = on or off
 								
 								if( isset($device['offline']) && $device['offline'] == 1){ $unplugged++; }
-									
+								
+								if( isset($device["other"]) && isset( $device["other"]["rcgroup"] ) && $device["other"]["rcgroup"] != null &&  $device["other"]["rcgroup"]  <= 4 ){
+									echo '<div class="control-button">'.$device["other"]["rcgroup"].'</div>';
+								}								
 								
 								echo '<p class="device-name"><b>'.$device['name'].'</b> <a href="info.php?did='.$device['did'].'"><img src="css/images/info.png"/></a></p>';
 								echo '<p class="on-off-buttons"><button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOn">On</button> | <button data-device-id="'.$device['did'].'" class="onOffDeviceToggleButton buttonOff">Off</button></p>';
@@ -159,16 +162,26 @@ if( TOKEN != "" ){
 				?>
 				<div class="scene-container" id="scene-id-<?php echo $scenes[$x]["sid"]; ?>">
                 	<div class="scene-info"><a href="scenescreatedit.php?SID=<?php echo $scenes[$x]["sid"]; ?>"><img src="css/images/info.png"/></a></div>
-					<p><b><?php echo $scenes[$x]["name"]; ?></b> (<?php echo is_array($scenes[$x]["device"]) ? sizeof($scenes[$x]["device"]) : ""; ?>)</p>
-					<p><img src="css/<?php echo $scenes[$x]["icon"]; ?>" /></p>
+					<p><b><?php echo $scenes[$x]["name"]; ?></b></p>
+					<p><img src="css/<?php echo $scenes[$x]["icon"]; ?>" /> <?php echo ($scenes[$x]["active"] == 0 ? "&#10074;&#10074; (deactivated)" : "" )  ?></p>
 					<p>
-                        <button data-scene-mode="run" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene">Run Scene</button> 
-                        <button data-scene-mode="off" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene">Scene Devices Off</button> 
-                        <button data-scene-mode="on" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene">Scene Devices On</button>
+                        <button data-scene-mode="run" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene" <?php echo $scenes[$x]["active"] == 0 ? "disabled" : ""; ?>>Run Scene</button> 
+                        <button data-scene-mode="off" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene" <?php echo $scenes[$x]["active"] == 0 ? "disabled" : ""; ?>>Scene Devices Off</button> 
+                        <button data-scene-mode="on" data-scene-id="<?php echo $scenes[$x]["sid"]; ?>" class="runScene" <?php echo $scenes[$x]["active"] == 0 ? "disabled" : ""; ?>>Scene Devices On</button>
                     </p>
 				</div>
 				<?php
 			}
+			
+			?>
+			<div class="scene-container" id="scene-id--1">
+				<div class="scene-info"><a href="scenescreatedit.php?SID=-1"><img src="css/images/info.png"/></a></div>
+				<p><a href="scenescreatedit.php?SID=-1"><b>Create New</b></a></p>
+				<p><img src="css/images/scene/bolt.png" /></p>
+			</div>
+			<?php
+			
+			
 			echo '<div class="clear"></div>';
 	}
 	echo '</div>';

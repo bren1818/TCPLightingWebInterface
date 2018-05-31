@@ -3,6 +3,8 @@ Creating a local web interface to work with the 'Connected by TCP' bulbs.
 
 Let me place this note at the top of the readme. Using this project in conjunction with IFTTT, webhooks and say a Google Home will allow you to control your lights again using voice commands. I will document the procedure step by step.
 
+See the fleshed out Wiki: https://github.com/bren1818/TCPLightingWebInterface/wiki
+
 The goal of this project is to re-create and improve upon the web interface which was used to control the Connected by TCP bulbs. The web interface was removed and the 'Connected by TCP' line was discontinued, leaving people with the bulbs out of luck, myself included.
 
 After doing some reading, de-compiling the Android source code, reverse engineering and some time, I have put together this simple PHP web interface with a GUI that can be used to control the Connected by TCP bulbs. This interface should work with the latest bridge firmware, and the previous version of the firmware  as well. All that needs to be done is modifying some strings in the include.php file. This can also be used with IFTTT via web hook commands issued to the API.php
