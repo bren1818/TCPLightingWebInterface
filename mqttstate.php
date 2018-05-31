@@ -2,7 +2,6 @@
 include "include.php";
 require("phpMQTT/phpMQTT.php");
 
-pageHeader("TCP Lighting Controller");
 
 /*
  *
@@ -84,7 +83,7 @@ pageHeader("TCP Lighting Controller");
 						$roomDevices = 0;
 						if ($mqtt->connect(true, NULL, $MQTTusername, $MQTTpassword)) {
 							foreach($DEVICES as $device){
-								$mqtt->publish('light/'.$room["name"].'/'.$device['did'].'/'.$device["name"].'/status', $device['state']);
+								$mqtt->publish('light/'.$room["name"].'/'.$device["name"].'/'.$device['did'].'/status', $device['state']);
 								echo $device["name"].': '.$device['state'].'<br>';
 							}
 							$mqtt->close();
@@ -130,6 +129,5 @@ pageHeader("TCP Lighting Controller");
 	}
 	echo '</div>';
 } 
-
-pageFooter();
 ?>
+
