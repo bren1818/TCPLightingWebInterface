@@ -71,4 +71,15 @@ define("LATITUDE", 43.59);
 define("LONGITUDE", -80.24);
 /************************************* END OF INSERTED CODE FOR SUNRISE SUNSET MOD **************************/
 
+/*
+	MQTT Services - Broker connections settings for subscribing and publishing 
+*/
+$MQTTserver = "172.16.33.8";     // change if necessary
+$MQTTport = 1883;                     // change if necessary
+$MQTTusername = "admin";                   // set your username
+$MQTTpassword = "zhgcfn";                   // set your password
+$MQTTsub_id = "tcp-subscriber"; // make sure this is unique for connecting to sever - you could use uniqid()
+$MQTTpub_id = "tcp-publisher"; // make sure this is unique for connecting to sever - you could use uniqid()
+
+
 ?>
