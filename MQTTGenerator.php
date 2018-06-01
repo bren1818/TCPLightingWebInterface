@@ -50,6 +50,14 @@ require("phpMQTT/phpMQTT.php");
 	}
 	
 	$deviceCount = 0;
+	$file_handle = fopen('mqtt_sub.py', 'w') or die('Error opening file.');
+	$data1 = "#!/usr/bin/env python3\n\nimport paho.mqtt.client as mqtt\nimport requests\n\n";
+	$data2 = "# This is the Subscriber\n\ndef on_connect(client, userdata, flags, rc)\n	print('Connected with result code '+str(rc))\n	client.subscribe('light/#')\n	client.subscribe('control')\n";
+	$data3 = "\n### topic message\ndef on_message(mosq, obj, msg):\n	print(msg.topic+' '+str(msg.qos)+' '+str(msg.payload))";
+	fwrite($file_handle, $data1);
+	fwrite($file_handle, $data2);
+	fwrite($file_handle, $data3);
+	fclose($file_handle);
 	
 	if( sizeof($DATA) > 0 ){
 		if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
@@ -83,9 +91,8 @@ require("phpMQTT/phpMQTT.php");
 						$roomDevices = 0;
 						if ($mqtt->connect(true, NULL, $MQTTusername, $MQTTpassword)) {
 							foreach($DEVICES as $device){
-								$mqtt->publish('light/'.$room["name"].'/'.$device["name"].'/'.$device['did'].'/status', $device['state'], 1);
-								$mqtt->publish('light/'.$room["name"].'/'.$device["name"].'/'.$device['did'].'/brightness', $device['level'], 1);
-								echo $device["name"].'- State: '.$device["state"].'  Brightness:'.$device["level"].'<br>';
+								/*$mqtt->publish('light/'.$room["name"].'/'.$device["name"].'/'.$device['did'].'/status', $device['state'], 1);*/
+								echo $device["name"].': '.$device['state'].'<br>';
 							}
 							$mqtt->close();
 						} else {
