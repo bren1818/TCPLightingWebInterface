@@ -3,7 +3,7 @@
 
 define("LIGTHING_BRIDGE_IP", 				"172.16.33.66"); 			// IP address of TCP Bridge/Gateway
 define("LIGHTING_BRIDGE_PORT", 				"443");						// 443 for new firmware, 80 for legacy - If you don't know, leave it at 443
-define("LOCAL_URL", 						"http://lighting.taylortrash.com");		// Address of your webserver running this - this is used in runSchedule to call the API
+define("LOCAL_URL", 						"https://lighting.taylortrash.com");		// Address of your webserver running this - this is used in runSchedule to call the API
 
 define("USER_EMAIL",    					"ptaylor@taylortrash.com"); 			// I think this is so you dont have to regenerate tokens if you run this script elsewhere
 define("USER_PASSWORD", 					"mf2hd100");			// can be anything
