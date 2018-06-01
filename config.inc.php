@@ -3,10 +3,10 @@
 
 define("LIGTHING_BRIDGE_IP", 				"172.16.33.66"); 			// IP address of TCP Bridge/Gateway
 define("LIGHTING_BRIDGE_PORT", 				"443");						// 443 for new firmware, 80 for legacy - If you don't know, leave it at 443
-define("LOCAL_URL", 						"https://lighting.taylortrash.com");		// Address of your webserver running this - this is used in runSchedule to call the API
+define("LOCAL_URL", 						"https://lighting.local");		// Address of your webserver running this - this is used in runSchedule to call the API
 
-define("USER_EMAIL",    					"ptaylor@taylortrash.com"); 			// I think this is so you dont have to regenerate tokens if you run this script elsewhere
-define("USER_PASSWORD", 					"mf2hd100");			// can be anything
+define("USER_EMAIL",    					"user@email.com"); 			// I think this is so you dont have to regenerate tokens if you run this script elsewhere
+define("USER_PASSWORD", 					"PasswordPizza");			// can be anything
 define("USE_TOKEN_FILE", 					1); 						// store the token in a file vs hard coding it below otherwise fill in line 51
 
 define("FORCE_FADE_ON", 					0);							//makes it so when lights are turned off they fade to 0 (Like Philips Bulbs)
@@ -22,10 +22,10 @@ define("LOG_API_CALLS", 					1);							//log issued API calls
 */
 
 define("ALLOW_EXTERNAL_API_ACCESS", 		1); 						//Allow outside access (Non Lan) (1 = true, 0 = false)
-define("EXTERNAL_DDNS_URL", 				"https://lighting.taylortrash.com");
+define("EXTERNAL_DDNS_URL", 				"https://lighting.domain.external");
 
 define("REQUIRE_EXTERNAL_API_PASSWORD", 	1);							//require a password for external (non lan) use IE for IFTTT? (1 = true, 0 = false)
-define("EXTERNAL_API_PASSWORD",  			"TaylorTrash");				//set what the password should be
+define("EXTERNAL_API_PASSWORD",  			"TiddlyWinks");				//set what the password should be
 define("RESTRICT_EXTERNAL_PORT",			2);							//if request is an external (API) user, should they only be on a specific port? (1= yes, 2=no)
 define("EXTERNAL_PORT",						443);						//if you wish to use an alternate external port change this number to the corresponding port number
 
@@ -77,7 +77,7 @@ define("LONGITUDE", -104.618894);
 $MQTTserver = "172.16.33.8";     // change if necessary
 $MQTTport = 1883;                     // change if necessary
 $MQTTusername = "admin";                   // set your username
-$MQTTpassword = "zhgcfn";                   // set your password
+$MQTTpassword = "password";                   // set your password
 $MQTTsub_id = "tcp-subscriber"; // make sure this is unique for connecting to sever - you could use uniqid()
 $MQTTpub_id = "tcp-publisher"; // make sure this is unique for connecting to sever - you could use uniqid()
 
