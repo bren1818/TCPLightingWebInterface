@@ -13,3 +13,8 @@ def on_connect(client, userdata, flags, rc)
 ### topic message
 def on_message(mosq, obj, msg):
 	print(msg.topic+' '+str(msg.qos)+' '+str(msg.payload))
+
+ def on_message_control(client, userdata, msg):
+    if (msg.payload.decode() == 'QUIT'):
+      print ('Exiting')
+      client.disconnect()

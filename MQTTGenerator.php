@@ -54,9 +54,11 @@ require("phpMQTT/phpMQTT.php");
 	$data1 = "#!/usr/bin/env python3\n\nimport paho.mqtt.client as mqtt\nimport requests\n\n";
 	$data2 = "# This is the Subscriber\n\ndef on_connect(client, userdata, flags, rc)\n	print('Connected with result code '+str(rc))\n	client.subscribe('light/#')\n	client.subscribe('control')\n";
 	$data3 = "\n### topic message\ndef on_message(mosq, obj, msg):\n	print(msg.topic+' '+str(msg.qos)+' '+str(msg.payload))";
+	$data4 ="\n\n def on_message_control(client, userdata, msg):\n    if (msg.payload.decode() == 'QUIT'):\n      print ('Exiting')\n      client.disconnect()";
 	fwrite($file_handle, $data1);
 	fwrite($file_handle, $data2);
 	fwrite($file_handle, $data3);
+	fwrite($file_handle, $data4);
 	fclose($file_handle);
 	
 	if( sizeof($DATA) > 0 ){
