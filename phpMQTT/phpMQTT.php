@@ -1,5 +1,7 @@
 <?php
 
+/*namespace Bluerhinos;*/
+
 /*
  	phpMQTT
 	A simple php class to connect/publish/subscribe to an MQTT broker
@@ -240,7 +242,7 @@ class phpMQTT {
 	}
 
 	/* publish: publishes $content on a $topic */
-	function publish($topic, $content, $qos = 0, $retain = 0){
+	function publish($topic, $content, $qos = 0, $retain){
 
 		$i = 0;
 		$buffer = "";
@@ -419,3 +421,4 @@ class phpMQTT {
 			}
 	}
 }
+?>
