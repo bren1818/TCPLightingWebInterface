@@ -242,7 +242,7 @@ class phpMQTT {
 	}
 
 	/* publish: publishes $content on a $topic */
-	function publish($topic, $content, $qos = 0, $retain){
+	function publish($topic, $content, $qos = 0, $retain = 1){
 
 		$i = 0;
 		$buffer = "";
@@ -421,4 +421,3 @@ class phpMQTT {
 			}
 	}
 }
-?>

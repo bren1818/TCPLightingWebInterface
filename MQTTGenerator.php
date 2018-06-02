@@ -110,10 +110,12 @@ fclose($file_handle);
 								$data4 = "        r.json()\n";
 								$data5 = "        client.publish(\"light/".$room['name']."/".$device['name']."/".$device['did']."/status\", msg.payload.decode()";
 								$data6 = ", 0, True)\n";
-								$data8 = "\ndef on_message_".$room['name']."_".$device['name']."_Bright(client, userdata, msg):\n";
-								$data9 = "    print (\"".$room['name']." ".$device['name']." Brightness \" + msg.payload.decode())\n";
-								$data10 = "    r = requests.get('".LOCAL_URL."/api.php?fx=dim&type=device&uid=".$device['did']."&val=' + msg.payload.decode())\n";
-								$data11 =  "    r.json()\n\n";
+								$data7 = "\ndef on_message_".$room['name']."_".$device['name']."_Bright(client, userdata, msg):\n";
+								$data8 = "    print (\"".$room['name']." ".$device['name']." Brightness \" + msg.payload.decode())\n";
+								$data9 = "    r = requests.get('".LOCAL_URL."/api.php?fx=dim&type=device&uid=".$device['did']."&val=' + msg.payload.decode())\n";
+								$data10 =  "    r.json()\n\n";
+								$data11 = "    client.publish(\"light/".$room['name']."/".$device['name']."/".$device['did']."/brightness\", msg.payload.decode()";
+								$data12 = ", 0, True)\n";
 								
 								fwrite($file_handle, $data1);
 								fwrite($file_handle, $data2);
@@ -121,10 +123,12 @@ fclose($file_handle);
 								fwrite($file_handle, $data4);
 								fwrite($file_handle, $data5);
 								fwrite($file_handle, $data6);
+								fwrite($file_handle, $data7);
 								fwrite($file_handle, $data8);
 								fwrite($file_handle, $data9);
 								fwrite($file_handle, $data10);
 								fwrite($file_handle, $data11);
+								fwrite($file_handle, $data12);
 								fclose($file_handle);
 							}
 

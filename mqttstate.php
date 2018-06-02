@@ -81,10 +81,10 @@ require("phpMQTT/phpMQTT.php");
 						$unplugged = 0;
 						$roomBrightness = 0;
 						$roomDevices = 0;
-						if ($mqtt->connect(true, NULL, $MQTTusername, $MQTTpassword)) {
+						if ($mqtt->connect(true, retain, $MQTTusername, $MQTTpassword)) {
 							foreach($DEVICES as $device){
-								$mqtt->publish('light/'.$room["name"].'/'.$device["name"].'/'.$device['did'].'/status', $device['state'], 1);
-								$mqtt->publish('light/'.$room["name"].'/'.$device["name"].'/'.$device['did'].'/brightness', $device['level'], 1);
+								$mqtt->publish('light/'.$room["name"].'/'.$device["name"].'/'.$device['did'].'/status', $device['state']);
+								$mqtt->publish('light/'.$room["name"].'/'.$device["name"].'/'.$device['did'].'/brightness', $device['level']);
 								echo $device["name"].'- State: '.$device["state"].'  Brightness:'.$device["level"].'<br>';
 							}
 							$mqtt->close();
