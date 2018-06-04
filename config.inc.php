@@ -74,6 +74,7 @@ define("LONGITUDE", -80.24);
 /*
 	MQTT Services - Broker connections settings for subscribing and publishing 
 */
+define("ENABLE_MQTT", 		1); 						//Enable MQTT State Publishing (1 = true, 0 = false)
 $MQTTserver = "172.16.33.8";     // change if necessary
 $MQTTport = 1883;                     // change if necessary
 $MQTTusername = "admin";                   // set your username
