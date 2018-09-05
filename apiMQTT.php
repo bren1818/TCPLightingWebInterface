@@ -75,9 +75,13 @@
 		$array = xmlToArray($result);
 	}
 	
+	if( ENABLE_MQTT == 1){
+		$mqtt = new phpMQTT($MQTTserver, $MQTTport, $MQTTpub_id);
+	}
+
 	if( $function != "" && $type != "" && $UID != "" && $val != ""){
-		
-		$DEVICES = getDevices();
+
+		$DEVICES = getDevicesMQTT();
 		if( $type == "device"){
 			
 			$THE_DEVICE = null;
@@ -116,6 +120,9 @@
 						$result = getCurlReturn($CMD);
 						$array = xmlToArray($result);
 						echo json_encode( array("toggle" => $val, "device" => $UID, "return" => $array) );
+						echo "<br>Device:".$THE_DEVICE['name']." Room:".$ROOMNAME." State ".$val ;
+						echo "<br>";
+						//pa($THE_DEVICE);
 					}
 					
 					
@@ -679,5 +686,9 @@
 		
 		echo json_encode( array("error" => "argument empty or invalid. Required: fx, type, UID, val", "recieved" => $_REQUEST) );
 		
+	}
+
+	if( ENABLE_MQTT == 1){
+		$mqtt->close();
 	}
 ?>	
