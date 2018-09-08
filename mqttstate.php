@@ -58,7 +58,7 @@ require("phpMQTT/phpMQTT.php");
 			
 			if( isset($room['rid'] ) ){
 				$DEVICES = array();
-					
+			
 				if( ! is_array($room["device"]) ){
 					
 				}else{
@@ -98,37 +98,6 @@ require("phpMQTT/phpMQTT.php");
 			}
 		}
 	}
-	
-
-	
-	
-}else{
-	echo '<div class="roomContainer" style="padding:20px;">';
-	echo "<h2>If you are seeing this, you haven't generated your token yet.</h2>";
-	
-	$CMD = "cmd=GWRLogin&data=<gip><version>1</version><email>".USER_EMAIL."</email><password>".USER_PASSWORD."</password></gip>&fmt=xml";
-		
-	$result = getCurlReturn($CMD);
-	$tokenArray = xmlToArray($result);
-	
-	
-	if( !isset($tokenArray["token"]) ){
-		echo '<p>Could not fetch token. Ensure you have the correct IP for your bridge and that you have hit the <b>sync</b> button before running this.</p>';
-		if(USE_TOKEN_FILE){
-			echo '<p>Since you are not using the token file option, ensure you paste your token in the config.inc.php.</p>';
-		}
-		echo '<p><img src="/css/images/syncgateway.png" /></p>';
-	}else{ 
-		if(USE_TOKEN_FILE){
-			ob_clean();
-			file_put_contents("tcp.token", $tokenArray["token"]);
-			header("Location: index.php");
-		}else{
-			echo "<p>Result Token: <b>".$tokenArray["token"]."</b> save this token in the TOKEN definition in the include.php file.</p><p>Full response: | ".htmlentities($result)." | - note this has been turned to html entities for legibility.<p>";
-			echo '<p><img src="/css/images/syncgateway.png" /></p>';
-		}
-	}
-	echo '</div>';
 } 
 ?>
 

@@ -56,10 +56,42 @@ fclose($file_handle);
 		if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
 		
 		foreach($DATA as $room){
-			
 			if( isset($room['rid'] ) ){
 				$DEVICES = array();
+
+				if ($mqtt->connect(true, NULL, $MQTTusername, $MQTTpassword)) {
+					$file_handle = fopen('mqtt_sub.py', 'a') or die('Error opening file.');
+					$data1 = "\n### ".$room['name']." \ndef on_message_".$room['name']."(client, userdata, msg):\n";
+					$data2 = "    if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):\n        print (\"".$room['name']."\" + msg.payload.decode())\n";
+					$data3 = "        r = requests.get('".LOCAL_URL."/api.php?fx=toggle&type=room&uid=".$room['rid']."&val=' + msg.payload.decode())\n";
+					$data4 = "        r.json()\n";
+					$data5 = "        client.publish(\"light/".$room['name']."/".$room['rid']."/status\", msg.payload.decode()";
+					$data6 = ", 0, True)\n";
+					$data7 = "\ndef on_message_".$room['name']."_Bright(client, userdata, msg):\n";
+					$data8 = "    print (\"".$room['name']." Brightness \" + msg.payload.decode())\n";
+					$data9 = "    r = requests.get('".LOCAL_URL."/api.php?fx=dim&type=room&uid=".$room['rid']."&val=' + msg.payload.decode())\n";
+					$data10 =  "    r.json()\n\n";
+					$data11 = "    client.publish(\"light/".$room['name']."/".$room['rid']."/brightness\", msg.payload.decode()";
+					$data12 = ", 0, True)\n";
 					
+					fwrite($file_handle, $data1);
+					fwrite($file_handle, $data2);
+					fwrite($file_handle, $data3);
+					fwrite($file_handle, $data4);
+					fwrite($file_handle, $data5);
+					fwrite($file_handle, $data6);
+					fwrite($file_handle, $data7);
+					fwrite($file_handle, $data8);
+					fwrite($file_handle, $data9);
+					fwrite($file_handle, $data10);
+					fwrite($file_handle, $data11);
+					fwrite($file_handle, $data12);
+					fclose($file_handle);
+
+				$mqtt->close();
+			}			
+				
+				
 				if( ! is_array($room["device"]) ){
 					
 				}else{
@@ -126,7 +158,34 @@ fclose($file_handle);
 		}
 	}
 	
+	$CMD = "cmd=SceneGetListDetails&data=<gip><version>1</version><token>".TOKEN."</token><bigicon>1</bigicon></gip>";
+	$sresult = getCurlReturn($CMD);
+	$sarray = xmlToArray($sresult);
+	$scenes = $sarray["scene"];
+	if( is_array($scenes) ){
+		foreach($scenes as $scene){
+//		for($x = 0; $x < sizeof($scenes); $x++){
+			if ($mqtt->connect(true, NULL, $MQTTusername, $MQTTpassword)) {
+					$file_handle = fopen('mqtt_sub.py', 'a') or die('Error opening file.');
+					$data1 = "\n### ".$scene['name']." \ndef on_message_".$scene['name']."(client, userdata, msg):\n";
+					$data2 = "    if (msg.payload.decode() == 'on' or msg.payload.decode() == 'off'):\n        print (\"".$scene['name']."\" + msg.payload.decode())\n";
+					$data3 = "        r = requests.get('".LOCAL_URL."/api.php?fx=scene&uid=".$scene['sid']."&type=' + msg.payload.decode())\n";
+					$data4 = "        r.json()\n";
+					$data5 = "        client.publish(\"light/".$scene['name']."/".$scene['sid']."/status\", msg.payload.decode()";
+					$data6 = ", 0, True)\n";
+							
+					fwrite($file_handle, $data1);
+					fwrite($file_handle, $data2);
+					fwrite($file_handle, $data3);
+					fwrite($file_handle, $data4);
+					fwrite($file_handle, $data5);
+					fwrite($file_handle, $data6);
+					fclose($file_handle);
+			}
 
+		}
+
+	}	
 	/* Begin Python File Fixed Connect Creation */
 	$file_handle = fopen('mqtt_sub.py', 'a') or die('Error opening file.');
 	$data1 = "\n\nclient = mqtt.Client('".$MQTTsub_id."')               #create new instance\n";
@@ -144,10 +203,25 @@ fclose($file_handle);
 		if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
 		
 		foreach($DATA as $room){
-			
 			if( isset($room['rid'] ) ){
 				$DEVICES = array();
-					
+
+				if ($mqtt->connect(true, NULL, $MQTTusername, $MQTTpassword)) {
+					foreach($DEVICES as $device){
+						$file_handle = fopen('mqtt_sub.py', 'a') or die('Error opening file.');
+						$data1 = "\n### ".$room['name']." Begin\n";
+						$data2 = "client.message_callback_add('light/".$room['name']."/".$room['rid']."/switch', on_message_".$room['name'].")\n";
+						$data3 = "client.message_callback_add('light/".$room['name']."/".$room['rid']."/brightness/set', on_message_".$room['name']."_Bright)\n";
+						fwrite($file_handle, $data1);
+						fwrite($file_handle, $data2);
+						fwrite($file_handle, $data3);
+						fclose($file_handle);
+												
+					}
+	
+					$mqtt->close();
+				}
+			
 				if( ! is_array($room["device"]) ){
 					
 				}else{
@@ -198,6 +272,25 @@ fclose($file_handle);
 
 } 
 
+$CMD = "cmd=SceneGetListDetails&data=<gip><version>1</version><token>".TOKEN."</token><bigicon>1</bigicon></gip>";
+$sresult = getCurlReturn($CMD);
+$sarray = xmlToArray($sresult);
+$scenes = $sarray["scene"];
+if( is_array($scenes) ){
+	foreach($scenes as $scene){
+//		for($x = 0; $x < sizeof($scenes); $x++){
+		if ($mqtt->connect(true, NULL, $MQTTusername, $MQTTpassword)) {
+				$file_handle = fopen('mqtt_sub.py', 'a') or die('Error opening file.');
+				$data1 = "\n### ".$scene['name']." Begin\n";
+				$data2 = "client.message_callback_add('light/".$scene['name']."/".$scene['sid']."/switch', on_message_".$scene['name'].")\n";
+				fwrite($file_handle, $data1);
+				fwrite($file_handle, $data2);
+				fclose($file_handle);
+		}
+
+	}
+
+}
 
 /* Begin Python File Fixed Footer Creation */
 $file_handle = fopen('mqtt_sub.py', 'a') or die('Error opening file.');
