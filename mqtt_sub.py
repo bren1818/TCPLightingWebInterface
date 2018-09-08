@@ -307,7 +307,7 @@ def on_message_FutureUse_LED_Bright(client, userdata, msg):
 
 ### AllFull 
 def on_message_AllFull(client, userdata, msg):
-    if (msg.payload.decode() == 'on' or msg.payload.decode() == 'off'):
+    if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):
         print ("AllFull" + msg.payload.decode())
         r = requests.get('https://lighting.taylortrash.com/api.php?fx=scene&uid=1&type=' + msg.payload.decode())
         r.json()
@@ -315,7 +315,7 @@ def on_message_AllFull(client, userdata, msg):
 
 ### WeekdayAM 
 def on_message_WeekdayAM(client, userdata, msg):
-    if (msg.payload.decode() == 'on' or msg.payload.decode() == 'off'):
+    if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):
         print ("WeekdayAM" + msg.payload.decode())
         r = requests.get('https://lighting.taylortrash.com/api.php?fx=scene&uid=2147483642&type=' + msg.payload.decode())
         r.json()
@@ -323,7 +323,7 @@ def on_message_WeekdayAM(client, userdata, msg):
 
 ### Afternoon 
 def on_message_Afternoon(client, userdata, msg):
-    if (msg.payload.decode() == 'on' or msg.payload.decode() == 'off'):
+    if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):
         print ("Afternoon" + msg.payload.decode())
         r = requests.get('https://lighting.taylortrash.com/api.php?fx=scene&uid=2147483646&type=' + msg.payload.decode())
         r.json()
@@ -331,7 +331,7 @@ def on_message_Afternoon(client, userdata, msg):
 
 ### Exterior 
 def on_message_Exterior(client, userdata, msg):
-    if (msg.payload.decode() == 'on' or msg.payload.decode() == 'off'):
+    if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):
         print ("Exterior" + msg.payload.decode())
         r = requests.get('https://lighting.taylortrash.com/api.php?fx=scene&uid=2147483645&type=' + msg.payload.decode())
         r.json()
@@ -339,7 +339,7 @@ def on_message_Exterior(client, userdata, msg):
 
 ### Broom 
 def on_message_Broom(client, userdata, msg):
-    if (msg.payload.decode() == 'on' or msg.payload.decode() == 'off'):
+    if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):
         print ("Broom" + msg.payload.decode())
         r = requests.get('https://lighting.taylortrash.com/api.php?fx=scene&uid=2147483647&type=' + msg.payload.decode())
         r.json()
@@ -347,7 +347,7 @@ def on_message_Broom(client, userdata, msg):
 
 ### TruckHome 
 def on_message_TruckHome(client, userdata, msg):
-    if (msg.payload.decode() == 'on' or msg.payload.decode() == 'off'):
+    if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):
         print ("TruckHome" + msg.payload.decode())
         r = requests.get('https://lighting.taylortrash.com/api.php?fx=scene&uid=2147483640&type=' + msg.payload.decode())
         r.json()
@@ -355,7 +355,7 @@ def on_message_TruckHome(client, userdata, msg):
 
 ### BedroomCeiling 
 def on_message_BedroomCeiling(client, userdata, msg):
-    if (msg.payload.decode() == 'on' or msg.payload.decode() == 'off'):
+    if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):
         print ("BedroomCeiling" + msg.payload.decode())
         r = requests.get('https://lighting.taylortrash.com/api.php?fx=scene&uid=2147483639&type=' + msg.payload.decode())
         r.json()

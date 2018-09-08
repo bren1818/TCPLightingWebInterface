@@ -168,7 +168,7 @@ fclose($file_handle);
 			if ($mqtt->connect(true, NULL, $MQTTusername, $MQTTpassword)) {
 					$file_handle = fopen('mqtt_sub.py', 'a') or die('Error opening file.');
 					$data1 = "\n### ".$scene['name']." \ndef on_message_".$scene['name']."(client, userdata, msg):\n";
-					$data2 = "    if (msg.payload.decode() == 'on' or msg.payload.decode() == 'off'):\n        print (\"".$scene['name']."\" + msg.payload.decode())\n";
+					$data2 = "    if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):\n        print (\"".$scene['name']."\" + msg.payload.decode())\n";
 					$data3 = "        r = requests.get('".LOCAL_URL."/api.php?fx=scene&uid=".$scene['sid']."&type=' + msg.payload.decode())\n";
 					$data4 = "        r.json()\n";
 					$data5 = "        client.publish(\"light/".$scene['name']."/".$scene['sid']."/status\", msg.payload.decode()";
