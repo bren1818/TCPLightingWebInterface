@@ -65,20 +65,35 @@ def on_message_Hallway_Bright(client, userdata, msg):
 
     client.publish("light/Hallway/1/brightness", msg.payload.decode(), 0, True)
 
-### Hallway-Hallway 
-def on_message_Hallway_Hallway(client, userdata, msg):
+### Hallway-Hall2 
+def on_message_Hallway_Hall2(client, userdata, msg):
     if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):
-        print ("Hallway Hallway" + msg.payload.decode())
-        r = requests.get('https://lighting.taylortrash.com/api.php?fx=toggle&type=device&uid=360123189510580692&val=' + msg.payload.decode())
+        print ("Hallway Hall2" + msg.payload.decode())
+        r = requests.get('https://lighting.taylortrash.com/api.php?fx=toggle&type=device&uid=216773570738064271&val=' + msg.payload.decode())
         r.json()
-        client.publish("light/Hallway/Hallway/360123189510580692/status", msg.payload.decode(), 0, True)
+        client.publish("light/Hallway/Hall2/216773570738064271/status", msg.payload.decode(), 0, True)
 
-def on_message_Hallway_Hallway_Bright(client, userdata, msg):
-    print ("Hallway Hallway Brightness " + msg.payload.decode())
-    r = requests.get('https://lighting.taylortrash.com/api.php?fx=dim&type=device&uid=360123189510580692&val=' + msg.payload.decode())
+def on_message_Hallway_Hall2_Bright(client, userdata, msg):
+    print ("Hallway Hall2 Brightness " + msg.payload.decode())
+    r = requests.get('https://lighting.taylortrash.com/api.php?fx=dim&type=device&uid=216773570738064271&val=' + msg.payload.decode())
     r.json()
 
-    client.publish("light/Hallway/Hallway/360123189510580692/brightness", msg.payload.decode(), 0, True)
+    client.publish("light/Hallway/Hall2/216773570738064271/brightness", msg.payload.decode(), 0, True)
+
+### Hallway-Hall1 
+def on_message_Hallway_Hall1(client, userdata, msg):
+    if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):
+        print ("Hallway Hall1" + msg.payload.decode())
+        r = requests.get('https://lighting.taylortrash.com/api.php?fx=toggle&type=device&uid=216773570738075960&val=' + msg.payload.decode())
+        r.json()
+        client.publish("light/Hallway/Hall1/216773570738075960/status", msg.payload.decode(), 0, True)
+
+def on_message_Hallway_Hall1_Bright(client, userdata, msg):
+    print ("Hallway Hall1 Brightness " + msg.payload.decode())
+    r = requests.get('https://lighting.taylortrash.com/api.php?fx=dim&type=device&uid=216773570738075960&val=' + msg.payload.decode())
+    r.json()
+
+    client.publish("light/Hallway/Hall1/216773570738075960/brightness", msg.payload.decode(), 0, True)
 
 ### MasterBedroom 
 def on_message_MasterBedroom(client, userdata, msg):
@@ -230,20 +245,50 @@ def on_message_LivingRoom_Bright(client, userdata, msg):
 
     client.publish("light/LivingRoom/4/brightness", msg.payload.decode(), 0, True)
 
-### LivingRoom-Fan 
-def on_message_LivingRoom_Fan(client, userdata, msg):
+### LivingRoom-fanwest 
+def on_message_LivingRoom_fanwest(client, userdata, msg):
     if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):
-        print ("LivingRoom Fan" + msg.payload.decode())
-        r = requests.get('https://lighting.taylortrash.com/api.php?fx=toggle&type=device&uid=359841714533870036&val=' + msg.payload.decode())
+        print ("LivingRoom fanwest" + msg.payload.decode())
+        r = requests.get('https://lighting.taylortrash.com/api.php?fx=toggle&type=device&uid=216773570733998247&val=' + msg.payload.decode())
         r.json()
-        client.publish("light/LivingRoom/Fan/359841714533870036/status", msg.payload.decode(), 0, True)
+        client.publish("light/LivingRoom/fanwest/216773570733998247/status", msg.payload.decode(), 0, True)
 
-def on_message_LivingRoom_Fan_Bright(client, userdata, msg):
-    print ("LivingRoom Fan Brightness " + msg.payload.decode())
-    r = requests.get('https://lighting.taylortrash.com/api.php?fx=dim&type=device&uid=359841714533870036&val=' + msg.payload.decode())
+def on_message_LivingRoom_fanwest_Bright(client, userdata, msg):
+    print ("LivingRoom fanwest Brightness " + msg.payload.decode())
+    r = requests.get('https://lighting.taylortrash.com/api.php?fx=dim&type=device&uid=216773570733998247&val=' + msg.payload.decode())
     r.json()
 
-    client.publish("light/LivingRoom/Fan/359841714533870036/brightness", msg.payload.decode(), 0, True)
+    client.publish("light/LivingRoom/fanwest/216773570733998247/brightness", msg.payload.decode(), 0, True)
+
+### LivingRoom-faneast 
+def on_message_LivingRoom_faneast(client, userdata, msg):
+    if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):
+        print ("LivingRoom faneast" + msg.payload.decode())
+        r = requests.get('https://lighting.taylortrash.com/api.php?fx=toggle&type=device&uid=216773570733869505&val=' + msg.payload.decode())
+        r.json()
+        client.publish("light/LivingRoom/faneast/216773570733869505/status", msg.payload.decode(), 0, True)
+
+def on_message_LivingRoom_faneast_Bright(client, userdata, msg):
+    print ("LivingRoom faneast Brightness " + msg.payload.decode())
+    r = requests.get('https://lighting.taylortrash.com/api.php?fx=dim&type=device&uid=216773570733869505&val=' + msg.payload.decode())
+    r.json()
+
+    client.publish("light/LivingRoom/faneast/216773570733869505/brightness", msg.payload.decode(), 0, True)
+
+### LivingRoom-fannorth 
+def on_message_LivingRoom_fannorth(client, userdata, msg):
+    if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):
+        print ("LivingRoom fannorth" + msg.payload.decode())
+        r = requests.get('https://lighting.taylortrash.com/api.php?fx=toggle&type=device&uid=216773570733998518&val=' + msg.payload.decode())
+        r.json()
+        client.publish("light/LivingRoom/fannorth/216773570733998518/status", msg.payload.decode(), 0, True)
+
+def on_message_LivingRoom_fannorth_Bright(client, userdata, msg):
+    print ("LivingRoom fannorth Brightness " + msg.payload.decode())
+    r = requests.get('https://lighting.taylortrash.com/api.php?fx=dim&type=device&uid=216773570733998518&val=' + msg.payload.decode())
+    r.json()
+
+    client.publish("light/LivingRoom/fannorth/216773570733998518/brightness", msg.payload.decode(), 0, True)
 
 ### Bathroom 
 def on_message_Bathroom(client, userdata, msg):
@@ -337,14 +382,6 @@ def on_message_Exterior(client, userdata, msg):
         r.json()
         client.publish("light/Exterior/2147483645/status", msg.payload.decode(), 0, True)
 
-### Broom 
-def on_message_Broom(client, userdata, msg):
-    if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):
-        print ("Broom" + msg.payload.decode())
-        r = requests.get('https://lighting.taylortrash.com/api.php?fx=scene&uid=2147483647&type=' + msg.payload.decode())
-        r.json()
-        client.publish("light/Broom/2147483647/status", msg.payload.decode(), 0, True)
-
 ### TruckHome 
 def on_message_TruckHome(client, userdata, msg):
     if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):
@@ -352,14 +389,6 @@ def on_message_TruckHome(client, userdata, msg):
         r = requests.get('https://lighting.taylortrash.com/api.php?fx=scene&uid=2147483640&type=' + msg.payload.decode())
         r.json()
         client.publish("light/TruckHome/2147483640/status", msg.payload.decode(), 0, True)
-
-### BedroomCeiling 
-def on_message_BedroomCeiling(client, userdata, msg):
-    if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):
-        print ("BedroomCeiling" + msg.payload.decode())
-        r = requests.get('https://lighting.taylortrash.com/api.php?fx=scene&uid=2147483639&type=' + msg.payload.decode())
-        r.json()
-        client.publish("light/BedroomCeiling/2147483639/status", msg.payload.decode(), 0, True)
 
 
 client = mqtt.Client('tcp-subscriber')               #create new instance
@@ -372,9 +401,13 @@ client.message_callback_add('control', on_message_control)
 client.message_callback_add('light/RearEntrance/BackDoor/216773570733040739/switch', on_message_RearEntrance_BackDoor)
 client.message_callback_add('light/RearEntrance/BackDoor/216773570733040739/brightness/set', on_message_RearEntrance_BackDoor_Bright)
 
-### Hallway-Hallway Begin
-client.message_callback_add('light/Hallway/Hallway/360123189510580692/switch', on_message_Hallway_Hallway)
-client.message_callback_add('light/Hallway/Hallway/360123189510580692/brightness/set', on_message_Hallway_Hallway_Bright)
+### Hallway-Hall2 Begin
+client.message_callback_add('light/Hallway/Hall2/216773570738064271/switch', on_message_Hallway_Hall2)
+client.message_callback_add('light/Hallway/Hall2/216773570738064271/brightness/set', on_message_Hallway_Hall2_Bright)
+
+### Hallway-Hall1 Begin
+client.message_callback_add('light/Hallway/Hall1/216773570738075960/switch', on_message_Hallway_Hall1)
+client.message_callback_add('light/Hallway/Hall1/216773570738075960/brightness/set', on_message_Hallway_Hall1_Bright)
 
 ### MasterBedroom-Ceiling1 Begin
 client.message_callback_add('light/MasterBedroom/Ceiling1/216773570733448185/switch', on_message_MasterBedroom_Ceiling1)
@@ -404,9 +437,17 @@ client.message_callback_add('light/Exterior/FrontDoor/216773570734112971/brightn
 client.message_callback_add('light/Exterior/NWBackDoor/216773570734219143/switch', on_message_Exterior_NWBackDoor)
 client.message_callback_add('light/Exterior/NWBackDoor/216773570734219143/brightness/set', on_message_Exterior_NWBackDoor_Bright)
 
-### LivingRoom-Fan Begin
-client.message_callback_add('light/LivingRoom/Fan/359841714533870036/switch', on_message_LivingRoom_Fan)
-client.message_callback_add('light/LivingRoom/Fan/359841714533870036/brightness/set', on_message_LivingRoom_Fan_Bright)
+### LivingRoom-fanwest Begin
+client.message_callback_add('light/LivingRoom/fanwest/216773570733998247/switch', on_message_LivingRoom_fanwest)
+client.message_callback_add('light/LivingRoom/fanwest/216773570733998247/brightness/set', on_message_LivingRoom_fanwest_Bright)
+
+### LivingRoom-faneast Begin
+client.message_callback_add('light/LivingRoom/faneast/216773570733869505/switch', on_message_LivingRoom_faneast)
+client.message_callback_add('light/LivingRoom/faneast/216773570733869505/brightness/set', on_message_LivingRoom_faneast_Bright)
+
+### LivingRoom-fannorth Begin
+client.message_callback_add('light/LivingRoom/fannorth/216773570733998518/switch', on_message_LivingRoom_fannorth)
+client.message_callback_add('light/LivingRoom/fannorth/216773570733998518/brightness/set', on_message_LivingRoom_fannorth_Bright)
 
 ### Bathroom-LED Begin
 client.message_callback_add('light/Bathroom/LED/216773570733505864/switch', on_message_Bathroom_LED)
@@ -428,14 +469,8 @@ client.message_callback_add('light/Afternoon/2147483646/switch', on_message_Afte
 ### Exterior Begin
 client.message_callback_add('light/Exterior/2147483645/switch', on_message_Exterior)
 
-### Broom Begin
-client.message_callback_add('light/Broom/2147483647/switch', on_message_Broom)
-
 ### TruckHome Begin
 client.message_callback_add('light/TruckHome/2147483640/switch', on_message_TruckHome)
-
-### BedroomCeiling Begin
-client.message_callback_add('light/BedroomCeiling/2147483639/switch', on_message_BedroomCeiling)
 client.connect('172.16.33.8', 1883,60)
 
 client.on_connect = on_connect
