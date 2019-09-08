@@ -17,7 +17,7 @@ define("LOG_ACTIONS", 						1); 						//saves completed actions to schedule.acti
 define("LOG_API_CALLS", 					1);							//log issued API calls
 
 /*
-	IFTTT Integration - https://github.com/bren1818/TCPLightingWebInterface/wiki/IFTTT-Integration
+	IFTTT additions Nov 28th / 2017
 	These settings  should be used in conjunction with your firewall and the .htaccess file.
 */
 
@@ -49,7 +49,7 @@ define("USE_LOCAL_API_IP", 					1); 				/*To do - hook in JS */
 define("LOG_DIR",							dirname(__FILE__) . DIRECTORY_SEPARATOR . "logs");
 
 
-date_default_timezone_set("America/New_York");                 //Ensure this matches your timezone so if you use scheduler the hours match
+date_default_timezone_set("America/Regina");                 //Ensure this matches your timezone so if you use scheduler the hours match
 
 /*************************************START OF INSERTED CODE FOR SUNRISE SUNSET MOD *************************/
 /* 
@@ -67,8 +67,8 @@ date_default_timezone_set("America/New_York");                 //Ensure this mat
 /* 
  */
 
-define("LATITUDE", 43.59);
-define("LONGITUDE", -80.24);
+define("LATITUDE", 50.445211);
+define("LONGITUDE", -104.618894);
 /************************************* END OF INSERTED CODE FOR SUNRISE SUNSET MOD **************************/
 
 /*

@@ -241,7 +241,7 @@ class phpMQTT {
 		stream_socket_shutdown($this->socket, STREAM_SHUT_WR);	
 	}
 
-	/* publish: publishes $content on a $topic */
+	/* publish: publishes $content on a $topic with retention */
 	function publish($topic, $content, $qos = 0, $retain = 1){
 
 		$i = 0;
@@ -273,6 +273,41 @@ class phpMQTT {
 		fwrite($this->socket, $buffer, $i);
 
 	}
+
+	/* publish: publishes $content on a $topic */
+	function publishnoretain($topic, $content, $qos = 0, $retain = 0){
+
+		$i = 0;
+		$buffer = "";
+
+		$buffer .= $this->strwritestring($topic,$i);
+
+		//$buffer .= $this->strwritestring($content,$i);
+
+		if($qos){
+			$id = $this->msgid++;
+			$buffer .= chr($id >> 8);  $i++;
+		 	$buffer .= chr($id % 256);  $i++;
+		}
+
+		$buffer .= $content;
+		$i+=strlen($content);
+
+
+		$head = " ";
+		$cmd = 0x30;
+		if($qos) $cmd += $qos << 1;
+		if($retain) $cmd += 1;
+
+		$head{0} = chr($cmd);		
+		$head .= $this->setmsglength($i);
+
+		fwrite($this->socket, $head, strlen($head));
+		fwrite($this->socket, $buffer, $i);
+
+	}
+
+
 
 	/* message: processes a recieved topic */
 	function message($msg){
