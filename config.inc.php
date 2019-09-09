@@ -74,12 +74,16 @@ define("LONGITUDE", -104.618894);
 /*
 	MQTT Services - Broker connections settings for subscribing and publishing 
 */
-define("ENABLE_MQTT", 		1); 						//Enable MQTT State Publishing (1 = true, 0 = false)
-$MQTTserver = "172.16.33.8";     // change if necessary
-$MQTTport = 1883;                     // change if necessary
-$MQTTusername = "admin";                   // set your username
-$MQTTpassword = "password";                   // set your password
-$MQTTsub_id = "tcp-subscriber"; // make sure this is unique for connecting to sever - you could use uniqid()
-$MQTTpub_id = "tcp-publisher"; // make sure this is unique for connecting to sever - you could use uniqid()
-
+$ENABLE_MQTT = 1;				 	// Enable MQTT State Publishing (1 = true, 0 = false)
+$MQTTserver = "172.16.33.8"; 		// Change as necessary
+$MQTTport = 1883;					// Change as necessary
+$MQTTusername = "admin";			// Set your username
+$MQTTpassword = "password";         // set your password
+$MQTTsub_id = "tcp-subscriber"; 	// make sure this is unique for connecting to sever - you could use uniqid()
+$MQTTpub_id = "tcp-publisher"; 		// make sure this is unique for connecting to sever - you could use uniqid()
+$MQTTsub_id = "tcp-subscriber"; 	// Make sure this is unique for connecting to sever - you could use uniqid()
+$MQTTpub_id = "tcp-publisher"; 		// Make sure this is unique for connecting to sever - you could use uniqid()
+$MQTT_prefix = "light"; 			// Topic prefix for lights
+$ENABLE_HA_DISCO = 1;				// Enable MQTT Publishing of Home Assistant Discovery Topics
+$HASSTopic_id = "homeassistant";	// Topice prefix for Home Assistant Discovery Topics
 ?>

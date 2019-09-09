@@ -11,6 +11,13 @@ require("phpMQTT/phpMQTT.php");
 
 
  if( TOKEN != "" ){
+	if($ENABLE_MQTT == 0){
+		echo "MQTT is not Enabled";
+	} elseif($ENABLE_HA_DISCO == 0) {
+		echo "Home Assistant Discovery is not Enabled";
+	} else {
+
+
 	$mqtt = new phpMQTT($MQTTserver, $MQTTport, $MQTTpub_id);
 	
 	//Get State of System Data
@@ -84,11 +91,11 @@ require("phpMQTT/phpMQTT.php");
 						if ($mqtt->connect(true, retain, $MQTTusername, $MQTTpassword)) {
 							foreach($DEVICES as $device){
                                 $DeviceCommand = $room['name']."/".$device['name']."/".$device['did'];
-                                $myObj->name = .$device["name"];
-                                $myObj->command_topic = "light/".$DeviceCommand."/switch";
-                                $myObj->state_topic = "light/".$DeviceCommand."/status";
-                                $myObj->brightness_command_topic = "light/".$DeviceCommand."/brightness/set";
-                                $myObj->brightness_state_topic = "light/".$DeviceCommand."/brightness";
+                                $myObj->name = $device["name"];
+                                $myObj->command_topic = $MQTT_prefix."/".$DeviceCommand."/switch";
+                                $myObj->state_topic = $MQTT_prefix."/".$DeviceCommand."/status";
+                                $myObj->brightness_command_topic = $MQTT_prefix."/".$DeviceCommand."/brightness/set";
+                                $myObj->brightness_state_topic = $MQTT_prefix."/".$DeviceCommand."/brightness";
                                 $myObj->brightness_scale = 100;
                                 $myObj->qos = 0;
                                 $myObj->payload_on = "1";
@@ -96,16 +103,13 @@ require("phpMQTT/phpMQTT.php");
                                 $myObj->optimistic = "false";
                                 
                                 $myJSON = json_encode($myObj, JSON_UNESCAPED_SLASHES);
-                                $Topic = "homeassistant/light/".$device['did']."/config";
-                                //echo $myJSON;
-                                echo "\r\n";
-                                echo $Topic;
+                                $Topic = $HASSTopic_id."/light/".$device['did']."/config";
+                                echo $myJSON;
+                                //echo $Topic;
 
                                 $mqtt->publishnoretain($Topic, $myJSON);
-
 							}
-
-                            $mqtt->close();
+							$mqtt->close();
 						} else {
 							echo "Time out!\n";
 						}
@@ -117,5 +121,6 @@ require("phpMQTT/phpMQTT.php");
 		}
 	}
 } 
+}
 ?>
 

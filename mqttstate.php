@@ -11,6 +11,10 @@ require("phpMQTT/phpMQTT.php");
 
 
  if( TOKEN != "" ){
+	if($ENABLE_MQTT == 0){
+		echo "MQTT is not Enabled";
+	} else {
+
 	$mqtt = new phpMQTT($MQTTserver, $MQTTport, $MQTTpub_id);
 	
 	//Get State of System Data
@@ -83,8 +87,8 @@ require("phpMQTT/phpMQTT.php");
 						$roomDevices = 0;
 						if ($mqtt->connect(true, retain, $MQTTusername, $MQTTpassword)) {
 							foreach($DEVICES as $device){
-								$mqtt->publish('light/'.$room["name"].'/'.$device["name"].'/'.$device['did'].'/status', $device['state']);
-								$mqtt->publish('light/'.$room["name"].'/'.$device["name"].'/'.$device['did'].'/brightness', $device['level']);
+								$mqtt->publish($MQTT_prefix.'/'.$room["name"].'/'.$device["name"].'/'.$device['did'].'/status', $device['state']);
+								$mqtt->publish($MQTT_prefix.'/'.$room["name"].'/'.$device["name"].'/'.$device['did'].'/brightness', $device['level']);
 								echo $device["name"].'- State: '.$device["state"].'  Brightness:'.$device["level"].'<br>';
 							}
 							$mqtt->close();
@@ -99,5 +103,6 @@ require("phpMQTT/phpMQTT.php");
 		}
 	}
 } 
+}
 ?>
 
