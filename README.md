@@ -25,7 +25,7 @@ $ENABLE_HA_DISCO = 1;		        // Enable MQTT Publishing of Home Assistant Disco
 $HASSTopic_id = "homeassistant";	// Topice prefix for Home Assistant Discovery Topics
 ```
 
-Once your lights are setup in TCP Connected bridge. You would run http://<webInterfaceIP>/MQTTGenerator.php  This will generate the python subscriber file mqtt_sub.py  - To run it you need the python modules - paho.mqtt.client and requests.  
+Once your lights are setup in TCP Connected bridge. You would run http://webInterfaceIP/MQTTGenerator.php  This will generate the python subscriber file mqtt_sub.py  - To run it you need the python modules - paho.mqtt.client and requests.  
 
 You can run it however you like. I generally create a service for scripts like this so they always run on restart. https://tecadmin.net/setup-autorun-python-script-using-systemd/ My service definition looks like this.
 
