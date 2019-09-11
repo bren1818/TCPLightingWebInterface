@@ -3,7 +3,7 @@
 
 define("LIGTHING_BRIDGE_IP", 				"192.168.1.TCP"); 			// IP address of TCP Bridge/Gateway
 define("LIGHTING_BRIDGE_PORT", 				"443");						// 443 for new firmware, 80 for legacy - If you don't know, leave it at 443
-define("LOCAL_URL", 						"http://localhost");		// Address of your webserver running this - this is used in runSchedule to call the API
+define("LOCAL_URL", 						"http://lighting.local");		// Address of your webserver running this - this is used in runSchedule to call the API
 
 define("USER_EMAIL",    					"you@email.com"); 			// I think this is so you dont have to regenerate tokens if you run this script elsewhere
 define("USER_PASSWORD", 					"can-be-anything");			// can be anything
@@ -79,9 +79,9 @@ $MQTTserver = "172.16.33.8"; 		// Change as necessary
 $MQTTport = 1883;					// Change as necessary
 $MQTTusername = "admin";			// Set your username
 $MQTTpassword = "password";         // set your password
-$MQTTsub_id = "tcp-subscriber"; 	// make sure this is unique for connecting to sever - you could use uniqid()
-$MQTTpub_id = "tcp-publisher"; 		// make sure this is unique for connecting to sever - you could use uniqid()
-$MQTT_prefix = "light"; 			// Topic prefix for lights
-$ENABLE_HA_DISCO = 1;				// Enable MQTT Publishing of Home Assistant Discovery Topics
-$HASSTopic_id = "homeassistant";	// Topice prefix for Home Assistant Discovery Topics
+$MQTTsub_id = "tcp-subscriber"; 	// Make sure this is unique for connecting to server - you could use uniqid()
+$MQTTpub_id = "tcp-publisher"; 		// Make sure this is unique for connecting to server - you could use uniqid()
+$MQTT_prefix = "light"; 			// Topic prefix for lights - ie light/<room-name>/<light-name>/<UniqueBulbID>
+$ENABLE_HA_DISCO = 1;				// Enable MQTT Publishing of Home Assistant Discovery Topics (1 = true, 0 = false)
+$HASSTopic_id = "homeassistant";	// Topic prefix for Home Assistant Discovery Topics - this must match with HASS
 ?>

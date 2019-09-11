@@ -62,7 +62,7 @@ require("phpMQTT/phpMQTT.php");
 		if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
 		
 		foreach($DATA as $room){
-			
+			$RoomName = str_replace(' ', '', $room['name']);			
 			if( isset($room['rid'] ) ){
 				$DEVICES = array();
 			
@@ -90,7 +90,8 @@ require("phpMQTT/phpMQTT.php");
 						$roomDevices = 0;
 						if ($mqtt->connect(true, retain, $MQTTusername, $MQTTpassword)) {
 							foreach($DEVICES as $device){
-                                $DeviceCommand = $room['name']."/".$device['name']."/".$device['did'];
+								$DeviceName = str_replace(' ', '', $device['name']);
+                                $DeviceCommand = $RoomName."/".$DeviceName."/".$device['did'];
                                 $myObj->name = $device["name"];
                                 $myObj->command_topic = $MQTT_prefix."/".$DeviceCommand."/switch";
                                 $myObj->state_topic = $MQTT_prefix."/".$DeviceCommand."/status";

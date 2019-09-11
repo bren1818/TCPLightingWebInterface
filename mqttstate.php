@@ -59,7 +59,7 @@ require("phpMQTT/phpMQTT.php");
 		if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
 		
 		foreach($DATA as $room){
-			
+			$RoomName = str_replace(' ', '', $room['name']);
 			if( isset($room['rid'] ) ){
 				$DEVICES = array();
 			
@@ -87,9 +87,10 @@ require("phpMQTT/phpMQTT.php");
 						$roomDevices = 0;
 						if ($mqtt->connect(true, retain, $MQTTusername, $MQTTpassword)) {
 							foreach($DEVICES as $device){
-								$mqtt->publish($MQTT_prefix.'/'.$room["name"].'/'.$device["name"].'/'.$device['did'].'/status', $device['state']);
-								$mqtt->publish($MQTT_prefix.'/'.$room["name"].'/'.$device["name"].'/'.$device['did'].'/brightness', $device['level']);
-								echo $device["name"].'- State: '.$device["state"].'  Brightness:'.$device["level"].'<br>';
+								$DeviceName = str_replace(' ', '', $device['name']);
+								$mqtt->publish($MQTT_prefix.'/'.$RoomName.'/'.$DeviceName.'/'.$device['did'].'/status', $device['state']);
+								$mqtt->publish($MQTT_prefix.'/'.$RoomName.'/'.$DeviceName.'/'.$device['did'].'/brightness', $device['level']);
+								echo $DeviceName.'- State: '.$device["state"].'  Brightness:'.$device["level"].'<br>';
 							}
 							$mqtt->close();
 						} else {
