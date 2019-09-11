@@ -287,7 +287,7 @@ if( is_array($scenes) ){
 		if ($mqtt->connect(true, NULL, $MQTTusername, $MQTTpassword)) {
 				$file_handle = fopen('mqtt_sub.py', 'a') or die('Error opening file.');
 				$data1 = "\n### ".$scene['name']." Begin\n";
-				$data2 = "client.message_callback_add('".$MQTT_prefix."/".$SceneName."/".$scene['sid']."/switch', on_message_".$scene['name'].")\n";
+				$data2 = "client.message_callback_add('".$MQTT_prefix."/".$SceneName."/".$scene['sid']."/switch', on_message_".$SceneName.")\n";
 				fwrite($file_handle, $data1);
 				fwrite($file_handle, $data2);
 				fclose($file_handle);
