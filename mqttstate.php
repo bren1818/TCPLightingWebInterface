@@ -92,7 +92,7 @@ require("phpMQTT/phpMQTT.php");
 								$mqtt->publish($MQTT_prefix.'/'.$RoomName.'/'.$DeviceName.'/'.$device['did'].'/status', $device['state']);
 								$mqtt->publish($MQTT_prefix.'/'.$RoomName.'/'.$DeviceName.'/'.$device['did'].'/brightness', $device['level']);
 								$mqtt->publish($MQTT_prefix.'/'.$RoomName.'/'.$DeviceName.'/'.$device['did'].'/LWT', $LWT);
-								echo $DeviceName.': On-Off State: '.$device["state"].'  Brightness:'.$device["level"].'  Online Status '.$LWT.'<br>';
+								echo $DeviceName.': On-Off State: '.$device["state"].'  Brightness:'.$device["level"].'  Online Status '.$LWT.'<br/>';
 							}
 							$mqtt->close();
 						} else {

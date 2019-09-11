@@ -96,7 +96,8 @@ require("phpMQTT/phpMQTT.php");
                                 $myObj->command_topic = $MQTT_prefix."/".$DeviceCommand."/switch";
                                 $myObj->state_topic = $MQTT_prefix."/".$DeviceCommand."/status";
                                 $myObj->brightness_command_topic = $MQTT_prefix."/".$DeviceCommand."/brightness/set";
-                                $myObj->brightness_state_topic = $MQTT_prefix."/".$DeviceCommand."/brightness";
+								$myObj->brightness_state_topic = $MQTT_prefix."/".$DeviceCommand."/brightness";
+								$myObj->availability_topic = $MQTT_prefix."/".$DeviceCommand."/LWT";
                                 $myObj->brightness_scale = 100;
                                 $myObj->qos = 0;
                                 $myObj->payload_on = "1";
@@ -105,8 +106,8 @@ require("phpMQTT/phpMQTT.php");
                                 
                                 $myJSON = json_encode($myObj, JSON_UNESCAPED_SLASHES);
                                 $Topic = $HASSTopic_id."/light/".$device['did']."/config";
-                                echo $myJSON;
-                                //echo $Topic;
+                                //echo $myJSON.'<br/>';
+                                //echo $Topic.'<br/>';
 
                                 $mqtt->publishnoretain($Topic, $myJSON);
 							}
@@ -121,6 +122,8 @@ require("phpMQTT/phpMQTT.php");
 			}
 		}
 	}
+	echo "Auto-Discovery Topics Published";
+
 } 
 }
 ?>
