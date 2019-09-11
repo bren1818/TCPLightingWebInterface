@@ -3,7 +3,7 @@
 
 define("LIGTHING_BRIDGE_IP", 				"192.168.1.TCP"); 			// IP address of TCP Bridge/Gateway
 define("LIGHTING_BRIDGE_PORT", 				"443");						// 443 for new firmware, 80 for legacy - If you don't know, leave it at 443
-define("LOCAL_URL", 						"http://localhost");		// Address of your webserver running this - this is used in runSchedule to call the API
+define("LOCAL_URL", 						"http://lighting.local");		// Address of your webserver running this - this is used in runSchedule to call the API
 
 define("USER_EMAIL",    					"you@email.com"); 			// I think this is so you dont have to regenerate tokens if you run this script elsewhere
 define("USER_PASSWORD", 					"can-be-anything");			// can be anything
@@ -17,7 +17,7 @@ define("LOG_ACTIONS", 						1); 						//saves completed actions to schedule.acti
 define("LOG_API_CALLS", 					1);							//log issued API calls
 
 /*
-	IFTTT Integration - https://github.com/bren1818/TCPLightingWebInterface/wiki/IFTTT-Integration
+	IFTTT additions Nov 28th / 2017
 	These settings  should be used in conjunction with your firewall and the .htaccess file.
 */
 
@@ -49,7 +49,7 @@ define("USE_LOCAL_API_IP", 					1); 				/*To do - hook in JS */
 define("LOG_DIR",							dirname(__FILE__) . DIRECTORY_SEPARATOR . "logs");
 
 
-date_default_timezone_set("America/New_York");                 //Ensure this matches your timezone so if you use scheduler the hours match
+date_default_timezone_set("America/Regina");                 //Ensure this matches your timezone so if you use scheduler the hours match
 
 /*************************************START OF INSERTED CODE FOR SUNRISE SUNSET MOD *************************/
 /* 
@@ -67,19 +67,21 @@ date_default_timezone_set("America/New_York");                 //Ensure this mat
 /* 
  */
 
-define("LATITUDE", 43.59);
-define("LONGITUDE", -80.24);
+define("LATITUDE", 50.445211);
+define("LONGITUDE", -104.618894);
 /************************************* END OF INSERTED CODE FOR SUNRISE SUNSET MOD **************************/
 
 /*
 	MQTT Services - Broker connections settings for subscribing and publishing 
 */
-define("ENABLE_MQTT", 		1); 						//Enable MQTT State Publishing (1 = true, 0 = false)
-$MQTTserver = "172.16.33.8";     // change if necessary
-$MQTTport = 1883;                     // change if necessary
-$MQTTusername = "admin";                   // set your username
-$MQTTpassword = "password";                   // set your password
-$MQTTsub_id = "tcp-subscriber"; // make sure this is unique for connecting to sever - you could use uniqid()
-$MQTTpub_id = "tcp-publisher"; // make sure this is unique for connecting to sever - you could use uniqid()
-
+$ENABLE_MQTT = 1;				 	// Enable MQTT State Publishing (1 = true, 0 = false)
+$MQTTserver = "172.16.33.8"; 		// Change as necessary
+$MQTTport = 1883;					// Change as necessary
+$MQTTusername = "admin";			// Set your username
+$MQTTpassword = "password";         // set your password
+$MQTTsub_id = "tcp-subscriber"; 	// Make sure this is unique for connecting to server - you could use uniqid()
+$MQTTpub_id = "tcp-publisher"; 		// Make sure this is unique for connecting to server - you could use uniqid()
+$MQTT_prefix = "light"; 			// Topic prefix for lights - ie light/<room-name>/<light-name>/<UniqueBulbID>
+$ENABLE_HA_DISCO = 1;				// Enable MQTT Publishing of Home Assistant Discovery Topics (1 = true, 0 = false)
+$HASSTopic_id = "homeassistant";	// Topic prefix for Home Assistant Discovery Topics - this must match with HASS
 ?>

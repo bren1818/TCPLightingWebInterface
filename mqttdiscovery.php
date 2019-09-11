@@ -13,7 +13,10 @@ require("phpMQTT/phpMQTT.php");
  if( TOKEN != "" ){
 	if($ENABLE_MQTT == 0){
 		echo "MQTT is not Enabled";
+	} elseif($ENABLE_HA_DISCO == 0) {
+		echo "Home Assistant Discovery is not Enabled";
 	} else {
+
 
 	$mqtt = new phpMQTT($MQTTserver, $MQTTport, $MQTTpub_id);
 	
@@ -59,7 +62,7 @@ require("phpMQTT/phpMQTT.php");
 		if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
 		
 		foreach($DATA as $room){
-			$RoomName = str_replace(' ', '', $room['name']);
+			$RoomName = str_replace(' ', '', $room['name']);			
 			if( isset($room['rid'] ) ){
 				$DEVICES = array();
 			
@@ -88,9 +91,24 @@ require("phpMQTT/phpMQTT.php");
 						if ($mqtt->connect(true, retain, $MQTTusername, $MQTTpassword)) {
 							foreach($DEVICES as $device){
 								$DeviceName = str_replace(' ', '', $device['name']);
-								$mqtt->publish($MQTT_prefix.'/'.$RoomName.'/'.$DeviceName.'/'.$device['did'].'/status', $device['state']);
-								$mqtt->publish($MQTT_prefix.'/'.$RoomName.'/'.$DeviceName.'/'.$device['did'].'/brightness', $device['level']);
-								echo $DeviceName.'- State: '.$device["state"].'  Brightness:'.$device["level"].'<br>';
+                                $DeviceCommand = $RoomName."/".$DeviceName."/".$device['did'];
+                                $myObj->name = $device["name"];
+                                $myObj->command_topic = $MQTT_prefix."/".$DeviceCommand."/switch";
+                                $myObj->state_topic = $MQTT_prefix."/".$DeviceCommand."/status";
+                                $myObj->brightness_command_topic = $MQTT_prefix."/".$DeviceCommand."/brightness/set";
+                                $myObj->brightness_state_topic = $MQTT_prefix."/".$DeviceCommand."/brightness";
+                                $myObj->brightness_scale = 100;
+                                $myObj->qos = 0;
+                                $myObj->payload_on = "1";
+                                $myObj->payload_off = "0";
+                                $myObj->optimistic = "false";
+                                
+                                $myJSON = json_encode($myObj, JSON_UNESCAPED_SLASHES);
+                                $Topic = $HASSTopic_id."/light/".$device['did']."/config";
+                                echo $myJSON;
+                                //echo $Topic;
+
+                                $mqtt->publishnoretain($Topic, $myJSON);
 							}
 							$mqtt->close();
 						} else {

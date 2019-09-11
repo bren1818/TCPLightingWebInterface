@@ -29,6 +29,15 @@ else
 	printf "File exists continuing\n\n"
 fi
 
+printf "Creating file mqtt_sub.py...\n\n"
+if [ ! -f mqtt_sub.py ]; then
+	touch mqtt_sub.py
+	chmod 777 mqtt_sub.py
+	printf "File mqtt_sub.py created\n\n"
+else 
+	printf "File exists continuing\n\n"
+fi
+
 printf "Creating directory logs...\n\n"
 if [ ! -d logs ]; then
 	mkdir logs
@@ -40,5 +49,4 @@ fi
 
 
 printf "File creation complete"
-
 
