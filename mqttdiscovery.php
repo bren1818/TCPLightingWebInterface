@@ -92,7 +92,8 @@ require("phpMQTT/phpMQTT.php");
 							foreach($DEVICES as $device){
 								$DeviceName = str_replace(' ', '', $device['name']);
                                 $DeviceCommand = $RoomName."/".$DeviceName."/".$device['did'];
-                                $myObj->name = $device["name"];
+								$myObj->name = $device["name"];
+                                $myObj->unique_id = $device['did'];
                                 $myObj->command_topic = $MQTT_prefix."/".$DeviceCommand."/switch";
                                 $myObj->state_topic = $MQTT_prefix."/".$DeviceCommand."/status";
                                 $myObj->brightness_command_topic = $MQTT_prefix."/".$DeviceCommand."/brightness/set";
