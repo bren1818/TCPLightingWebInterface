@@ -25,6 +25,8 @@ $data11 ="\ndef on_message_hassonline(client, userdata, msg):\n    if (msg.paylo
 
 fwrite($file_handle, $data1);
 fwrite($file_handle, $data2);
+fwrite($file_handle, $data3);
+fwrite($file_handle, $data4);
 fwrite($file_handle, $data5);
 fwrite($file_handle, $data6);
 fwrite($file_handle, $data7);
