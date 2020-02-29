@@ -13,13 +13,15 @@ require("phpMQTT/phpMQTT.php");
 $file_handle = fopen('mqtt_sub.py', 'w') or die('Error opening mqtt_sub.py.');
 $data1 = "#!/usr/bin/env python3\n\nimport paho.mqtt.client as mqtt\nimport requests\nimport subprocess\n\n";
 $data2 = "# This is the Subscriber\n\n";
-$data5 = "def on_connect(client, userdata, flags, rc):\n";
-$data6 = "    print(\"Connected with result code \"+str(rc)) \n";
-$data7 = "    client.subscribe(\"".$MQTT_prefix."/#\")\n";
-$data8 = "    client.subscribe(\"control/".$MQTT_control."/#\")\n";
-$data3 = "\n### topic message\ndef on_message(mosq, obj, msg):\n    print(msg.topic+\" \"+str(msg.qos)+\" \"+str(msg.payload))";
-$data4 ="\n\ndef on_message_control(client, userdata, msg):\n    if (msg.payload.decode() == 'QUIT'):\n        print ('Exiting')\n        client.disconnect()\n";
-$data9 ="    elif (msg.payload.decode() == 'REBOOT'):\n        print ('Rebooting')\n        client.disconnect()\n        command = 'sudo reboot'\n        subprocess.check_call(command.split())\n\n";
+$data3 = "def on_connect(client, userdata, flags, rc):\n";
+$data4 = "    print(\"Connected with result code \"+str(rc)) \n";
+$data5 = "    client.subscribe(\"".$MQTT_prefix."/#\")\n";
+$data6 = "    client.subscribe(\"control/".$MQTT_control."/#\")\n";
+$data7 = "    client.subscribe(\"".$HASSOnline."\")\n";
+$data8 = "\n### topic message\ndef on_message(mosq, obj, msg):\n    print(msg.topic+\" \"+str(msg.qos)+\" \"+str(msg.payload))";
+$data9 ="\n\ndef on_message_control(client, userdata, msg):\n    if (msg.payload.decode() == 'QUIT'):\n        print ('Exiting')\n        client.disconnect()\n";
+$data10 ="    elif (msg.payload.decode() == 'REBOOT'):\n        print ('Rebooting')\n        client.disconnect()\n        command = 'sudo reboot'\n        subprocess.check_call(command.split())\n";
+$data11 ="\ndef on_message_hassonline(client, userdata, msg):\n    if (msg.payload.decode() == 'online'):\n        print ('Refreshing')\n        command = 'curl ".LOCAL_URL."/mqttdiscovery.php'\n        subprocess.check_call(command.split())\n\n";
 
 fwrite($file_handle, $data1);
 fwrite($file_handle, $data2);
@@ -27,9 +29,9 @@ fwrite($file_handle, $data5);
 fwrite($file_handle, $data6);
 fwrite($file_handle, $data7);
 fwrite($file_handle, $data8);
-fwrite($file_handle, $data3);
-fwrite($file_handle, $data4);
 fwrite($file_handle, $data9);
+fwrite($file_handle, $data10);
+fwrite($file_handle, $data11);
 fclose($file_handle);
 /* End Python File Fixed Header Creation */
 
@@ -196,9 +198,11 @@ fclose($file_handle);
 	$data1 = "\n\nclient = mqtt.Client('".$MQTTsub_id."')               #create new instance\n";
 	$data2 = "client.username_pw_set('".$MQTTusername."', password='".$MQTTpassword."')    #set username and password\n\n";
 	$data3 = "#Callbacks that trigger on a specific subscription match\nclient.message_callback_add('control/".$MQTT_control."', on_message_control)\n";
+	$data4 = "client.message_callback_add('".$HASSOnline."', on_message_hassonline)\n";
 	fwrite($file_handle, $data1);
 	fwrite($file_handle, $data2);
 	fwrite($file_handle, $data3);
+	fwrite($file_handle, $data4);
 	fclose($file_handle);	
 	/* End Python File Fixed Connect Creation */
 
