@@ -35,6 +35,13 @@ function getCurlReturn($postDataString){
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 	}
 
+	//This may be required if you encounter an error that your openssl dh key is too small error
+	// curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT:!DH');
+
+
+
+
+
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	
 	$result = curl_exec($ch);
