@@ -85,5 +85,5 @@ $MQTT_prefix = "light"; 			// Topic prefix for lights - ie light/<room-name>/<li
 $MQTT_control = "tcp";				// Control topic identifier for host and script control ie control/<MQTT_control>
 $ENABLE_HA_DISCO = 1;				// Enable MQTT Publishing of Home Assistant Discovery Topics (1 = true, 0 = false)
 $HASSTopic_id = "homeassistant";	// Topic prefix for Home Assistant Discovery Topics - this must match with HASS
-$HASSOnline = "hass/status";		// Topic Home Assistant publishes to, to announce its online
+$HASSOnline = "homeassistant/status";		// Topic Home Assistant publishes to, to announce its online
 ?>

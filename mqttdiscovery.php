@@ -92,20 +92,27 @@ require("phpMQTT/phpMQTT.php");
 							foreach($DEVICES as $device){
 								$DeviceName = str_replace(' ', '', $device['name']);
                                 $DeviceCommand = $RoomName."/".$DeviceName."/".$device['did'];
-								$myObj->name = $device["name"];
-                                $myObj->unique_id = $device['did'];
-                                $myObj->command_topic = $MQTT_prefix."/".$DeviceCommand."/switch";
-                                $myObj->state_topic = $MQTT_prefix."/".$DeviceCommand."/status";
-                                $myObj->brightness_command_topic = $MQTT_prefix."/".$DeviceCommand."/brightness/set";
-								$myObj->brightness_state_topic = $MQTT_prefix."/".$DeviceCommand."/brightness";
-								$myObj->availability_topic = $MQTT_prefix."/".$DeviceCommand."/LWT";
-                                $myObj->brightness_scale = 100;
-                                $myObj->qos = 0;
-                                $myObj->payload_on = "1";
-                                $myObj->payload_off = "0";
-                                $myObj->optimistic = "false";
-                                
-                                $myJSON = json_encode($myObj, JSON_UNESCAPED_SLASHES);
+								$array = array(
+									"name" => $device["name"],
+									"unique_id" => $device['did'],
+									"command_topic" => $MQTT_prefix."/".$DeviceCommand."/switch",
+									"state_topic" => $MQTT_prefix."/".$DeviceCommand."/status",
+									"brightness_command_topic" => $MQTT_prefix."/".$DeviceCommand."/brightness/set",
+									"brightness_state_topic" => $MQTT_prefix."/".$DeviceCommand."/brightness",
+									"availability_topic" => $MQTT_prefix."/".$DeviceCommand."/LWT",
+									"brightness_scale" => 100,
+									"qos" => 0,
+									"payload_on" => "1",
+									"payload_off" => "0",
+									"optimistic" => "false",
+									"device" => array(
+										"ids" => $device['did'],
+										"name" => $device["name"],
+										"mf" => "TCP",
+										"mdl" => "TCP Bulb"
+									 )
+								);
+								$myJSON = json_encode($array, JSON_UNESCAPED_SLASHES);
                                 $Topic = $HASSTopic_id."/light/".$device['did']."/config";
                                 //echo $myJSON.'<br/>';
                                 //echo $Topic.'<br/>';
