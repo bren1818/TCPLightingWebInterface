@@ -180,6 +180,7 @@ function pageHeader($title){
     <!-- <a target="_blank" href="https://github.com/bren1818/TCPLightingWebInterface/wiki">Wiki</a>-->
     <a target="_blank" href="MQTTGenerator.php">MQTT Script Generator</a>
     <a target="_blank" href="mqttstate.php">Publish Current Device States</a>
+    <a target="_blank" href="mqttdiscovery.php">Publish Home Assistant Discovery Topics</a>
     <a href="queryBuilder.php">IFTTT Query Builder</a>
 	<?php if( LOG_ACTIONS == 1 || LOG_API_CALLS == 1){
 		echo '<a href="viewLogs.php">View Logs</a>';

@@ -114,9 +114,10 @@ require("phpMQTT/phpMQTT.php");
 								);
 								$myJSON = json_encode($array, JSON_UNESCAPED_SLASHES);
                                 $Topic = $HASSTopic_id."/light/".$device['did']."/config";
-                                //echo $myJSON.'<br/>';
-                                //echo $Topic.'<br/>';
+								//Uncomment the line below to see the formatted JSON being sent to the Home Assistant Discovery Topic
+								//echo '<pre>'.json_encode($array, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT).'</pre>';
 
+								
                                 $mqtt->publishnoretain($Topic, $myJSON);
 							}
 							$mqtt->close();
