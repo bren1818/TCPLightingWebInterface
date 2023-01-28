@@ -41,14 +41,6 @@ function getCurlReturn($postDataString){
 	
 	
 
-	//This may be required if you encounter an error that your openssl dh key is too small error
-	//Also appears to be required for PHP 8+
-	curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT:!DH');
-
-
-
-
-
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	
 	$result = curl_exec($ch);
@@ -94,36 +86,7 @@ function getDevices(){
 			}	
 		}
 	}
-	return $DEVICES;
-}
-
-function getDevicesMQTT(){
-	$CMD = "cmd=GWRBatch&data=<gwrcmds><gwrcmd><gcmd>RoomGetCarousel</gcmd><gdata><gip><version>1</version><token>".TOKEN."</token><fields>name,image,imageurl,control,power,product,class,realtype,status</fields></gip></gdata></gwrcmd></gwrcmds>&fmt=xml";
-	$result = getCurlReturn($CMD);
-	$array = xmlToArray($result);
-	$DATA = $array["gwrcmd"]["gdata"]["gip"]["room"];
-	$DEVICES = array();	
 	
-	if ( isset( $DATA["rid"] ) ){ $DATA = array( $DATA ); }
-	
-	foreach($DATA as $room){
-		
-		if( ! is_array($room["device"]) ){
-			//$DEVICES[] = $room["device"]; //singular device in a room
-		}else{
-			$device = (array)$room["device"];
-			if( isset($device["did"]) ){
-				//item is singular device
-				$DEVICES[] = $room["device"];
-			}else{
-				for( $x = 0; $x < sizeof($device); $x++ ){
-					if( isset($device[$x]) && is_array($device[$x]) && ! empty($device[$x]) ){
-						$DEVICES[] = $device[$x];
-					}
-				}
-			}	
-		}
-	}
 	return $DEVICES;
 }
 
@@ -183,11 +146,8 @@ function pageHeader($title){
 		<a href="#">Home</a>
 		<a href="#scenes">Scenes</a>
 	<?php } ?>
-	<a target="_blank" href="https://github.com/sktaylortrash/TCPLightingWebInterface-MQTT">GitHub Link</a>
-    <!-- <a target="_blank" href="https://github.com/bren1818/TCPLightingWebInterface/wiki">Wiki</a>-->
-    <a target="_blank" href="MQTTGenerator.php">MQTT Script Generator</a>
-    <a target="_blank" href="mqttstate.php">Publish Current Device States</a>
-    <a target="_blank" href="mqttdiscovery.php">Publish Home Assistant Discovery Topics</a>
+	<a target="_blank" href="https://github.com/bren1818/TCPLightingWebInterface">GitHub Link</a>
+    <a target="_blank" href="https://github.com/bren1818/TCPLightingWebInterface/wiki">Wiki</a>
     <a href="queryBuilder.php">IFTTT Query Builder</a>
 	<?php if( LOG_ACTIONS == 1 || LOG_API_CALLS == 1){
 		echo '<a href="viewLogs.php">View Logs</a>';
