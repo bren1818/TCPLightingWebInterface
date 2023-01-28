@@ -3,3 +3,5 @@ schedule.actioned
 tcp.token
 Plugins/tcp/TCP_token
 API-Request.log
+mqtt_sub.py
+taylortrash.p12

@@ -9,9 +9,9 @@ p{margin: 10px 0; }
 </style>
 <div class="container" style="padding: 20px; background-color: #fff; border: 1px solid #000;">
 <p>Use this to assist with creation of the IFTTT web-hooks quickly</p>
-<p>I suggest setting up a Google Assistant Hook which then calls a webhook with the API string. Follow the <a target="_blank" href="https://github.com/bren1818/TCPLightingWebInterface/wiki/IFTTT-Integration">excellent guide</a> written by <a target="_blank" href="https://github.com/sktaylortrash">@sktaylortrash</a> in the wiki and feel free to ask a question in the forum</p>
+<p>This builder is aimed at setting up a Google Assistant Hook which then calls a webhook with the API string. Follow the <a target="_blank" href="https://github.com/sktaylortrash/TCPLightingWebInterface-MQTT/wiki/IFTTT-Integration">guide</a> in the wiki and feel free to post a question in the issues</p>
 
-<p>It is recommended that use SSL if you're able. This will work on non-standard ports, (ports other than 80/443) but you will need to setup port-forwarding and setup your webserver to listen on those ports. <a target="_blank" href="https://github.com/sktaylortrash">@sktaylortrash</a> has <a target="_blank" href="https://github.com/bren1818/TCPLightingWebInterface/wiki/Installation">documented</a> how to set everything up on both a <a target="_blank" href="https://github.com/bren1818/TCPLightingWebInterface/wiki/Installation-for-Apache-on-Raspbian">Raspberry Pi / Linux Environment</a>, or using <a target="_blanks" href="https://github.com/bren1818/TCPLightingWebInterface/wiki/Installation-for-Apache-on-XAMPP-Windows">XAMPP on Windows</a>.</p> 
+<p>It is recommended that you use SSL if you're able. This will work on non-standard ports, (ports other than 80/443) but you will need to setup port-forwarding and setup your webserver to listen on those ports. Some <a target="_blank" href="https://github.com/sktaylortrash/TCPLightingWebInterface-MQTT/wiki/Installation">documentation</a> is provided on how to set everything up on a <a target="_blank" href="https://github.com/sktaylortrash/TCPLightingWebInterface-MQTT/wiki/Installation-for-Apache-on-Raspbian">Raspberry Pi / Linux Environment</a>.</p> 
 
 
 
@@ -130,21 +130,21 @@ $(function(){
 			$('#scene_command_on_3').html(sceneName + preface + " scene on");
 			$('#scene_command_on_response').html("Turning " + sceneName + preface + " devices ON");
 			
-			$('#scene_command_on_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=on&uid=' + id + '' + ( requireExtPass == 1 ? '&password=' + externalPass : '')  );
+			$('#scene_command_on_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=1&uid=' + id + '' +( requireExtPass == 1 ? '&password=' + externalPass : '')  );
 			
 			$('#scene_command_off_1').html("Deactivate " +  sceneName + preface + " scene");
 			$('#scene_command_off_2').html("Turn " + sceneName + preface + " scene off");
 			$('#scene_command_off_3').html(sceneName  + preface + " scene off");
 			$('#scene_command_off_response').html("Turning " + sceneName + preface + " devices off");
 			
-			$('#scene_command_off_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=off&uid=' + id + '' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+			$('#scene_command_off_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=0&uid=' + id + "" + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 			
 			$('#command_run_1').html("Activate " +  sceneName + preface +" scene");
 			$('#command_run_2').html("Turn " + sceneName + preface + " scene on");
 			$('#command_run_3').html(sceneName + " scene on");
 			$('#command_run_response').html("Running " + preface + sceneName + " scene");
 			
-			$('#command_run_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=run&uid=' + id + '' + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
+			$('#command_run_url').html( externalAddr + ( externalPort != 80 ?  ':' + externalPort : '' ) + '/api.php?fx=scene&type=run&uid=' + id + "" + ( requireExtPass == 1 ? '&password=' + externalPass : '') );
 			
 		}
 

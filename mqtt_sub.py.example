@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+
+import paho.mqtt.client as mqtt
+import requests
+
+# This is the Subscriber
+
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code "+str(rc)) 
+    client.subscribe("light/#")
+    client.subscribe("control")
+
+### topic message
+def on_message(mosq, obj, msg):
+    print(msg.topic+" "+str(msg.qos)+" "+str(msg.payload))
+
+def on_message_control(client, userdata, msg):
+    if (msg.payload.decode() == 'QUIT'):
+        print ('Exiting')
+    client.disconnect()
+
+
+### RearEntrance-BackDoor 
+def on_message_RearEntrance_BackDoor(client, userdata, msg):
+    if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):
+        print ("RearEntrance BackDoor" + msg.payload.decode())
+        r = requests.get('https://lighting.taylortrash.com/api.php?fx=toggle&type=device&uid=216773570733040739&val=' + msg.payload.decode())
+        r.json()
+        client.publish("light/RearEntrance/BackDoor/216773570733040739/status", msg.payload.decode(), 0, True)
+
+def on_message_RearEntrance_BackDoor_Bright(client, userdata, msg):
+    print ("RearEntrance BackDoor Brightness " + msg.payload.decode())
+    r = requests.get('https://lighting.taylortrash.com/api.php?fx=dim&type=device&uid=216773570733040739&val=' + msg.payload.decode())
+    r.json()
+
+    client.publish("light/RearEntrance/BackDoor/216773570733040739/brightness", msg.payload.decode(), 0, True)
+
+### AllFull 
+def on_message_AllFull(client, userdata, msg):
+    if (msg.payload.decode() == '0' or msg.payload.decode() == '1'):
+        print ("AllFull" + msg.payload.decode())
+        r = requests.get('https://lighting.taylortrash.com/api.php?fx=scene&uid=1&type=' + msg.payload.decode())
+        r.json()
+        client.publish("light/AllFull/1/status", msg.payload.decode(), 0, True)
+
+
+client = mqtt.Client('tcp-subscriber')               #create new instance
+client.username_pw_set('admin', password='password')    #set username and password
+
+#Callbacks that trigger on a specific subscription match
+client.message_callback_add('control', on_message_control)
+
+### RearEntrance-BackDoor Begin
+client.message_callback_add('light/RearEntrance/BackDoor/216773570733040739/switch', on_message_RearEntrance_BackDoor)
+client.message_callback_add('light/RearEntrance/BackDoor/216773570733040739/brightness/set', on_message_RearEntrance_BackDoor_Bright)
+
+### AllFull Begin
+client.message_callback_add('light/AllFull/1/switch', on_message_AllFull)
+
+client.connect('172.16.33.8', 1883,60)
+
+client.on_connect = on_connect
+client.on_message = on_message
+
+client.loop_forever()
