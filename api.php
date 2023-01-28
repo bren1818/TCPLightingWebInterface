@@ -434,9 +434,9 @@
 			$CMD = "";
 			if($type == "run"){
 				$CMD = "cmd=SceneRun&data=<gip><version>1</version><token>".TOKEN."</token><sid>".$UID."</sid></gip>";
-			}elseif( $type == "0" ){
+			}elseif( $type == "off" ){
 				$CMD = "cmd=SceneRun&data=<gip><version>1</version><token>".TOKEN."</token><sid>".$UID."</sid><val>0</val></gip>";
-			}elseif( $type == "1"){
+			}elseif( $type == "on"){
 				$CMD = "cmd=SceneRun&data=<gip><version>1</version><token>".TOKEN."</token><sid>".$UID."</sid><val>1</val></gip>";
 			}elseif( $type == "delete" ){
 				//$CMD = "cmd=SceneDelete&data=<gip><version>1</version><token>".TOKEN."</token><sid>".$UID."</sid></gip>"; 
