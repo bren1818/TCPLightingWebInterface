@@ -75,9 +75,9 @@ define("LONGITUDE", -104.618894);
 	MQTT Services - Broker connections settings for subscribing and publishing 
 */
 $ENABLE_MQTT = 1;				 	// Enable MQTT State Publishing (1 = true, 0 = false)
-$MQTTserver = "172.16.33.8"; 		// Change as necessary
+$MQTTserver = "192.168.1.MQTT"; 	// Change as necessary
 $MQTTport = 1883;					// Change as necessary
-$MQTTusername = "admin";			// Set your username
+$MQTTusername = "username";			// Set your username
 $MQTTpassword = "password";         // set your password
 $MQTTsub_id = "tcp-subscriber"; 	// Make sure this is unique for connecting to server - you could use uniqid()
 $MQTTpub_id = "tcp-publisher"; 		// Make sure this is unique for connecting to server - you could use uniqid()
