@@ -36,7 +36,8 @@ function getCurlReturn($postDataString){
 	}
 
 	//This may be required if you encounter an error that your openssl dh key is too small error
-	// curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT:!DH');
+	//Also appears to be required for PHP 8+
+	curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT:!DH');
 
 
 
