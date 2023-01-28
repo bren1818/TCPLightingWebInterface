@@ -85,7 +85,7 @@ require("phpMQTT/phpMQTT.php");
 						$unplugged = 0;
 						$roomBrightness = 0;
 						$roomDevices = 0;
-						if ($mqtt->connect(true, retain, $MQTTusername, $MQTTpassword)) {
+						if ($mqtt->connect(true, NULL, $MQTTusername, $MQTTpassword)) {
 							foreach($DEVICES as $device){
 								$DeviceName = str_replace(' ', '', $device['name']);
 								if( isset($device['offline']) && $device['offline'] == 1){ $LWT = "offline"; } else {$LWT = "online";}
